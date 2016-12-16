@@ -21,6 +21,8 @@ infilecontents = infilecontents.replace(/xlink:/g, 'xlink_');
 infilecontents = infilecontents.replace(/\<\!\-\-/g, '{/*');
 infilecontents = infilecontents.replace(/\-\-\>/g, '*/}');
 
+infilecontents = infilecontents.replace(/@/g, 'this.');
+
 // TODO try    {"<!--   and  -->"}  to make it pass through...  (DOESN'T WORK since we have to count / escape quotes correctly...) NEEDS REGEX
 //
 //  TODO? also remove newlines from within strings, since SVG allows this,
@@ -28,10 +30,27 @@ infilecontents = infilecontents.replace(/\-\-\>/g, '*/}');
 
 var result = `(function() {
 ${pre}
-TSVG.Templates['${inkey}'] = ${infilecontents};
-console.log(TSVG.Templates['${inkey}'].render());
+  bind(TSVG.Helpers, function() {
+    TSVG.Templates['${inkey}'] = ${infilecontents}
+    console.log(TSVG.Templates['${inkey}'].render());
+  })();
 })();
 `;
 
 var outfilename = inkey + ".tsx";
 fs.writeFileSync(outfilename, result);
+
+/*
+function bind(obj, fn) {
+  return function() {
+    return fn.apply(obj, arguments);
+  };
+}
+
+function tester(x) {
+  return this.y + x;
+}
+
+var tester2: any = bind({y: 45}, tester);
+console.log(tester2(23));
+*/

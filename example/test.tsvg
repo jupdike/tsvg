@@ -164,24 +164,10 @@
   <!-- where board surface and side meet, at the edge, specular highlights -->
   <rect x="150" y="0" width="8" height="4100" fill="url(#sHighlight1)"/>
 
-  <use xlink:href="#fret" transform="translate(0,    0)"/>   <!-- fret  1 -->
-  <use xlink:href="#fret" transform="translate(0,  220)"/>   <!-- fret  2 -->
-  <use xlink:href="#fret" transform="translate(0,  440)"/>   <!-- fret  3 -->
-  <use xlink:href="#fret" transform="translate(0,  660)"/>   <!-- fret  4 -->
-  <use xlink:href="#fret" transform="translate(0,  880)"/>   <!-- fret  5 -->
-  <use xlink:href="#fret" transform="translate(0, 1100)"/>   <!-- fret  6 -->
-  <use xlink:href="#fret" transform="translate(0, 1320)"/>   <!-- fret  7 -->
-  <use xlink:href="#fret" transform="translate(0, 1540)"/>   <!-- fret  8 -->
-  <use xlink:href="#fret" transform="translate(0, 1760)"/>   <!-- fret  9 -->
-  <use xlink:href="#fret" transform="translate(0, 1980)"/>   <!-- fret 10 -->
-  <use xlink:href="#fret" transform="translate(0, 2200)"/>   <!-- fret 11 -->
-  <use xlink:href="#fret" transform="translate(0, 2420)"/>   <!-- fret 12 -->
-  <use xlink:href="#fret" transform="translate(0, 2640)"/>   <!-- fret 13 -->
-  <use xlink:href="#fret" transform="translate(0, 2860)"/>   <!-- fret 14 -->
-  <use xlink:href="#fret" transform="translate(0, 3080)"/>   <!-- fret 15 -->
-  <use xlink:href="#fret" transform="translate(0, 3300)"/>   <!-- fret 16 -->
-  <use xlink:href="#fret" transform="translate(0, 3520)"/>   <!-- fret 17 -->
-  <use xlink:href="#fret" transform="translate(0, 3740)"/>   <!-- fret 18 -->
+  <For from="0" upTo="17">
+    <!-- fret i -->
+    {i => <use xlink:href="#fret" transform={@translate(0, i*220)}/>}
+  </For>
 
   <!-- big string shadow -->
   <rect x="195" y="0" width="12" height="4100"
