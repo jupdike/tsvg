@@ -110,18 +110,18 @@
     
     <g id="single">
       <!-- single dot on board surface -->
-      <circle cx="445" cy="660" r="35" fill="url(#pearlGrad)" transform="translate(0,-440)"/>
+      <circle cx="445" cy="660" r="35" fill="url(#pearlGrad)" transform="translate(0,-660)"/>
       <!-- single dot on side -->
-      <circle cx="132" cy="660" r="12" fill="url(#pearlGrad)" transform="translate(0,-440)"/>
+      <circle cx="132" cy="660" r="12" fill="url(#pearlGrad)" transform="translate(0,-660)"/>
     </g>
 
     <g id="double">
       <!-- double dot on board surface -->
-      <circle cx="320" cy="880" r="35" fill="url(#pearlGrad)" transform="translate(0,-660)"/>
-      <circle cx="580" cy="880" r="35" fill="url(#pearlGrad)" transform="translate(0,-660)"/>
+      <circle cx="320" cy="880" r="35" fill="url(#pearlGrad)" transform="translate(0,-880)"/>
+      <circle cx="580" cy="880" r="35" fill="url(#pearlGrad)" transform="translate(0,-880)"/>
       <!-- double dot on side -->
-      <circle cx="132" cy="850" r="12" fill="url(#pearlGrad)" transform="translate(0,-660)"/>
-      <circle cx="132" cy="910" r="12" fill="url(#pearlGrad)" transform="translate(0,-660)"/>
+      <circle cx="132" cy="850" r="12" fill="url(#pearlGrad)" transform="translate(0,-880)"/>
+      <circle cx="132" cy="910" r="12" fill="url(#pearlGrad)" transform="translate(0,-880)"/>
     </g>
 
   </defs>
@@ -145,15 +145,15 @@
   <rect x="150" y="0" width="600" height="410" filter="url(#woodGrain)" transform="scale(1,10)"/>
 
   <!-- mother of pearl inlay markers on board surface and side -->
-  <use xlink:href="#single" transform="translate(0,  440)"/>
-  <use xlink:href="#single" transform="translate(0,  880)"/>
-  <use xlink:href="#single" transform="translate(0, 1320)"/>
-  <use xlink:href="#single" transform="translate(0, 1760)"/>
+  <use xlink:href="#single" transform={@translate(0,  3*220)}/>
+  <use xlink:href="#single" transform={@translate(0,  5*220)}/>
+  <use xlink:href="#single" transform={@translate(0,  7*220)}/>
+  <use xlink:href="#single" transform={@translate(0,  9*220)}/>
   
-  <use xlink:href="#double" transform="translate(0, 2420)"/>
+  <use xlink:href="#double" transform={@translate(0, 12*220)}/>
   
-  <use xlink:href="#single" transform="translate(0, 3080)"/>
-  <use xlink:href="#single" transform="translate(0, 3520)"/>
+  <use xlink:href="#single" transform={@translate(0, 15*220)}/>
+  <use xlink:href="#single" transform={@translate(0, 17*220)}/>
 
   <!--  no nut shadow ^ there (sHighlight1), but is one here: ! -->
   <rect x="742" y="0" width="8" height="4100" fill="url(#sHighlight2)"/>

@@ -30,10 +30,13 @@ infilecontents = infilecontents.replace(/@/g, 'this.');
 
 var result = `(function() {
 ${pre}
+
   bind(TSVG.Helpers, function() {
     TSVG.Templates['${inkey}'] = ${infilecontents}
-    console.log(TSVG.Templates['${inkey}'].render());
   })();
+
+  console.log(TSVG.Templates['${inkey}'].render());
+
 })();
 `;
 
