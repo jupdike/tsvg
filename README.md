@@ -1,6 +1,8 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+FYI typescript type for a Dictionary<string, any> =    myKVDict: {[k: string]: any}
+
+TSVG: Turing-complete preprocessor for SVG, using JSX and TypeScript.
 
 ### What is this repository for? ###
 

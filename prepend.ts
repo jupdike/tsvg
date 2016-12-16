@@ -51,20 +51,20 @@ class FakeElement {
     public children: Array<any>) {
   }
   public render(): string {
-    return this.renderInner(0, {}).join('');
+    return this.renderInner(0).join('');
   }
   static bind(obj, fn): any {
     return function() {
         return fn.apply(obj, arguments);
     };
   }
-  public static doChildren(indent, children, env) {
+  public static doChildren(indent, children) {
     var ret: Array<string> = [];
     for (var i = 0; i < children.length; i++) {
       //console.log('---');
       //console.log(this.children[i]);
       if (children[i].renderInner) {
-        ret = ret.concat((children[i] as FakeElement).renderInner(indent + 1, env));
+        ret = ret.concat((children[i] as FakeElement).renderInner(indent + 1));
         ret.push('\n');
       }
       else { // XML, SVG, HTML can have text in there. Thanks again morons who made SGML = whitespace doesn't matter except when it does.
@@ -73,7 +73,7 @@ class FakeElement {
     }
     return ret;
   }
-  renderInner(indent: number, env: {[k: string]: any}): Array<string> {
+  renderInner(indent: number): Array<string> {
     var ret = [];
     let moreAttribs = ' ';
     var indentStr = '';
@@ -94,13 +94,12 @@ class FakeElement {
       else {
         ret.push('>', '\n');
           // NOTE: other children can access stuff stored in here ... that is good
-        var envNew = FakeElement.clone(env); // enforce scoping by copying cloning once, for all the children
-        ret = ret.concat(FakeElement.doChildren(indent, this.children, envNew));
+        ret = ret.concat(FakeElement.doChildren(indent, this.children));
         ret.push(indentStr, '</', this.tagName, '>');
       }
     }
     else { // Component mode, or capitilized special guys...
-      ret = ret.concat(this.tagName.renderSpecial(indent, env, this.attributes, this.children));
+      ret = ret.concat(this.tagName.renderSpecial(indent, this.attributes, this.children));
     }
     return ret;
   }
@@ -112,34 +111,8 @@ class React {
   }
 }
 
-/*
-class Let {
-  public static renderSpecial(indent: number, env: any, attributes: any, children: Array<any>): Array<string> {
-    if (!attributes && attributes.hasOwnProperty('name') && attributes.hasOwnProperty('value')) {
-      throw "Let expects name='identifier' and value=some-JS-value";
-    }
-    var indentStr = '';
-    for (var i = 0; i < indent; i++) {
-      indentStr += '  '; // 2 spaces per indent
-    }
-    // TODO if children, make this variable only exist in scope of children.   OR: IDEA: make variable = the children
-    //      else add to env (which caller will preserve nicely)
-    var name = attributes.name;
-    var value = attributes.value;
-    console.error('OK -- added variable called "'+name+'" with value: '+value);
-
-    // var ret = []; //indentStr];
-    env[name] = value;
-    // //ret.push('Let: TODO do something with attrs and children');
-    // return ret;
-
-    return FakeElement.doChildren(indent, children, env);
-  }
-}
-*/
-
 class For {
-  public static renderSpecial(indent: number, env: any, attributes: any, children: Array<any>): Array<string> {
+  public static renderSpecial(indent: number, attributes: any, children: Array<any>): Array<string> {
     if (!attributes && attributes.hasOwnProperty('from') && attributes.hasOwnProperty('upTo')) {
       throw "For expects from=number and upTo=number";
     }
@@ -155,6 +128,6 @@ class For {
         newChildren.push( kid(i) );
       }
     });
-    return FakeElement.doChildren(Math.max(0, indent-1), newChildren, env);
+    return FakeElement.doChildren(Math.max(0, indent-1), newChildren);
   }
 }
