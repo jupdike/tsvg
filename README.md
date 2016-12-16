@@ -2,7 +2,7 @@
 
 FYI typescript type for a Dictionary<string, any> =    myKVDict: {[k: string]: any}
 
-TSVG: Turing-complete preprocessor for SVG, using JSX and TypeScript.
+TSVG: Turing-complete SVG preprocessor, using JSX and TypeScript.
 
 ### What is this repository for? ###
 
