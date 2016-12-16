@@ -1,0 +1,4 @@
+node_modules/*
+example/*.svg
+example/*.tsx
+example/*.js

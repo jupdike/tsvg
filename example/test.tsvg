@@ -1,0 +1,247 @@
+<svg id="kb-svg-horiz" class="kb-bottom" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns_xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="800" height="4070" viewBox="0 0 800 4070" preserveAspectRatio="xMidYMid none">
+  <defs>
+    <filter id="blurHoriz8" x="-400%" y="0%" width="800%" height="100%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="8"/>
+    </filter>
+    <filter id="blurHoriz3" x="-400%" y="0%" width="800%" height="100%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3"/>
+    </filter>
+    <filter id="blurHoriz2" x="-400%" y="0%" width="800%" height="100%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2"/>
+    </filter>
+  
+    <filter id="blurVert" y="-400%" x="0%" width="100%" height="800%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="8"/>
+    </filter>
+
+    <linearGradient id="pearlGrad" x1="0" y1="0" x2="0.34" y2="0.9">
+      <stop offset="0%" stop-color="#a7a7a7"/>
+      <stop offset="25%" stop-color="#a7a7a7"/>
+      <stop offset="50%" stop-color="#bbb" stop-opacity="1"/>
+      <stop offset="51%" stop-color="#A7a7a7" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#C9C9C9"/>
+    </linearGradient>
+
+    <linearGradient id="boardGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6D3317"/>
+      <stop offset="10%" stop-color="#6D3317"/>
+      <stop offset="70%" stop-color="#582D14"/>
+      <stop offset="100%" stop-color="#43260F"/>
+    </linearGradient>
+    
+    <linearGradient id="sHighlight1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#5C4232"/>
+      <stop offset="10%" stop-color="#5C4232"/>
+      <stop offset="100%" stop-color="#9B7F70"/>
+    </linearGradient>
+    
+    <linearGradient id="sHighlight2" x1="1" y1="0" x2="0" y2="0">
+      <stop offset="0%" stop-color="#5C4232"/>
+      <stop offset="10%" stop-color="#5C4232"/>
+      <stop offset="100%" stop-color="#9B7F70"/>
+    </linearGradient>
+    
+    <linearGradient id="nutTopGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#F4EFD2"/>
+      <stop offset="100%" stop-color="#D6D3C6"/>
+    </linearGradient>
+    
+    <linearGradient id="stringDark" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="black" stop-opacity="0.45"/>
+      <stop offset="8%" stop-color="black" stop-opacity="0.3"/>
+      <stop offset="20%" stop-color="black" stop-opacity="0.2"/>
+      <stop offset="50%" stop-color="black" stop-opacity="0"/>
+      <stop offset="70%" stop-color="black" stop-opacity="0.1"/>
+      <stop offset="90%" stop-color="black" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="black" stop-opacity="0.6"/>
+    </linearGradient>
+    
+    <linearGradient id="stringLight" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FEEDC9" stop-opacity="0.08"/>
+      <stop offset="30%" stop-color="#FEEDC9" stop-opacity="0.3"/>
+      <stop offset="40%" stop-color="#FFED96" stop-opacity="0.5"/>
+      <stop offset="50%" stop-color="#FEEDC9" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#FEEDC9" stop-opacity="0"/>
+    </linearGradient>
+
+    <pattern id="stringWindPatt"
+               width="2" height="6"
+               patternUnits="userSpaceOnUse">
+      <line stroke="rgba(0,0,0, 0.1)" stroke-width="10px" x1="0" y1="0" x2="5" y2="0"/>
+      <line stroke="rgba(0,0,0, 0.3)" stroke-width="3px" x1="0" y1="4" x2="5" y2="4"/>
+    </pattern>
+
+    <filter id="woodGrain" filterUnits="objectBoundingBox" 
+            x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="10 0.1" numOctaves="1" result="f0"/>
+      <feColorMatrix type="matrix" values="0.0  0.0  0.0  0.0  0.0 0.0  0.0  0.0  0.0  0.0 0.0  0.0  0.0  0.0  0.0 0.0  0.0  0.0 -1.6  0.8" result="f1" in="f0" />
+      {/* not working on Safari feBlend mode="darken" in="f1" in2="BackgroundImage" */}
+    </filter>
+
+    <linearGradient id="fretGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#333"/>
+      <stop offset="10%" stop-color="#3F3F3F"/>
+      <stop offset="15%" stop-color="#484848"/>
+      <stop offset="35%" stop-color="#aaa"/>
+      <stop offset="50%" stop-color="#ddd"/>
+      <stop offset="65%" stop-color="#999"/>
+      <stop offset="80%" stop-color="#444"/>
+      <stop offset="90%" stop-color="#3F3F3F"/>
+      <stop offset="100%" stop-color="#333"/>
+    </linearGradient>
+
+    <g id="fret">
+      <rect x="150" y="330" width="600" height="10" fill="rgba(0,0,0,0.7)" filter="url(#blurVert)"/>
+      {/* rect x="150" y="325" width="610" height="17" fill="red"/ */}
+      <path d="M 160 326 l 575 0  c 0 0 20 0 20 7 c 0 0 0 7 -20 7   l -575 0 z" fill="url(#fretGrad)"/>
+      <path d="M 158 326 c 0 0, 10 0, 10 7, c 0 0 0 7 -10 7  c 0 0 -10 0 -10 -7 c 0 0 0 -7 10 -7 z"
+        fill="#3d3d3d" />
+    </g>
+    
+    <linearGradient id="sideGlossGrad1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="black" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="black" stop-opacity="0.2"/>
+    </linearGradient>
+    
+    <linearGradient id="sideGlossGrad2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="black" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="black" stop-opacity="0"/>
+    </linearGradient>
+    
+    <g id="single">
+      {/* single dot on board surface */}
+      <circle cx="445" cy="660" r="35" fill="url(#pearlGrad)" transform="translate(0,-440)"/>
+      {/* single dot on side */}
+      <circle cx="132" cy="660" r="12" fill="url(#pearlGrad)" transform="translate(0,-440)"/>
+    </g>
+
+    <g id="double">
+      {/* double dot on board surface */}
+      <circle cx="320" cy="880" r="35" fill="url(#pearlGrad)" transform="translate(0,-660)"/>
+      <circle cx="580" cy="880" r="35" fill="url(#pearlGrad)" transform="translate(0,-660)"/>
+      {/* double dot on side */}
+      <circle cx="132" cy="850" r="12" fill="url(#pearlGrad)" transform="translate(0,-660)"/>
+      <circle cx="132" cy="910" r="12" fill="url(#pearlGrad)" transform="translate(0,-660)"/>
+    </g>
+
+  </defs>
+
+  {/* background: should be whitish */}
+  <rect x="-1" y="-1" width="802" height="4072" fill="#eee" />
+
+  {/* some shadows on the sides of the fretboard on the background */}
+  <rect x="50" y="0" width="8" height="4100" fill="rgba(0,0,0,0.7)" filter="url(#blurHoriz8)"/>
+  <rect x="745" y="0" width="6" height="4100" fill="rgba(0,0,0,0.7)" filter="url(#blurHoriz8)"/>
+
+  {/* side #60461C to #2C200B */}
+  <rect x="50" y="0" width="100" height="4100" fill="#2C200B"/>
+  <rect x="50" y="0" width="65" height="4100" fill="#60461C"/>
+
+  <rect x="50" y="0" width="38" height="4100" fill="url(#sideGlossGrad1)"/>
+  <rect x="88" y="0" width="27" height="4100" fill="url(#sideGlossGrad2)"/>
+
+  {/* board surface - noise is drawn and then it gets stretched vertically, to create a wood grain effect */}
+  <rect x="150" y="0" width="600" height="410" fill="url(#boardGrad)" transform="scale(1,10)"/>
+  <rect x="150" y="0" width="600" height="410" filter="url(#woodGrain)" transform="scale(1,10)"/>
+
+  {/* mother of pearl inlay markers on board surface and side */}
+  <use xlink_href="#single" transform="translate(0,  440)"/>
+  <use xlink_href="#single" transform="translate(0,  880)"/>
+  <use xlink_href="#single" transform="translate(0, 1320)"/>
+  <use xlink_href="#single" transform="translate(0, 1760)"/>
+  
+  <use xlink_href="#double" transform="translate(0, 2420)"/>
+  
+  <use xlink_href="#single" transform="translate(0, 3080)"/>
+  <use xlink_href="#single" transform="translate(0, 3520)"/>
+
+  {/*  no nut shadow ^ there (sHighlight1), but is one here: ! */}
+  <rect x="742" y="0" width="8" height="4100" fill="url(#sHighlight2)"/>
+
+  {/* nut shadow */}
+  <rect x="150" y="110" width="600" height="16" fill="rgba(0,0,0,0.5)" filter="url(#blurVert)"/>
+
+  {/* where board surface and side meet, at the edge, specular highlights */}
+  <rect x="150" y="0" width="8" height="4100" fill="url(#sHighlight1)"/>
+
+  <Var name="height" value={456+789} />
+
+  <For var="i" from="1" upTo="18">
+    <use xlink_href="#fret" transform={this.i}/>   {/* fret  ? */}
+  </For>
+  <use xlink_href="#fret" transform="translate(0,    0)"/>   {/* fret  1 */}
+  <use xlink_href="#fret" transform="translate(0,  220)"/>   {/* fret  2 */}
+  <use xlink_href="#fret" transform="translate(0,  440)"/>   {/* fret  3 */}
+  <use xlink_href="#fret" transform="translate(0,  660)"/>   {/* fret  4 */}
+  <use xlink_href="#fret" transform="translate(0,  880)"/>   {/* fret  5 */}
+  <use xlink_href="#fret" transform="translate(0, 1100)"/>   {/* fret  6 */}
+  <use xlink_href="#fret" transform="translate(0, 1320)"/>   {/* fret  7 */}
+  <use xlink_href="#fret" transform="translate(0, 1540)"/>   {/* fret  8 */}
+  <use xlink_href="#fret" transform="translate(0, 1760)"/>   {/* fret  9 */}
+  <use xlink_href="#fret" transform="translate(0, 1980)"/>   {/* fret 10 */}
+  <use xlink_href="#fret" transform="translate(0, 2200)"/>   {/* fret 11 */}
+  <use xlink_href="#fret" transform="translate(0, 2420)"/>   {/* fret 12 */}
+  <use xlink_href="#fret" transform="translate(0, 2640)"/>   {/* fret 13 */}
+  <use xlink_href="#fret" transform="translate(0, 2860)"/>   {/* fret 14 */}
+  <use xlink_href="#fret" transform="translate(0, 3080)"/>   {/* fret 15 */}
+  <use xlink_href="#fret" transform="translate(0, 3300)"/>   {/* fret 16 */}
+  <use xlink_href="#fret" transform="translate(0, 3520)"/>   {/* fret 17 */}
+  <use xlink_href="#fret" transform="translate(0, 3740)"/>   {/* fret 18 */}
+
+  {/* big string shadow */}
+  <rect x="195" y="0" width="12" height="4100"
+    transform="translate(24,0)" fill="rgba(0,0,0,0.75)" filter="url(#blurHoriz8)" />
+  
+  <rect x="296" y="0" width="11" height="4100"
+    transform="translate(24,0)" fill="rgba(0,0,0,0.7)" filter="url(#blurHoriz8)" />
+  <rect x="396" y="0" width="10" height="4100"
+    transform="translate(24,0)" fill="rgba(0,0,0,0.65)" filter="url(#blurHoriz8)" />
+  <rect x="497" y="0" width="9" height="4100"
+    transform="translate(24,0)" fill="rgba(0,0,0,0.6)" filter="url(#blurHoriz8)" />
+  <rect x="597" y="0" width="8" height="4100"
+    transform="translate(24,0)" fill="rgba(0,0,0,0.55)" filter="url(#blurHoriz8)" />
+  {/* small string shadow */}
+  <rect x="698" y="0" width="7" height="4100"
+    transform="translate(24,0)" fill="rgba(0,0,0,0.5)" filter="url(#blurHoriz8)" />
+
+  {/* nut - side - no string shadows ^ on top of nut */}
+  <path d="M 170 50 l -50 0  c 0 0 -5 0 -5 5 l 0 50 c 0 0 0 5 5 5  l 50 0 z" fill="#D2C9A9"/>
+  {/* nut - top */}
+  <path d="M 170 50 l 577 0  c 0 0 5 0 5 5 l 0 50 c 0 0 0 5 -5 5  l -577 0 z" fill="url(#nutTopGrad)"/>
+
+  {/* shallow string shadows on nut, in grooves where strings rest on the nut */}
+  <rect x="194" y="48" width="14" height="64" filter="url(#blurHoriz3)" fill="rgba(0,0,0, 0.85)"/>
+  <rect x="295" y="48" width="12" height="64" filter="url(#blurHoriz3)" fill="rgba(0,0,0, 0.85)"/>
+  <rect x="395" y="48" width="10" height="64" filter="url(#blurHoriz3)" fill="rgba(0,0,0, 0.85)"/>
+  <rect x="496" y="48" width="8"  height="64" filter="url(#blurHoriz2)" fill="rgba(0,0,0, 0.85)"/>
+  <rect x="596" y="48" width="6"  height="64" filter="url(#blurHoriz2)" fill="rgba(0,0,0, 0.85)"/>
+  <rect x="697" y="48" width="6"  height="64" filter="url(#blurHoriz2)" fill="rgba(0,0,0, 0.85)"/>
+
+  {/* big string */}
+  <rect x="195" y="0" width="14" height="4100" fill="rgba(218, 187, 141, 1)"/>
+  <rect x="195" y="0" width="14" height="4100" fill="url(#stringWindPatt)"/>
+  <rect x="195" y="0" width="14" height="4100" fill="url(#stringDark)"/>
+  <rect x="195" y="0" width="14" height="4100" fill="url(#stringLight)"/>
+
+  <rect x="296" y="0" width="12" height="4100" fill="rgba(218, 187, 141, 1)"/>
+  <rect x="296" y="0" width="12" height="4100" fill="url(#stringWindPatt)"/>
+  <rect x="296" y="0" width="12" height="4100" fill="url(#stringDark)"/>
+  <rect x="296" y="0" width="12" height="4100" fill="url(#stringLight)"/>
+
+  <rect x="396" y="0" width="10" height="4100" fill="rgba(218, 187, 141, 1)"/>
+  <rect x="396" y="0" width="10" height="4100" fill="url(#stringWindPatt)"/>
+  <rect x="396" y="0" width="10" height="4100" fill="url(#stringDark)"/>
+  <rect x="396" y="0" width="10" height="4100" fill="url(#stringLight)"/>
+
+  <rect x="497" y="0" width="8" height="4100" fill="rgba(218, 187, 141, 1)"/>
+  <rect x="497" y="0" width="8" height="4100" fill="url(#stringWindPatt)"/>
+  <rect x="497" y="0" width="8" height="4100" fill="url(#stringDark)"/>
+  <rect x="497" y="0" width="8" height="4100" fill="url(#stringLight)"/>
+
+  <rect x="597" y="0" width="6" height="4100" fill="#cEcBc3"/>
+  <rect x="597" y="0" width="6" height="4100" fill="url(#stringDark)"/>
+  {"<!--  small string -->"}
+  <rect x="698" y="0" width="5" height="4100" fill="#DEDBD3"/>
+  <rect x="698" y="0" width="5" height="4100" fill="url(#stringDark)"/>
+  
+</svg>
