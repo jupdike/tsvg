@@ -1,14 +1,6 @@
-// TODO -- Very Simple string replace:
-//
-//   <!-- small string -->
-//   vvvv              vvv
-//   {/*  small string */}
-//
-//   xmlns:xyz
-//   vvvvvv
-//   xmlns_xyz
-//
-//  TODO? also remove newlines from within strings, since SVG allows this, but JSX does not
+class TSVG {
+  public static Templates = {};
+}
 
 class FakeElement {
   public static addSlashes(str) {
@@ -91,7 +83,3 @@ class For {
     return ret;
   }
 }
-
-let tree = React.createElement('a', {}, []); // todo read in file!
-console.log(tree.render());
-
