@@ -39,18 +39,3 @@ ${pre}
 
 var outfilename = inkey + ".tsx";
 fs.writeFileSync(outfilename, result);
-
-/*
-function bind(obj, fn) {
-  return function() {
-    return fn.apply(obj, arguments);
-  };
-}
-
-function tester(x) {
-  return this.y + x;
-}
-
-var tester2: any = bind({y: 45}, tester);
-console.log(tester2(23));
-*/

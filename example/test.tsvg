@@ -1,4 +1,4 @@
-<svg id="kb-svg-horiz" class="kb-bottom" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="800" height="4070" viewBox="0 0 800 4070" preserveAspectRatio="xMidYMid none">
+<svg id="kb-svg-horiz" class="kb-bottom" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="800" height="4070" viewBox="0 0 800 4070">
   <defs>
     <filter id="blurHoriz8" x="-400%" y="0%" width="800%" height="100%">
       <feGaussianBlur in="SourceGraphic" stdDeviation="8"/>

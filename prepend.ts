@@ -1,3 +1,5 @@
+// TODO make this a module and rearrange and put stuff where it goes, etc.
+
 class TSVG {
   public static Templates = {};
   public static translate(x, y) { return "translate("+x+", "+y+")"; }
@@ -52,11 +54,6 @@ class FakeElement {
   }
   public render(): string {
     return this.renderInner(0).join('');
-  }
-  static bind(obj, fn): any {
-    return function() {
-        return fn.apply(obj, arguments);
-    };
   }
   public static doChildren(indent, children) {
     var ret: Array<string> = [];
