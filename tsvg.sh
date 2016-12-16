@@ -10,4 +10,4 @@ if [ -z "$1" ]; then
 fi
 one=`echo $1 | sed s/[.]tsvg//`
 tsc tsvg.ts prepend.ts && node tsvg.js $one.tsvg
-tsc --jsx react $one.tsx && node $one.js
+tsc --jsx react $one.tsx && node $one.js > $one.svg

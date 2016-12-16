@@ -15,21 +15,21 @@ var pre = fs.readFileSync('prepend.ts');
 
 var infilecontents = fs.readFileSync(infilename) + "";
 
-// TODO 'fix' problems in infilecontents, like these:
+// fix for certain XML v. JSX 'problems' in infilecontents, like these:
 infilecontents = infilecontents.replace(/xmlns:/g, 'xmlns_');
 infilecontents = infilecontents.replace(/xlink:/g, 'xlink_');
+infilecontents = infilecontents.replace(/\<\!\-\-/g, '{/*');
+infilecontents = infilecontents.replace(/\-\-\>/g, '*/}');
 
-// TODO -- Very Simple string replace:
+// TODO try    {"<!--   and  -->"}  to make it pass through...  (DOESN'T WORK since we have to count / escape quotes correctly...) NEEDS REGEX
 //
-//   <!-- small string -->
-//   vvvv              vvv
-//   {/*  small string */}
-//
-//  TODO? also remove newlines from within strings, since SVG allows this, but JSX does not
+//  TODO? also remove newlines from within strings, since SVG allows this,
+//  but JSX does not
 
 var result = `(function() {
 ${pre}
 TSVG.Templates['${inkey}'] = ${infilecontents};
+console.log(TSVG.Templates['${inkey}'].render());
 })();
 `;
 
