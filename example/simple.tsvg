@@ -4,6 +4,8 @@
 
   { @line(50, 50, 85, 670, {stroke: 'red'}) }
 
-  { @closedPolyPath({stroke: 'green', fill: 'transparent'}, 40, 40, 250, 50, 55, 700) }
+  { @closedPolyPath({stroke: 'green', fill: 'transparent'},
+    [40, 40, 250, 50, 55, 700]
+  ) }
 
 </svg>

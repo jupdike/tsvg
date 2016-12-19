@@ -4,13 +4,13 @@ class TSVG {
   public static line(x1: string, y1: string, x2: string, y2: string, opts: { [k: string]: any; }) {
     return FakeElement.creator('line', { x1: x1, y1: y1, x2: x2, y2: y2 }, {'stroke-width': 1, stroke: "black" }, opts);
   }
-  public static closedPolyPath(opts: { [k: string]: any; }, ...d: string[]) {
+  public static closedPolyPath(opts: { [k: string]: any; }, d: string[]) {
     if (d.length < 4) {
       throw "Expected at least 4 scalars in coordinate list";
     }
     var d2 = d.slice(2);
     var data = `M ${d[0]} ${d[1]} ` + d2.byPairs().map(one => `L ${one[0]} ${one[1]}`).join(' ') + ' z';
-    return FakeElement.creator('path', {d: data }, {'stroke-width': 1, stroke: "black"}, opts);
+    return FakeElement.creator('path', {d: data}, {'stroke-width': 1, stroke: "black"}, opts);
   }
   public static Helpers = {
     closedPolyPath: TSVG.closedPolyPath,
