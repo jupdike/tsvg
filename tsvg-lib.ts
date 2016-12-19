@@ -1,12 +1,22 @@
+/*
+
+TODO
+make a function that takes attrs {} and a <g> and makes <g attrs/>
+
+*/
+
 class TSVG {
   public static Helpers = {
     closedPolyPath: TSVG.closedPolyPath,
     translate: TSVG.translate,
     line: TSVG.line,
+    lines: TSVG.lines,
+    rotate: TSVG.rotate,
     range: TSVG.range
   };
   public static Templates = {};
   public static translate(x: string, y: string) { return `translate(${x}, ${y})`; }
+  public static rotate(x: string, ox=0, oy=0) { return `rotate(${x}, ${ox}, ${oy})`; }
   public static line(x1: string, y1: string, x2: string, y2: string, opts: { [k: string]: any; }) {
     return FakeElement.creator('line', { x1: x1, y1: y1, x2: x2, y2: y2 }, {'stroke-width': 1, stroke: "black" }, opts);
   }
@@ -17,6 +27,14 @@ class TSVG {
     var d2 = d.slice(2);
     var data = `M ${d[0]} ${d[1]} ` + d2.byPairs().map(one => `L ${one[0]} ${one[1]}`).join(' ') + ' z';
     return FakeElement.creator('path', {d: data}, {'stroke-width': 1, stroke: "black"}, opts);
+  }
+  public static lines(opts: { [k: string]: any; }, pointPairs: Array<[any, any, any, any]>) {
+    pointPairs.forEach(pointPair => {
+      if (pointPair.length < 4) {
+        throw "Expected at least 4 scalars in coordinate list";
+      }
+    });
+    return React.createElement('g', {}, ...pointPairs.map( ([a,b, c,d]) => TSVG.line(a,b, c,d, opts) ));
   }
   static range2(start: number, count: number) {
     return Array.apply(0, Array(count))

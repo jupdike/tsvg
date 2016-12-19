@@ -1,13 +1,20 @@
 <svg id="kb-svg-horiz" class="kb-bottom" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="800" height="800" viewBox="0 0 800 800" preserveAspectRatio="xMidYMid none">
 
+  {/* @height: 800; */}
+
   <rect x="-1" y="-1" width="802" height="802" fill="#eee" />
 
-  { @line(50, 50, 85, 670, {stroke: 'red'}) }
+  { @line(50, 50, 85, 670, {stroke: '#eee'}) }
 
-  { @closedPolyPath({stroke: '#ddd', fill: 'transparent'},
+  { @closedPolyPath({stroke: '#eee', fill: 'transparent'},
     @range(3, 7).map( x => [x*50, 0, 0, 800 - x*50] ).flatten()
   ) }
 
-  ) }
+  <For from="0" upTo="3">
+    { time => @lines({transform: @rotate(90*time, 800/2, 800/2),
+      stroke: ['red','green','blue','orange'][time], fill: 'transparent'},
+      @range(64).map( x => [x*800/64, 0, 0, 800 - x*800/64] ))
+    }
+  </For>
 
 </svg>
