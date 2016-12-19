@@ -8,7 +8,8 @@ var infilename = process.argv[2];
 var inkey = infilename.replace(".tsvg", "");
 //console.log(infile);
 
-var pre = fs.readFileSync('prepend.ts');
+var pre = fs.readFileSync('prepend.ts'); // TODO use the right path
+var lib = fs.readFileSync('tsvg-lib.ts');
 
 //let tree = React.createElement('a', {}, []); // todo read in file!
 //console.log(tree.render());
@@ -28,8 +29,11 @@ infilecontents = infilecontents.replace(/@/g, 'this.');
 //  TODO? also remove newlines from within strings, since SVG allows this,
 //  but JSX does not
 
-var result = `(function() {
+var result = `
 ${pre}
+(function() {
+
+  ${lib}
 
   bind(TSVG.Helpers, function() {
     TSVG.Templates['${inkey}'] = ${infilecontents}

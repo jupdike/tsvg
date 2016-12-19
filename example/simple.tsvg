@@ -1,15 +1,9 @@
 <svg id="kb-svg-horiz" class="kb-bottom" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="800" height="800" viewBox="0 0 800 800" preserveAspectRatio="xMidYMid none">
 
-  <!-- background: should be whitish -->
   <rect x="-1" y="-1" width="802" height="802" fill="#eee" />
 
-  <!-- some shadows on the sides of the fretboard on the background -->
-  <rect x="50" y="0" width="8" height="4100" fill="rgba(0,0,0,0.7)" filter="url(#blurHoriz8)"/>
-  <rect x="745" y="0" width="6" height="4100" fill="rgba(0,0,0,0.7)" filter="url(#blurHoriz8)"/>
+  { @line(50, 50, 85, 670, {stroke: 'red'}) }
 
-  <For from="1" upTo="18">
-    <!-- fret i -->
-    {i => <use xlink:href="#fret" transform={@translate(0, i*220)}/>}
-  </For>
+  { @closedPolyPath({stroke: 'green', fill: 'transparent'}, 40, 40, 250, 50, 55, 700) }
 
 </svg>
