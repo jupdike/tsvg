@@ -1,4 +1,10 @@
 class TSVG {
+  public static Helpers = {
+    closedPolyPath: TSVG.closedPolyPath,
+    translate: TSVG.translate,
+    line: TSVG.line,
+    range: TSVG.range
+  };
   public static Templates = {};
   public static translate(x: string, y: string) { return `translate(${x}, ${y})`; }
   public static line(x1: string, y1: string, x2: string, y2: string, opts: { [k: string]: any; }) {
@@ -12,10 +18,17 @@ class TSVG {
     var data = `M ${d[0]} ${d[1]} ` + d2.byPairs().map(one => `L ${one[0]} ${one[1]}`).join(' ') + ' z';
     return FakeElement.creator('path', {d: data}, {'stroke-width': 1, stroke: "black"}, opts);
   }
-  public static Helpers = {
-    closedPolyPath: TSVG.closedPolyPath,
-    translate: TSVG.translate,
-    line: TSVG.line
+  static range2(start: number, count: number) {
+    return Array.apply(0, Array(count))
+      .map(function (element, index) { 
+        return index + start;  
+    });
+  }
+  public static range(a: number, b: number = undefined) {
+    if (b) {
+      return TSVG.range2(a, b - a);
+    }
+    return TSVG.range2(0, a);
   };
 }
 
@@ -34,39 +47,6 @@ class FakeElement {
     defaultOpts = FakeElement.combineAttrs(defaultOpts, newOpts);
     var combinedAttrs = FakeElement.combineAttrs(defaultOpts, args);
     return React.createElement(tagName, combinedAttrs);
-  }
-  public static clone(obj) {
-    var copy;
-
-    // Handle the 3 simple types, and null or undefined
-    if (null == obj || "object" != typeof obj) return obj;
-
-    // Handle Date
-    if (obj instanceof Date) {
-      copy = new Date();
-      copy.setTime(obj.getTime());
-      return copy;
-    }
-
-    // Handle Array
-    if (obj instanceof Array) {
-      copy = [];
-      for (var i = 0; i < obj.length; i++) {
-          copy[i] = FakeElement.clone(obj[i]);
-      }
-      return copy;
-    }
-
-    // Handle Object
-    if (obj instanceof Object) {
-      copy = {};
-      for (var attr in obj) {
-          if (obj.hasOwnProperty(attr)) copy[attr] = FakeElement.clone(obj[attr]);
-      }
-      return copy;
-    }
-
-    throw new Error("Unable to copy obj! Its type isn't supported.");
   }
   constructor(public tagName: any, public attributes: { [k: string]: string; },
     public children: Array<any>) {
