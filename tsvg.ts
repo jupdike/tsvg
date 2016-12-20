@@ -6,15 +6,11 @@ var fs = require('fs');
 
 var infilename = process.argv[2];
 var inkey = infilename.replace(".tsvg", "");
-//console.log(infile);
 
 var pre = fs.readFileSync('prepend.ts'); // TODO use the right path
 var lib = fs.readFileSync('tsvg-lib.ts');
 
-//let tree = React.createElement('a', {}, []); // todo read in file!
-//console.log(tree.render());
-
-var regexDefine = new RegExp("(@[a-zA-Z0-9_\-]+):\w*([^;]+);", "g");
+var regexDefine = new RegExp(`(@[a-zA-Z0-9_\-]+)[ ]*=[ ]*([^;]+);`, "g");
 
 var infilecontents = fs.readFileSync(infilename) + "";
 
@@ -26,7 +22,7 @@ function getGlobals(input, vals) {
 	while ((match = regexDefine.exec(input)) !== null) {
 		var full = match[0];
 		var lhs = match[1];
-		var rhs = match[2];
+    var rhs = match[2].replace('@', 'that.');
     var k = lhs.replace('@','');
 		copyInput = copyInput.replace(full, '');
 		vals[k] = rhs; // possibly overwrite previous value
@@ -38,9 +34,9 @@ var kvs = {};
 infilecontents = getGlobals(infilecontents, kvs);
 var valbits = [];
 for (let prop in kvs) {
-  valbits.push('"' + prop + '": ' + kvs[prop]);
+  valbits.push('that["' + prop + '"] = ' + kvs[prop] + ';');
 }
-var valStr = '{ ' + valbits.join(', ') + ' }';
+var valStr = valbits.join('\n');
 
 // fix for certain XML v. JSX 'problems' in infilecontents, like these:
 infilecontents = infilecontents.replace(/xmlns:/g, 'xmlns_');
@@ -59,14 +55,17 @@ var result = `
 ${pre}
 (function() {
 
-  ${lib}
+${lib}
 
-  var that = FakeElement.combineAttrs(TSVG.Helpers, ${valStr});
-  bind(that, function() {
-    TSVG.Templates['${inkey}'] = ${infilecontents}
-  })();
+var that: any = {};
+${valStr};
 
-  console.log(TSVG.Templates['${inkey}'].render());
+var that2 = FakeElement.combineAttrs(TSVG.Helpers, that);
+bind(that2, function() {
+  TSVG.Templates['${inkey}'] = ${infilecontents}
+})();
+
+console.log(TSVG.Templates['${inkey}'].render());
 
 })();
 `;

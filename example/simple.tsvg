@@ -1,6 +1,7 @@
 <svg id="kb-svg-horiz" class="kb-bottom" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="800" height="800" viewBox="0 0 800 800" preserveAspectRatio="xMidYMid none">
 
-  @height: 800;
+  @height = 800;
+  @half = @height / 2;
 
   <rect x="-1" y="-1" width="802" height="802" fill="#eee" />
 
@@ -11,7 +12,7 @@
   ) }
 
   <For from="0" upTo="3">
-    { time => @lines({transform: @rotate(90*time, @height / 2, @height / 2),
+    { time => @lines({transform: @rotate(90*time, @half, @half),
       stroke: ['red','green','blue','orange'][time], fill: 'transparent'},
       @range(64).map( x => [x * @height / 64, 0, 0, @height * (1 - x/64) , @height / 64] ))
     }
