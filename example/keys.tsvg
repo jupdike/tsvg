@@ -1,39 +1,29 @@
 <svg id="kb-svg-horiz" class="kb-bottom" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="1100" height="694" viewBox="0 0 1100 694">
-  @beadgcf = "B E A D G C F".split(' ');
-  @keyIndex = 0;
   <defs>
     <g id="up-tri">
-      <path style="fill: #eee; stroke: #999; stroke-width: 2px" d="M 0,173.2 l 100,0 l -100,-173.2 l -100,173.2 z"/>
+      <path style="fill: #ddd; stroke: #999; stroke-width: 2px" d="M 0,173.2 l 100,0 l -100,-173.2 l -100,173.2 z"/>
     </g>
     <g id="down-tri">
-      <path style="fill: #eee; stroke: #999; stroke-width: 2px" d="M 0,173.2 l 100,-173.2 l -200,0 z"/>
+      <path style="fill: #ddd; stroke: #999; stroke-width: 2px" d="M 0,173.2 l 100,-173.2 l -200,0 z"/>
     </g>
   </defs>
   <rect x="0" y="0" width="1100" height="694" fill="#eee"/>
 
-  <For from="0" upTo="5">
+  @beadgcf = "B E A D G C F".split(' ');
+  @myzip = (ch) => @beadgcf.map(x => x+ch);
+  @texts = @flatten([@myzip('##'), @myzip('#'), @myzip(''), @myzip('b'), @myzip('bb')]);
+  <!-- this is sort of the only argument ... could be appended by other program to generate multiple .svg files, then .png, etc. -->
+  @keyIndex = 0;
+  <For from="0" upTo="6">
     {i => <use xlink:href="#up-tri" transform={@translate(i*200+100, 173.2*0)}/>}
-  </For>
-  <For from="0" upTo="6">
     {i => <use xlink:href="#up-tri" transform={@translate(i*200, 173.2*1)}/>}
-  </For>
-  <For from="0" upTo="5">
     {i => <use xlink:href="#up-tri" transform={@translate(i*200+100, 173.2*2)}/>}
-  </For>
-  <For from="0" upTo="6">
     {i => <use xlink:href="#up-tri" transform={@translate(i*200, 173.2*3)}/>}
+    {i => <use xlink:href="#down-tri" transform={@translate(i*200, 173.2*0)}/>}
+    {i => <use xlink:href="#down-tri" transform={@translate(i*200+100, 173.2*1)}/>}
+    {i => <use xlink:href="#down-tri" transform={@translate(i*200, 173.2*2)}/>}
+    {i => <use xlink:href="#down-tri" transform={@translate(i*200+100, 173.2*3)}/>}
+    {i => <text x={200*i} y={80} text-anchor="middle" style="fill: #999; font-family: 'Helevtica Neue', Arial, sans-serif; font-size: 55px;">{@texts[i + @keyIndex + 10]}</text>}
   </For>
 
-  <For from="0" upTo="5">
-    {i => <use xlink:href="#down-tri" transform={@translate(i*200, 173.2*0)}/>}
-  </For>
-  <For from="0" upTo="5">
-    {i => <use xlink:href="#down-tri" transform={@translate(i*200+100, 173.2*1)}/>}
-  </For>
-  <For from="0" upTo="5">
-    {i => <use xlink:href="#down-tri" transform={@translate(i*200, 173.2*2)}/>}
-  </For>
-  <For from="0" upTo="5">
-    {i => <use xlink:href="#down-tri" transform={@translate(i*200+100, 173.2*3)}/>}
-  </For>
 </svg>
