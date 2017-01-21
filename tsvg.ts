@@ -22,7 +22,7 @@ function getGlobals(input, vals) {
 	while ((match = regexDefine.exec(input)) !== null) {
 		var full = match[0];
 		var lhs = match[1];
-    var rhs = match[2].replace('@', 'that.');
+    var rhs = match[2].replace(/@/g, 'that.');
     var k = lhs.replace('@','');
 		copyInput = copyInput.replace(full, '');
 		vals[k] = rhs; // possibly overwrite previous value
@@ -34,7 +34,7 @@ var kvs = {};
 infilecontents = getGlobals(infilecontents, kvs);
 var valbits = [];
 for (let prop in kvs) {
-  valbits.push('that["' + prop + '"] = ' + kvs[prop] + ';');
+	valbits.push('that["' + prop + '"] = ' + kvs[prop] + ';');
 }
 var valStr = valbits.join('\n');
 
@@ -57,11 +57,12 @@ ${pre}
 
 ${lib}
 
-var that: any = {};
+var that2: any = {};
+// allow @xyz = rhs; for rhs to use TSVG.Helpers!
+var that: any = FakeElement.combineAttrs(TSVG.Helpers, that2); // does a copy
 ${valStr};
 
-var that2 = FakeElement.combineAttrs(TSVG.Helpers, that);
-bind(that2, function() {
+bind(that, function() {
   TSVG.Templates['${inkey}'] = ${infilecontents}
 })();
 

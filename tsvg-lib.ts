@@ -12,7 +12,8 @@ class TSVG {
     line: TSVG.line,
     lines: TSVG.lines,
     rotate: TSVG.rotate,
-    range: TSVG.range
+    range: TSVG.range,
+    flatten: TSVG.flatten
   };
   public static Templates = {};
   public static translate(x: string, y: string) { return `translate(${x}, ${y})`; }
@@ -47,7 +48,24 @@ class TSVG {
       return TSVG.range2(a, b - a);
     }
     return TSVG.range2(0, a);
-  };
+  }
+  public static flatten(array: any) {
+    var result = [];
+    TSVG.flattenInner(array, result);
+    return result;
+  }
+  static flattenInner(array: any, result) {
+    var length = array.length;
+    var ii = 0;
+    while (length--) {
+      var current = array[ii++];
+      if (Array.isArray(current)) {
+        TSVG.flattenInner(current, result);
+      } else {
+        result.push(current);
+      }
+    }
+  }
 }
 
 function bind(obj, fn) {
@@ -86,8 +104,14 @@ class FakeElement {
     var ret: Array<string> = [];
     for (var i = 0; i < children.length; i++) {
       //console.log('---');
-      //console.log(this.children[i]);
-      if (children[i].renderInner) {
+      //console.log(children[i]);
+      if (children[i] === undefined) {
+        ret.push('undefined'); // don'r crash
+      }
+      else if (children[i] === null) {
+        ret.push('null'); // don'r crash
+      }
+      else if (children[i].renderInner) {
         ret = ret.concat((children[i] as FakeElement).renderInner(indent + 1));
         ret.push('\n');
       }
@@ -145,10 +169,13 @@ class For {
       indentStr += '  '; // 2 spaces per indent
     }
 
+    var from: any = attributes.from;
+    var upTo: any = attributes.upTo;
+
     // run the for loop on each child in order
     var newChildren = [];
     children.forEach(kid => {
-      for (var i = attributes.from; i <= attributes.upTo; i++) {
+      for (var i = (from|0); i <= (upTo|0); i++) {
         newChildren.push( kid(i) );
       }
     });
