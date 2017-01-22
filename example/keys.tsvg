@@ -1,5 +1,6 @@
 <svg id="kb-svg-horiz" class="kb-bottom" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="1100" height="694" viewBox="0 0 1100 694">
   <defs>
+    <Font id="my-font" path="/Users/jupdike/Downloads/fira-sans-condensed/firasanscondensed-book.svg"/>
     <g id="up-tri">
       <path style="fill: #ddd; stroke: #999; stroke-width: 3px" d="M 0,173.2 l 100,0 l -100,-173.2 l -100,173.2 z"/>
     </g>
@@ -78,5 +79,9 @@
       </text>)
       )(@triples[ix][0], @triples[ix][1], @triples[ix][2]))}
   </For>
+
+  <TextPath style="TODO">
+    Hello World
+  </TextPath>
 
 </svg>

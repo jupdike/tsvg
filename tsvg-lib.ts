@@ -221,3 +221,33 @@ class For {
     return FakeElement.doChildren(Math.max(0, indent-1), newChildren);
   }
 }
+
+class Font {
+  public static renderSpecial(indent: number, attributes: any, children: Array<any>): Array<string> {
+    if (!attributes && attributes.hasOwnProperty('id') && attributes.hasOwnProperty('path')) {
+      throw "For expects id=string and path=string";
+    }
+    var indentStr = '';
+    for (var i = 0; i < indent; i++) {
+      indentStr += '  '; // 2 spaces per indent
+    }
+    // TODO check that path exists and load it, strip out some messy garbage, etc.
+    // TODO load some stuff into TSVG.Fonts
+    return [indentStr, '<!-- Loaded SVG font from path "', attributes.path, '" as id "', attributes.id, '" -->'];
+  }
+}
+
+class TextPath {
+  public static renderSpecial(indent: number, attributes: any, children: Array<any>): Array<string> {
+    if (!attributes && attributes.hasOwnProperty('font-id') && attributes.hasOwnProperty('style')) {
+      throw "For expects font-id=string and style=string";
+    }
+    var indentStr = '';
+    for (var i = 0; i < indent; i++) {
+      indentStr += '  '; // 2 spaces per indent
+    }
+    // TODO check that path exists and load it, strip out some messy garbage, etc.
+    // TODO load some stuff into TSVG.Fonts
+    return [indentStr, '<!-- TODO "rasterize" out vectors for each glyph in children text -->'];
+  }  
+}
