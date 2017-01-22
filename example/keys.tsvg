@@ -32,6 +32,7 @@
   @hyphens = "- - - - - - -".split(' ');
   @texts = @flatten([@hyphens, @myzip('\\#\\#'), @myzip('\\#'), @myzip(''), @myzip('\\b'), @myzip('\\b\\b'), @hyphens]);
   @bgtextstyle = @makeStyle({'fill': '#999', 'font-family': "'Helevtica Neue', Arial, sans-serif", 'font-size': '55px'});
+  @fgtextstyle = @makeStyle({'fill': '#222', 'font-family': "'Helevtica Neue', Arial, sans-serif", 'font-size': '55px'});
   @minorList = [0, 4, 7, 11];
   @majorList = [0, 3, 7, 10];
   <!-- this is sort of the only argument ... could be appended by other program to generate multiple .svg files, then .png, etc.
@@ -49,11 +50,20 @@
       </text>}
     </For>}
   </For>
-
+  <!-- @ s m artCaser = (z,txt) => (z%2 ? txt : txt.toLowerCase()) -->
   @refs = "#down-tri-2 #up-tri-2 #down-tri-3 #up-tri-3 #down-tri-4 #up-tri-4".split(' ');
   @triples = [[0,1,0], [0,2,0], [0,3,0], [0,4,0], [0,4,1], [0,2,3], [0,3,3],   [1,1,1], [1,1,2], [1,4,2],  [2,2,2],  [2,4,2], [2,1,1], [2,2,1], [2,3,1],   [3,2,1],  [3,4,1], [3,2,2], [3,3,2], [3,1,0], [3,2,0], [3,3,0],  [0,3,2],  [1,3,1], [4,3,2],  [5,3,1]];
   <For from="0" upTo={@triples.length-1}>
     {ix => (((z,i,j) => <use xlink:href={@refs[z]} transform={@translate(i*200 + ((j+z)%2)*100, 173.2*j)}/>)(@triples[ix][0], @triples[ix][1], @triples[ix][2]))}
+    {ix => (((z,i,j) =>
+      ((z+1)%2 ?
+        <text x={200*i + ((j+z)%2)*100} y={80 + 172.3*j} text-anchor="middle" style={@fgtextstyle}>
+          {@texts[i + @keyIndex + 16 +  @minorList[j]].toLowerCase()}
+        </text> :
+        <text x={200*i + ((j+z)%2)*100} y={133 + 172.3*j} text-anchor="middle" style={@fgtextstyle}>
+        {@texts[i + @keyIndex + 20 +  @majorList[j]]}
+      </text>)
+      )(@triples[ix][0], @triples[ix][1], @triples[ix][2]))}
   </For>
 
 </svg>
