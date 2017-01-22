@@ -17,6 +17,8 @@
   @hyphens = "- - - - - - -".split(' ');
   @texts = @flatten([@hyphens, @myzip('\\#\\#'), @myzip('\\#'), @myzip(''), @myzip('\\b'), @myzip('\\b\\b'), @hyphens]);
   @bgtextstyle = @makeStyle({'fill': '#999', 'font-family': "'Helevtica Neue', Arial, sans-serif", 'font-size': '55px'});
+  @minorList = [0, 4, 7, 11];
+  @majorList = [0, 3, 7, 10];
   <!-- this is sort of the only argument ... could be appended by other program to generate multiple .svg files, then .png, etc.
        from -10 (10 sharps) to 10 (10 flats), 0 = key of C (no sharps or flats) -->
   @keyIndex = 0;
@@ -24,16 +26,12 @@
     {j => <For from="0" upTo="6">
       {i => <use xlink:href="#up-tri"   transform={@translate(i*200 + ((j+1)%2)*100, 173.2*j)}/>}
       {i => <use xlink:href="#down-tri" transform={@translate(i*200 + ((j+0)%2)*100, 173.2*j)}/>}
-
-      {i => <text x={200*i +   0} y={80+172.3*0} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 16 +  0].toLowerCase()}</text>}
-      {i => <text x={200*i + 100} y={80+172.3*1} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 16 +  4].toLowerCase()}</text>}
-      {i => <text x={200*i +   0} y={80+172.3*2} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 16 +  7].toLowerCase()}</text>}
-      {i => <text x={200*i + 100} y={80+172.3*3} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 16 + 11].toLowerCase()}</text>}
-
-      {i => <text x={200*i + 100} y={133+172.3*0} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 20 +  0]}</text>}
-      {i => <text x={200*i +   0} y={133+172.3*1} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 20 +  3]}</text>}
-      {i => <text x={200*i + 100} y={133+172.3*2} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 20 +  7]}</text>}
-      {i => <text x={200*i +   0} y={133+172.3*3} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 20 +  10]}</text>}
+      {i => <text x={200*i + ((j+0)%2)*100} y={80 + 172.3*j} text-anchor="middle" style={@bgtextstyle}>
+        {@texts[i + @keyIndex + 16 +  @minorList[j]].toLowerCase()}
+      </text>}
+      {i => <text x={200*i + ((j+1)%2)*100} y={133 + 172.3*j} text-anchor="middle" style={@bgtextstyle}>
+        {@texts[i + @keyIndex + 20 +  @majorList[j]]}
+      </text>}
     </For>}
   </For>
 
