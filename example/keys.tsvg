@@ -21,12 +21,22 @@
     {i => <use xlink:href="#up-tri" transform={@translate(i*200, 173.2*1)}/>}
     {i => <use xlink:href="#up-tri" transform={@translate(i*200+100, 173.2*2)}/>}
     {i => <use xlink:href="#up-tri" transform={@translate(i*200, 173.2*3)}/>}
+
     {i => <use xlink:href="#down-tri" transform={@translate(i*200, 173.2*0)}/>}
     {i => <use xlink:href="#down-tri" transform={@translate(i*200+100, 173.2*1)}/>}
     {i => <use xlink:href="#down-tri" transform={@translate(i*200, 173.2*2)}/>}
     {i => <use xlink:href="#down-tri" transform={@translate(i*200+100, 173.2*3)}/>}
-    {i => <text x={200*i} y={80} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 16].toLowerCase()}</text>}
-    {i => <text x={200*i + 100} y={80+172.3*1} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 16 + 4].toLowerCase()}</text>}
+
+    {i => <text x={200*i +   0} y={80+172.3*0} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 16 +  0].toLowerCase()}</text>}
+    {i => <text x={200*i + 100} y={80+172.3*1} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 16 +  4].toLowerCase()}</text>}
+    {i => <text x={200*i +   0} y={80+172.3*2} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 16 +  7].toLowerCase()}</text>}
+    {i => <text x={200*i + 100} y={80+172.3*3} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 16 + 11].toLowerCase()}</text>}
+
+    {i => <text x={200*i + 100} y={133+172.3*0} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 20 +  0]}</text>}
+    {i => <text x={200*i +   0} y={133+172.3*1} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 20 +  3]}</text>}
+    {i => <text x={200*i + 100} y={133+172.3*2} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 20 +  7]}</text>}
+    {i => <text x={200*i +   0} y={133+172.3*3} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 20 +  10]}</text>}
+
   </For>
 
 </svg>

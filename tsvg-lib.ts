@@ -4,7 +4,11 @@ TODO
 bug with the stupid regex for @xyz = rhs;
 when rhs is a string with ; inside of it!
 
-make a function that takes attrs {} and a <g> and makes <g attrs/>
+TODO
+make a <Text ...>Hello World</Text> component with real SVG fonts (only loaded into the .tsx -> .js file but not present in generated .svg)
+
+TODO
+make a TSVG.Helper function that takes attrs {} and a <g> and makes <g attrs/>
 
 */
 
