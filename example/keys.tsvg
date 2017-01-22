@@ -18,6 +18,12 @@
     <g id="down-tri-3">
       <path style="fill: #fff; stroke: #ddd; stroke-width: 3px" d="M 0,173.2 l 100,-173.2 l -200,0 z"/>
     </g>
+    <g id="up-tri-4">
+      <path stroke-dasharray='1.5,5,1.5,0' style="fill: transparent; stroke: #fff; stroke-width: 4px" d="M 0,173.2 l 100,0 l -100,-173.2 l -100,173.2 z"/>
+    </g>
+    <g id="down-tri-4">
+      <path stroke-dasharray='3,5' style="fill: transparent; stroke: #fff; stroke-width: 4px" d="M 0,173.2 l 100,-173.2 l -200,0 z"/>
+    </g>
   </defs>
   <rect x="0" y="0" width="1100" height="694" fill="red"/>
 
@@ -44,8 +50,8 @@
     </For>}
   </For>
 
-  @refs = "#down-tri-2 #up-tri-2 #down-tri-3 #up-tri-3".split(' ');
-  @triples = [[0,1,0], [0,2,0], [0,3,0], [0,4,0], [0,4,1], [0,2,3], [0,3,3],   [1,1,1], [1,1,2], [1,4,2],  [2,2,2], [2,3,2], [2,4,2], [2,1,1], [2,2,1], [2,3,1],   [3,2,1], [3,3,1], [3,4,1], [3,2,2], [3,3,2], [3,1,0], [3,2,0], [3,3,0]];
+  @refs = "#down-tri-2 #up-tri-2 #down-tri-3 #up-tri-3 #down-tri-4 #up-tri-4".split(' ');
+  @triples = [[0,1,0], [0,2,0], [0,3,0], [0,4,0], [0,4,1], [0,2,3], [0,3,3],   [1,1,1], [1,1,2], [1,4,2],  [2,2,2],  [2,4,2], [2,1,1], [2,2,1], [2,3,1],   [3,2,1],  [3,4,1], [3,2,2], [3,3,2], [3,1,0], [3,2,0], [3,3,0],  [0,3,2],  [1,3,1], [4,3,2],  [5,3,1]];
   <For from="0" upTo={@triples.length-1}>
     {ix => (((z,i,j) => <use xlink:href={@refs[z]} transform={@translate(i*200 + ((j+z)%2)*100, 173.2*j)}/>)(@triples[ix][0], @triples[ix][1], @triples[ix][2]))}
   </For>
