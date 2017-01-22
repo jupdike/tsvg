@@ -44,39 +44,10 @@
     </For>}
   </For>
 
-  <use xlink:href='#down-tri-2' transform={@translate(1*200, 173.2*0)}/>
-  <use xlink:href='#down-tri-2' transform={@translate(2*200, 173.2*0)}/>
-  <use xlink:href='#down-tri-2' transform={@translate(3*200, 173.2*0)}/>
-  <use xlink:href='#down-tri-2' transform={@translate(4*200, 173.2*0)}/>
-
-  <use xlink:href='#down-tri-2' transform={@translate(4*200+100, 173.2*1)}/>
-
-  <use xlink:href='#down-tri-2' transform={@translate(2*200+100, 173.2*3)}/>
-  <use xlink:href='#down-tri-2' transform={@translate(3*200+100, 173.2*3)}/>
-
-  <use xlink:href="#up-tri-2"   transform={@translate(1*200, 173.2*1)}/>
-
-  <use xlink:href="#up-tri-2"   transform={@translate(1*200+100, 173.2*2)}/>
-  <use xlink:href="#up-tri-2"   transform={@translate(4*200+100, 173.2*2)}/>
-
-  <use xlink:href="#up-tri-3"   transform={@translate(2*200, 173.2*1)}/>
-  <use xlink:href="#up-tri-3"   transform={@translate(3*200, 173.2*1)}/>
-  <use xlink:href="#up-tri-3"   transform={@translate(4*200, 173.2*1)}/>
-
-  <use xlink:href="#up-tri-3"   transform={@translate(2*200+100, 173.2*2)}/>
-  <use xlink:href="#up-tri-3"   transform={@translate(3*200+100, 173.2*2)}/>
-
-  <use xlink:href="#up-tri-3"   transform={@translate(1*200+100, 173.2*0)}/>
-  <use xlink:href="#up-tri-3"   transform={@translate(2*200+100, 173.2*0)}/>
-  <use xlink:href="#up-tri-3"   transform={@translate(3*200+100, 173.2*0)}/>
-
-  <use xlink:href='#down-tri-3' transform={@translate(2*200, 173.2*2)}/>
-  <use xlink:href='#down-tri-3' transform={@translate(3*200, 173.2*2)}/>
-  <use xlink:href='#down-tri-3' transform={@translate(4*200, 173.2*2)}/>
-
-  <use xlink:href='#down-tri-3' transform={@translate(1*200+100, 173.2*1)}/>
-  <use xlink:href='#down-tri-3' transform={@translate(2*200+100, 173.2*1)}/>
-  <use xlink:href='#down-tri-3' transform={@translate(3*200+100, 173.2*1)}/>
-
+  @refs = "#down-tri-2 #up-tri-2 #down-tri-3 #up-tri-3".split(' ');
+  @triples = [[0,1,0], [0,2,0], [0,3,0], [0,4,0], [0,4,1], [0,2,3], [0,3,3],   [1,1,1], [1,1,2], [1,4,2],  [2,2,2], [2,3,2], [2,4,2], [2,1,1], [2,2,1], [2,3,1],   [3,2,1], [3,3,1], [3,4,1], [3,2,2], [3,3,2], [3,1,0], [3,2,0], [3,3,0]];
+  <For from="0" upTo={@triples.length-1}>
+    {ix => (((z,i,j) => <use xlink:href={@refs[z]} transform={@translate(i*200 + ((j+z)%2)*100, 173.2*j)}/>)(@triples[ix][0], @triples[ix][1], @triples[ix][2]))}
+  </For>
 
 </svg>
