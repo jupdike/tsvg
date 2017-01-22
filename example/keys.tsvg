@@ -10,7 +10,7 @@
       <path style="fill: #fff; stroke: #444; stroke-width: 3px" d="M 0,173.2 l 100,-173.2 l -200,0 z"/>
     </g>
   </defs>
-  <rect x="0" y="0" width="1100" height="694" fill="#eee"/>
+  <rect x="0" y="0" width="1100" height="694" fill="red"/>
 
   @beadgcf = "B E A D G C F".split(' ');
   @myzip = (ch) => @beadgcf.map(x => x + @unescapeSharpsFlatsNats(ch));
@@ -20,27 +20,21 @@
   <!-- this is sort of the only argument ... could be appended by other program to generate multiple .svg files, then .png, etc.
        from -10 (10 sharps) to 10 (10 flats), 0 = key of C (no sharps or flats) -->
   @keyIndex = 0;
-  <For from="0" upTo="6">
-    {i => <use xlink:href="#up-tri" transform={@translate(i*200+100, 173.2*0)}/>}
-    {i => <use xlink:href="#up-tri" transform={@translate(i*200, 173.2*1)}/>}
-    {i => <use xlink:href="#up-tri" transform={@translate(i*200+100, 173.2*2)}/>}
-    {i => <use xlink:href="#up-tri" transform={@translate(i*200, 173.2*3)}/>}
+  <For from="0" upTo="3">
+    {j => <For from="0" upTo="6">
+      {i => <use xlink:href="#up-tri"   transform={@translate(i*200 + ((j+1)%2)*100, 173.2*j)}/>}
+      {i => <use xlink:href="#down-tri" transform={@translate(i*200 + ((j+0)%2)*100, 173.2*j)}/>}
 
-    {i => <use xlink:href="#down-tri" transform={@translate(i*200, 173.2*0)}/>}
-    {i => <use xlink:href="#down-tri" transform={@translate(i*200+100, 173.2*1)}/>}
-    {i => <use xlink:href="#down-tri" transform={@translate(i*200, 173.2*2)}/>}
-    {i => <use xlink:href="#down-tri" transform={@translate(i*200+100, 173.2*3)}/>}
+      {i => <text x={200*i +   0} y={80+172.3*0} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 16 +  0].toLowerCase()}</text>}
+      {i => <text x={200*i + 100} y={80+172.3*1} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 16 +  4].toLowerCase()}</text>}
+      {i => <text x={200*i +   0} y={80+172.3*2} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 16 +  7].toLowerCase()}</text>}
+      {i => <text x={200*i + 100} y={80+172.3*3} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 16 + 11].toLowerCase()}</text>}
 
-    {i => <text x={200*i +   0} y={80+172.3*0} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 16 +  0].toLowerCase()}</text>}
-    {i => <text x={200*i + 100} y={80+172.3*1} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 16 +  4].toLowerCase()}</text>}
-    {i => <text x={200*i +   0} y={80+172.3*2} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 16 +  7].toLowerCase()}</text>}
-    {i => <text x={200*i + 100} y={80+172.3*3} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 16 + 11].toLowerCase()}</text>}
-
-    {i => <text x={200*i + 100} y={133+172.3*0} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 20 +  0]}</text>}
-    {i => <text x={200*i +   0} y={133+172.3*1} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 20 +  3]}</text>}
-    {i => <text x={200*i + 100} y={133+172.3*2} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 20 +  7]}</text>}
-    {i => <text x={200*i +   0} y={133+172.3*3} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 20 +  10]}</text>}
-
+      {i => <text x={200*i + 100} y={133+172.3*0} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 20 +  0]}</text>}
+      {i => <text x={200*i +   0} y={133+172.3*1} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 20 +  3]}</text>}
+      {i => <text x={200*i + 100} y={133+172.3*2} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 20 +  7]}</text>}
+      {i => <text x={200*i +   0} y={133+172.3*3} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 20 +  10]}</text>}
+    </For>}
   </For>
 
   <!-- use xlink:href='#down-tri-2' transform={@translate(1*200, 173.2*0)}/ -->
