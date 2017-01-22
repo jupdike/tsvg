@@ -10,12 +10,13 @@
   <rect x="0" y="0" width="1100" height="694" fill="#eee"/>
 
   @beadgcf = "B E A D G C F".split(' ');
-  @myzip = (ch) => @beadgcf.map(x => x+ch);
+  @myzip = (ch) => @beadgcf.map(x => x + @unescapeSharpsFlatsNats(ch));
   @hyphens = "- - - - - - -".split(' ');
   @texts = @flatten([@hyphens, @myzip('\\#\\#'), @myzip('\\#'), @myzip(''), @myzip('\\b'), @myzip('\\b\\b'), @hyphens]);
-  <!-- this is sort of the only argument ... could be appended by other program to generate multiple .svg files, then .png, etc. -->
-  @keyIndex = 0;
   @bgtextstyle = @makeStyle({'fill': '#999', 'font-family': "'Helevtica Neue', Arial, sans-serif", 'font-size': '55px'});
+  <!-- this is sort of the only argument ... could be appended by other program to generate multiple .svg files, then .png, etc.
+       from -10 (10 sharps) to 10 (10 flats), 0 = key of C (no sharps or flats) -->
+  @keyIndex = 0;
   <For from="0" upTo="6">
     {i => <use xlink:href="#up-tri" transform={@translate(i*200+100, 173.2*0)}/>}
     {i => <use xlink:href="#up-tri" transform={@translate(i*200, 173.2*1)}/>}
