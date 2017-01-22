@@ -11,9 +11,11 @@
 
   @beadgcf = "B E A D G C F".split(' ');
   @myzip = (ch) => @beadgcf.map(x => x+ch);
-  @texts = @flatten([@myzip('##'), @myzip('#'), @myzip(''), @myzip('b'), @myzip('bb')]);
+  @hyphens = "- - - - - - -".split(' ');
+  @texts = @flatten([@hyphens, @myzip('\\#\\#'), @myzip('\\#'), @myzip(''), @myzip('\\b'), @myzip('\\b\\b'), @hyphens]);
   <!-- this is sort of the only argument ... could be appended by other program to generate multiple .svg files, then .png, etc. -->
   @keyIndex = 0;
+  @bgtextstyle = @makeStyle({'fill': '#999', 'font-family': "'Helevtica Neue', Arial, sans-serif", 'font-size': '55px'});
   <For from="0" upTo="6">
     {i => <use xlink:href="#up-tri" transform={@translate(i*200+100, 173.2*0)}/>}
     {i => <use xlink:href="#up-tri" transform={@translate(i*200, 173.2*1)}/>}
@@ -23,7 +25,8 @@
     {i => <use xlink:href="#down-tri" transform={@translate(i*200+100, 173.2*1)}/>}
     {i => <use xlink:href="#down-tri" transform={@translate(i*200, 173.2*2)}/>}
     {i => <use xlink:href="#down-tri" transform={@translate(i*200+100, 173.2*3)}/>}
-    {i => <text x={200*i} y={80} text-anchor="middle" style="fill: #999; font-family: 'Helevtica Neue', Arial, sans-serif; font-size: 55px;">{@texts[i + @keyIndex + 10]}</text>}
+    {i => <text x={200*i} y={80} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 16].toLowerCase()}</text>}
+    {i => <text x={200*i + 100} y={80+172.3*1} text-anchor="middle" style={@bgtextstyle}>{@texts[i + @keyIndex + 16 + 4].toLowerCase()}</text>}
   </For>
 
 </svg>

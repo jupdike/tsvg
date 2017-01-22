@@ -1,6 +1,9 @@
 /*
 
 TODO
+bug with the stupid regex for @xyz = rhs;
+when rhs is a string with ; inside of it!
+
 make a function that takes attrs {} and a <g> and makes <g attrs/>
 
 */
@@ -13,7 +16,8 @@ class TSVG {
     lines: TSVG.lines,
     rotate: TSVG.rotate,
     range: TSVG.range,
-    flatten: TSVG.flatten
+    flatten: TSVG.flatten,
+    makeStyle: TSVG.makeStyle
   };
   public static Templates = {};
   public static translate(x: string, y: string) { return `translate(${x}, ${y})`; }
@@ -65,6 +69,14 @@ class TSVG {
         result.push(current);
       }
     }
+  }
+  public static makeStyle(kvs) {
+    var ret = [];
+    for (let k in kvs) {
+      var v = kvs[k];
+      ret.push(k + ': ' + v);
+    }
+    return ret.join('; ');
   }
 }
 
