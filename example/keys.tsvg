@@ -6,8 +6,17 @@
     <g id="down-tri">
       <path style="fill: #ddd; stroke: #999; stroke-width: 2px" d="M 0,173.2 l 100,-173.2 l -200,0 z"/>
     </g>
+    <g id="up-tri-2">
+      <path style="fill: #fff; stroke: #444; stroke-width: 3px" d="M 0,173.2 l 100,0 l -100,-173.2 l -100,173.2 z"/>
+    </g>
     <g id="down-tri-2">
       <path style="fill: #fff; stroke: #444; stroke-width: 3px" d="M 0,173.2 l 100,-173.2 l -200,0 z"/>
+    </g>
+    <g id="up-tri-3">
+      <path style="fill: #fff; stroke: #ddd; stroke-width: 3px" d="M 0,173.2 l 100,0 l -100,-173.2 l -100,173.2 z"/>
+    </g>
+    <g id="down-tri-3">
+      <path style="fill: #fff; stroke: #ddd; stroke-width: 3px" d="M 0,173.2 l 100,-173.2 l -200,0 z"/>
     </g>
   </defs>
   <rect x="0" y="0" width="1100" height="694" fill="red"/>
@@ -35,7 +44,39 @@
     </For>}
   </For>
 
-  <!-- use xlink:href='#down-tri-2' transform={@translate(1*200, 173.2*0)}/ -->
+  <use xlink:href='#down-tri-2' transform={@translate(1*200, 173.2*0)}/>
+  <use xlink:href='#down-tri-2' transform={@translate(2*200, 173.2*0)}/>
+  <use xlink:href='#down-tri-2' transform={@translate(3*200, 173.2*0)}/>
+  <use xlink:href='#down-tri-2' transform={@translate(4*200, 173.2*0)}/>
+
+  <use xlink:href='#down-tri-2' transform={@translate(4*200+100, 173.2*1)}/>
+
+  <use xlink:href='#down-tri-2' transform={@translate(2*200+100, 173.2*3)}/>
+  <use xlink:href='#down-tri-2' transform={@translate(3*200+100, 173.2*3)}/>
+
+  <use xlink:href="#up-tri-2"   transform={@translate(1*200, 173.2*1)}/>
+
+  <use xlink:href="#up-tri-2"   transform={@translate(1*200+100, 173.2*2)}/>
+  <use xlink:href="#up-tri-2"   transform={@translate(4*200+100, 173.2*2)}/>
+
+  <use xlink:href="#up-tri-3"   transform={@translate(2*200, 173.2*1)}/>
+  <use xlink:href="#up-tri-3"   transform={@translate(3*200, 173.2*1)}/>
+  <use xlink:href="#up-tri-3"   transform={@translate(4*200, 173.2*1)}/>
+
+  <use xlink:href="#up-tri-3"   transform={@translate(2*200+100, 173.2*2)}/>
+  <use xlink:href="#up-tri-3"   transform={@translate(3*200+100, 173.2*2)}/>
+
+  <use xlink:href="#up-tri-3"   transform={@translate(1*200+100, 173.2*0)}/>
+  <use xlink:href="#up-tri-3"   transform={@translate(2*200+100, 173.2*0)}/>
+  <use xlink:href="#up-tri-3"   transform={@translate(3*200+100, 173.2*0)}/>
+
+  <use xlink:href='#down-tri-3' transform={@translate(2*200, 173.2*2)}/>
+  <use xlink:href='#down-tri-3' transform={@translate(3*200, 173.2*2)}/>
+  <use xlink:href='#down-tri-3' transform={@translate(4*200, 173.2*2)}/>
+
+  <use xlink:href='#down-tri-3' transform={@translate(1*200+100, 173.2*1)}/>
+  <use xlink:href='#down-tri-3' transform={@translate(2*200+100, 173.2*1)}/>
+  <use xlink:href='#down-tri-3' transform={@translate(3*200+100, 173.2*1)}/>
 
 
 </svg>

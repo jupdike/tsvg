@@ -1,8 +1,13 @@
 /*
 
 TODO
-bug with the stupid regex for @xyz = rhs;
-when rhs is a string with ; inside of it!
+bug with the stupid regex for @xyz = rhs;  --  when rhs is a string with ; inside of it!
+
+TODO
+<If test={test-condition-code}>
+  child1
+  child2
+</If> component
 
 TODO
 make a <Text ...>Hello World</Text> component with real SVG fonts (only loaded into the .tsx -> .js file but not present in generated .svg)
