@@ -46,19 +46,20 @@
   <!-- this is sort of the only argument ... could be appended by other program to generate multiple .svg files, then .png, etc.
        from -10 (10 sharps) to 10 (10 flats), 0 = key of C (no sharps or flats) -->
   @keyIndex = 0;
+  @minorOffset = 70;
+  @majorOffset = 143;
   <For from="0" upTo="3">{j =>
     <For from="0" upTo="6">
       {i => <use xlink:href="#up-tri"   transform={@translate(i*200 + ((j+1)%2)*100, 173.2*j)}/>}
       {i => <use xlink:href="#down-tri" transform={@translate(i*200 + ((j+0)%2)*100, 173.2*j)}/>}
-      {i => <text x={200*i + ((j+0)%2)*100} y={80 + 172.3*j} text-anchor="middle" style={@bgtextstyle}>
+      {i => <text x={200*i + ((j+0)%2)*100} y={@minorOffset + 172.3*j} text-anchor="middle" style={@bgtextstyle}>
         {@texts[i + @keyIndex + 16 +  @minorList[j]].toLowerCase()}
       </text>}
-      {i => <text x={200*i + ((j+1)%2)*100} y={133 + 172.3*j} text-anchor="middle" style={@bgtextstyle}>
+      {i => <text x={200*i + ((j+1)%2)*100} y={@majorOffset + 172.3*j} text-anchor="middle" style={@bgtextstyle}>
         {@texts[i + @keyIndex + 20 +  @majorList[j]]}
       </text>}
     </For>
   }</For>
-  <!-- @ s m artCaser = (z,txt) => (z%2 ? txt : txt.toLowerCase()) -->
   @refs = "#down-tri-2 #up-tri-2 #down-tri-3 #up-tri-3 #down-tri-4 #up-tri-4 #down-tri-5 #up-tri-5".split(' ');
   @triples = [[0,1,0], [0,2,0], [0,3,0], [0,4,0], [0,4,1], [0,2,3], [0,3,3],
               [1,1,1], [1,1,2], [1,4,2],
@@ -71,10 +72,10 @@
     {ix => (((z,i,j) => <use xlink:href={@refs[z]} transform={@translate(i*200 + ((j+z)%2)*100, 173.2*j)}/>)(@triples[ix][0], @triples[ix][1], @triples[ix][2]))}
     {ix => (((z,i,j) =>
       ((z+1)%2 ?
-        <text x={200*i + ((j+z)%2)*100} y={80 + 172.3*j} text-anchor="middle" style={@fgtextstyle}>
+        <text x={200*i + ((j+z)%2)*100} y={@minorOffset + 172.3*j} text-anchor="middle" style={@fgtextstyle}>
           {@texts[i + @keyIndex + 16 +  @minorList[j]].toLowerCase()}
         </text> :
-        <text x={200*i + ((j+z)%2)*100} y={133 + 172.3*j} text-anchor="middle" style={@fgtextstyle}>
+        <text x={200*i + ((j+z)%2)*100} y={@majorOffset + 172.3*j} text-anchor="middle" style={@fgtextstyle}>
         {@texts[i + @keyIndex + 20 +  @majorList[j]]}
       </text>)
       )(@triples[ix][0], @triples[ix][1], @triples[ix][2]))}
