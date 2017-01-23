@@ -41,13 +41,14 @@
   @texts = @flatten([@hyphens, @myzip('\\#\\#'), @myzip('\\#'), @myzip(''), @myzip('\\b'), @myzip('\\b\\b'), @hyphens]);
   @bgtextstyle = @makeStyle({'fill': '#999', 'font-family': "'Helevtica Neue', Arial, sans-serif", 'font-size': '55px'});
   @fgtextstyle = @makeStyle({'fill': '#222', 'font-family': "'Helevtica Neue', Arial, sans-serif", 'font-size': '55px'});
+  @romantextstyle = @makeStyle({'fill': 'red', 'font-family': "Georgia, 'Times New Roman', serif", 'font-size': '35px'});
   @minorList = [0, 4, 7, 11];
   @majorList = [0, 3, 7, 10];
+  @minorOffset = 65;
+  @majorOffset = 155;
   <!-- this is sort of the only argument ... could be appended by other program to generate multiple .svg files, then .png, etc.
        from -10 (10 sharps) to 10 (10 flats), 0 = key of C (no sharps or flats) -->
   @keyIndex = 0;
-  @minorOffset = 70;
-  @majorOffset = 143;
   <For from="0" upTo="3">{j =>
     <For from="0" upTo="6">
       {i => <use xlink:href="#up-tri"   transform={@translate(i*200 + ((j+1)%2)*100, 173.2*j)}/>}
@@ -61,13 +62,14 @@
     </For>
   }</For>
   @refs = "#down-tri-2 #up-tri-2 #down-tri-3 #up-tri-3 #down-tri-4 #up-tri-4 #down-tri-5 #up-tri-5".split(' ');
-  @triples = [[0,1,0], [0,2,0], [0,3,0], [0,4,0], [0,4,1], [0,2,3], [0,3,3],
-              [1,1,1], [1,1,2], [1,4,2],
-              [2,2,2], [2,4,2], [2,1,1], [2,2,1], [2,3,1],
-              [3,2,1], [3,4,1], [3,2,2], [3,3,2], [3,1,0], [3,2,0], [3,3,0],
-              [4,3,2],
-              [5,3,1], [6,3,2],
-              [7,3,1]];
+  @triples = [[0,1,0, "vii°/iii"], [0,2,0, "vii°/vi"], [0,3,0, "vii°/ii"], [0,4,0, "vii°/V"], [0,4,1, "ii"],
+              [0,2,3, "\\biii"], [0,3,3, "\\bvi"],
+              [1,1,1, "V/V"], [1,1,2, "\\bVII"], [1,4,2, "\\bII"],
+              [2,2,2, "iv"], [2,4,2, "iv"], [2,1,1, "vii°"], [2,2,1, "iii"], [2,3,1, "vi"],
+              [3,2,1, "V"], [3,4,1, "IV"], [3,2,2, "III"], [3,3,2, "\\bVI"],
+              [3,1,0, "V/iii"], [3,2,0, "V/vi"], [3,3,0, "V/ii"],
+              [4,3,2, "i"], [6,3,2, ""],
+              [5,3,1, "I"], [7,3,1, ""]];
   <For from="0" upTo={@triples.length-1}>
     {ix => (((z,i,j) => <use xlink:href={@refs[z]} transform={@translate(i*200 + ((j+z)%2)*100, 173.2*j)}/>)(@triples[ix][0], @triples[ix][1], @triples[ix][2]))}
     {ix => (((z,i,j) =>
@@ -79,6 +81,9 @@
         {@texts[i + @keyIndex + 20 +  @majorList[j]]}
       </text>)
       )(@triples[ix][0], @triples[ix][1], @triples[ix][2]))}
+    {ix => (((z,i,j,txt) => <text x={200*i + ((j+z)%2)*100} y={((z+1)%2 ? @minorOffset+54 : @majorOffset-65) + 172.3*j} text-anchor="middle" style={@romantextstyle}>
+      {@unescapeSharpsFlatsNats(txt)}
+    </text>)(@triples[ix][0], @triples[ix][1], @triples[ix][2], @triples[ix][3]))}
   </For>
 
   <TextPath style="TODO">
