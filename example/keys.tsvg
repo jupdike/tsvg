@@ -87,7 +87,9 @@
     </text>)(@triples[ix][0], @triples[ix][1], @triples[ix][2], @triples[ix][3]))}
   </For>
 
-  <TextPath font-id="FiraSansCondensed-Book" style={@textpathstyle}>
+  <TextPath font-id="FiraSansCondensed-Book"
+    x="50" y="50" font-size="100"
+    style={@textpathstyle}>
     Hello World
   </TextPath>
 

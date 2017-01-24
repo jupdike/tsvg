@@ -239,18 +239,75 @@ class Font {
   }
 }
 
+interface FontAndTextParams {
+  x, y, fontSize, letterSpacing, lineHeight,
+    unitsPerEm, ascent, descent, horizAdvX: number;
+  emGlyph: any;
+  id: string;
+  style: string;
+  className: string;
+  // a little statefulness
+  lastX, lastY: number;
+}
 class TextPath {
+  // based on (sort of) EasySVG by Simon Tarchichi <kartsims@gmail.com>
   public static renderSpecial(indent: number, attributes: any, children: Array<any>): Array<string> {
     if (!attributes || !attributes.hasOwnProperty('font-id') || !attributes.hasOwnProperty('style')) {
       throw "TextPath expects font-id=string and style=string";
     }
+
+    // ----
+    // pull out all the attributes, style fields, font metadata, and merge with defaults, etc.
     var id = attributes['font-id'];
-    var style = attributes['style'];
+    var className = attributes['className'] || null;
+    var styleStr = attributes['style'];
+    var style = TextPath.styleToObject(styleStr);
+    // font-size in Ems
+    var params: FontAndTextParams = {
+      id: null, style: null, className: className,
+      x: 0, y: 0, fontSize: 16, letterSpacing: 0, lineHeight: 1, unitsPerEm: 1, emGlyph: null,
+      ascent: 0, descent: 0, horizAdvX: 1,
+      // a little statefulness
+      lastX: 0, lastY: 0};
+    TextPath.setAttrib(params, 'id', attributes);
+    TextPath.setAttrib(params, 'x', attributes);
+    TextPath.setAttrib(params, 'y', attributes);
+    TextPath.setAttrib(params, 'fontSize', style, 'font-size');
+    TextPath.setAttrib(params, 'fontSize', attributes, 'font-size'); // attributes override CSS
+    TextPath.setAttrib(params, 'letterSpacing', style, 'letter-spacing');
+    TextPath.setAttrib(params, 'letterSpacing', attributes, 'letter-spacing'); // attributes override CSS
+    TextPath.setAttrib(params, 'lineHeight', style, 'line-height');
+    TextPath.setAttrib(params, 'lineHeight', attributes, 'line-height'); // attributes override CSS
+    // get the string out of here
+    params.x = +(params.x);
+    params.y = +(params.y);
+    params.lastX = params.x;
+    params.lastY = params.y;
+    params.fontSize = +(params.fontSize);
+    params.letterSpacing = +(params.letterSpacing);
+    params.lineHeight = +(params.lineHeight);
+
+    // TODO copy attributes like stroke-width, fill and stroke (color) to style (object -> back to string), but only if style is missing those fields, then add that string in here
+    params.style = styleStr;
+    
     if (!TSVG.Fonts.hasOwnProperty(id)) {
-      console.error("Could not find font with id = "+id);
+      console.error("Could not find Font with id = "+id);
       return [];
     }
     var font = TSVG.Fonts[id];
+    TextPath.setAttrib(params, 'emGlyph', font.glyphs, 'm');
+    TextPath.setAttrib(params, 'horizAdvX', font.meta, 'horiz-adv-x');
+    TextPath.setAttrib(params, 'unitsPerEm', font.meta['font-face'], 'units-per-em');
+    TextPath.setAttrib(params, 'ascent', font.meta['font-face']);
+    TextPath.setAttrib(params, 'descent', font.meta['font-face']);
+    params.horizAdvX = +(params.horizAdvX);
+    params.unitsPerEm = +(params.unitsPerEm);
+    params.ascent = +(params.ascent);
+    params.descent = +(params.descent);
+    TextPath.setAttrib(params, 'missingGlyph', font.meta, 'missing-glyph');
+    console.error(params);
+    // ---- done pulling out params
+
     var indentStr = '';
     for (var i = 0; i < indent; i++) {
       indentStr += '  '; // 2 spaces per indent
@@ -262,17 +319,40 @@ class TextPath {
       // TODO then maybe one day, look for tspans and typeset those, or do line wrapping, whatever...
       for (var ix = 0; ix < s.length; ix++) {
         var ch = s.charAt(ix); // TODO use EasySVG approach to pull out unicode from utf8 string
-        ret.push(TextPath.renderGlyph(font, style, ch));
+        // TODO pass params instead of style
+        ret.push(TextPath.renderGlyph(font, params, ch));
       }
     });
     return ret;
   }
-  public static renderGlyph(font, style, uni) {
+  public static renderGlyph(font: any, params: FontAndTextParams, uni: string) {
+    var style: string = params.style;
     var glyph = font.meta['missing-glyph'];
     if (font.glyphs.hasOwnProperty(uni)) {
       glyph = font.glyphs[uni];
     }
     // TODO check if d is undefined (for example, space char -- just need horizontal advance :-)
     return `<path style="${style}" d="${glyph.d}"/>` + '\n'; // this whole bit is a hack, should be one path for entire run of glyphs
+  }
+
+  // helpers
+  public static setAttrib(params: any, k: string, attribs: any, k2: string=null) {
+    if (!k2) { k2 = k; }
+    if (attribs.hasOwnProperty(k2)) {
+      params[k] = attribs[k2];
+    }
+  }
+  public static styleToObject(styleStr) {
+    var ret = {}
+    var pieces = styleStr.split(';');
+    pieces.forEach(pair => {
+      if (pair.indexOf(':') > -1) {
+        var ps2 = pair.split(':');
+        var a = ps2[0].trim();
+        var b = ps2[1].trim();
+        ret[a] = b;
+      }
+    });
+    return ret;
   }
 }

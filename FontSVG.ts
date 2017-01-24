@@ -74,8 +74,8 @@ export class FontSVG {
       }
     });
     console.error('Loaded font: '+svgXmlPath);
-    console.error('loaded '+Object.keys(font.glyphs).length+ ' glyphs');
-    console.error('loaded '+Object.keys(font.hkern).length+ ' kerning pairs');
+    console.error('... Found '+Object.keys(font.glyphs).length+ ' glyphs');
+    console.error('... Found '+Object.keys(font.hkern).length+ ' kerning pairs');
     //console.log(JSON.stringify(font, null, 2));
 
     //process.exit(1);
