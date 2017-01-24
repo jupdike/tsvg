@@ -11,7 +11,8 @@
     "url": "git+https://updike_org@bitbucket.org/updike_org/tsvg.git"
   },
   "dependencies": {
-    "typescript": "~2.1.4"
+    "typescript": "~2.1.4",
+    "xml-parser": "^1.2.1"
   },
   "author": "Jared Updike",
   "license": "ISC",

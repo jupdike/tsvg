@@ -1,6 +1,6 @@
 <svg id="kb-svg-horiz" class="kb-bottom" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="1100" height="694" viewBox="0 0 1100 694">
   <defs>
-    <Font id="my-font" path="/Users/jupdike/Downloads/fira-sans-condensed/firasanscondensed-book.svg"/>
+    <Font path="/Users/jupdike/Downloads/fira-sans-condensed/firasanscondensed-book.svg"/>
     <g id="up-tri">
       <path style="fill: #ddd; stroke: #999; stroke-width: 3px" d="M 0,173.2 l 100,0 l -100,-173.2 l -100,173.2 z"/>
     </g>
@@ -42,6 +42,7 @@
   @bgtextstyle = @makeStyle({'fill': '#999', 'font-family': "'Helevtica Neue', Arial, sans-serif", 'font-size': '55px'});
   @fgtextstyle = @makeStyle({'fill': '#222', 'font-family': "'Helevtica Neue', Arial, sans-serif", 'font-size': '55px'});
   @romantextstyle = @makeStyle({'fill': 'red', 'font-family': "Georgia, 'Times New Roman', serif", 'font-size': '35px'});
+  @textpathstyle = @makeStyle({'fill': 'red'});
   @minorList = [0, 4, 7, 11];
   @majorList = [0, 3, 7, 10];
   @minorOffset = 65;
@@ -86,7 +87,7 @@
     </text>)(@triples[ix][0], @triples[ix][1], @triples[ix][2], @triples[ix][3]))}
   </For>
 
-  <TextPath style="TODO">
+  <TextPath font-id="FiraSansCondensed-Book" style={@textpathstyle}>
     Hello World
   </TextPath>
 

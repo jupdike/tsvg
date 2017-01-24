@@ -21,6 +21,8 @@ make a TSVG.Helper function that takes attrs {} and a <g> and makes <g attrs/>
 
 class TSVG {
 
+  public static Fonts: any = {};
+
   // hack! -- TSVG needs a way to supply helper methods in user code from an external file (outside of TSVG file itself)
   public static unescapeSharpsFlatsNats(s) {
     s = s.replace(/\\#\\#/gi, '&#9839;&#9839;'); // double sharp
@@ -239,15 +241,38 @@ class Font {
 
 class TextPath {
   public static renderSpecial(indent: number, attributes: any, children: Array<any>): Array<string> {
-    if (!attributes && attributes.hasOwnProperty('font-id') && attributes.hasOwnProperty('style')) {
-      throw "For expects font-id=string and style=string";
+    if (!attributes || !attributes.hasOwnProperty('font-id') || !attributes.hasOwnProperty('style')) {
+      throw "TextPath expects font-id=string and style=string";
     }
+    var id = attributes['font-id'];
+    var style = attributes['style'];
+    if (!TSVG.Fonts.hasOwnProperty(id)) {
+      console.error("Could not find font with id = "+id);
+      return [];
+    }
+    var font = TSVG.Fonts[id];
     var indentStr = '';
     for (var i = 0; i < indent; i++) {
       indentStr += '  '; // 2 spaces per indent
     }
-    // TODO check that path exists and load it, strip out some messy garbage, etc.
-    // TODO load some stuff into TSVG.Fonts
-    return [indentStr, '<!-- TODO "rasterize" out vectors for each glyph in children text -->'];
-  }  
+    var ret = [indentStr];
+    // children are UTF8 strings... right?
+    children.forEach(s => {
+      // TODO test if s is really Just A Single String and not nest nodes/components (or throw error)
+      // TODO then maybe one day, look for tspans and typeset those, or do line wrapping, whatever...
+      for (var ix = 0; ix < s.length; ix++) {
+        var ch = s.charAt(ix); // TODO use EasySVG approach to pull out unicode from utf8 string
+        ret.push(TextPath.renderGlyph(font, style, ch));
+      }
+    });
+    return ret;
+  }
+  public static renderGlyph(font, style, uni) {
+    var glyph = font.meta['missing-glyph'];
+    if (font.glyphs.hasOwnProperty(uni)) {
+      glyph = font.glyphs[uni];
+    }
+    // TODO check if d is undefined (for example, space char -- just need horizontal advance :-)
+    return `<path style="${style}" d="${glyph.d}"/>` + '\n'; // this whole bit is a hack, should be one path for entire run of glyphs
+  }
 }
