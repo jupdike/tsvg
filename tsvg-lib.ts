@@ -10,11 +10,6 @@ TODO
 </If> component
 
 TODO
-<Font id="reference-to-my-font" path=""/>  --> will load the font into the xyz.tsx -> xyz.js, available as FakeElement. Then a method of FakeElement can query the tree and pull out the shapes
-- when .svg font file loads, strip out garabage and newlines that will break the .tsx parser... :-)
-make a <Text font="reference-to-my-font">Hello World</Text> component with real SVG fonts (only loaded into the .tsx -> .js file but not present in generated .svg)
-
-TODO
 make a TSVG.Helper function that takes attrs {} and a <g> and makes <g attrs/>
 
 */
@@ -262,7 +257,7 @@ class TextPath {
     var styleStr = attributes['style'];
     var transform = attributes['transform'] || null;
     var style = TextPath.styleToObject(styleStr);
-    // font-size in Ems
+    // font-size in px, 16 px = 1 em
     var params: FontAndTextParams = {
       id: null, style: null, className: className, transform: transform,
       x: 0, y: 0, fontSize: 16, letterSpacing: 0, lineHeight: 1, unitsPerEm: 1, emGlyph: null,

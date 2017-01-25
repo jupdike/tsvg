@@ -17,7 +17,10 @@ var infilecontents = fs.readFileSync(infilename) + "";
 
 var fonts = {};
 // TODO use actual file path(s) from <Font> tag(s) in .tsvg file
-FontSVG.Load(fonts, '/Users/jupdike/Downloads/fira-sans-condensed/firasanscondensed-book.svg');
+//FontSVG.Load(fonts, '/Users/jupdike/Downloads/fira-sans-condensed/firasanscondensed-book.svg');
+FontSVG.Load(fonts, '/Users/jupdike/Documents/HelveticaNeue-dfont-split/HelveticaNeue.svg');
+///Users/jupdike/Documents/HelveticaNeue-dfont-split/HelveticaNeue.svg
+
 // TODO regex to find this (and NOT replace, so Font component inserts comment into output :-)
 // <Font path="/Users/jupdike/Downloads/fira-sans-condensed/firasanscondensed-book.svg"/>
 

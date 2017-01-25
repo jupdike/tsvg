@@ -55,10 +55,10 @@ export class FontSVG {
     });
     walker(fontJson.root, 'hkern', node => {
       //console.log(node);
-      var g1 = node.attributes.g1.split(',');
-      var g2 = node.attributes.g2.split(',');
-      var kerning = node.attributes.k;
-      if (g1 && g2) {
+      if (node.attributes.g1 && node.attributes.g2) {
+        var g1 = node.attributes.g1.split(',');
+        var g2 = node.attributes.g2.split(',');
+        var kerning = node.attributes.k;
         g1.forEach(g => {
           if (!(g1 in gNameToUnicode)) {
             return;
@@ -72,6 +72,18 @@ export class FontSVG {
           });
         });
       }
+      if (node.attributes.u1 && node.attributes.u2) {
+        var u1 = node.attributes.u1.split(',');
+        var u2 = node.attributes.u2.split(',');
+        var kerning = node.attributes.k;
+        u1.forEach(u => {
+          u2.forEach(v => {
+            var p = u+','+v;
+            font.hkern[p] = kerning;
+          });
+        });
+      }
+      
     });
     console.error('Loaded font: '+svgXmlPath);
     console.error('... Found '+Object.keys(font.glyphs).length+ ' glyphs');
