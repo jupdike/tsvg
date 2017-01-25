@@ -379,14 +379,15 @@ class TextPath {
     def.match(TextPath.AzAZazAZRegex).forEach(instruction => {
       var i = instruction.replace(TextPath.NotazAZRegex, '');
       var coords = instruction.match(TextPath.NumberRegex);
-      var newCoords = [];
+      var newCoords: number[] = [];
       while (coords && coords.length > 0) {
         let [a, b, c, d, e, f] = matrix;
         if (i === i.toLowerCase()) { // do not translate relative instructions :-)
           e = 0; f = 0;
         }
         let pushPoint = (x, y) => {
-          newCoords.push([ a*x + c*y + e, b*x + d*y + f ]);
+          newCoords.push(a*x + c*y + e);
+          newCoords.push(b*x + d*y + f);
         }
         // convert horizontal lineto to lineto (relative)
         if (i === 'h') {
@@ -410,7 +411,9 @@ class TextPath {
           pushPoint(+(coords.shift()), +(coords.shift()));
         }
       }
-      ret.push(i + newCoords.join(',').replace(TextPath.CommaMinusRegex, '-')); // remove useless commas (when dash for negative is there to separate the numbers)
+      // chop of weird digits after ten decimal places, then convert back to 'succinct' representation (skip trailing 0's)
+      // remove useless commas (when dash for negative is there to separate the numbers)
+      ret.push(i + newCoords.map(x => +(+(x).toFixed(10))).join(',').replace(TextPath.CommaMinusRegex, '-'));
     });
     return ret.join('');
   }
