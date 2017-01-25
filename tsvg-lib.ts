@@ -307,7 +307,7 @@ class TextPath {
     for (var i = 0; i < indent; i++) {
       indentStr += '  '; // 2 spaces per indent
     }
-    var ret = [indentStr];
+    var ret = [indentStr, `<path style="${styleStr}" d="`];
     // children are UTF8 strings... right?
     children.forEach(s => {
       // TODO test if s is really Just A Single String and not nest nodes/components (or throw error)
@@ -318,6 +318,7 @@ class TextPath {
         ret.push(TextPath.renderGlyph(font, params, ch, ch1));
       }
     });
+    ret.push('"/>');
     return ret;
   }
   static renderGlyph(font: any, params: FontAndTextParams, uni: string, uniNext: string) {
@@ -326,7 +327,6 @@ class TextPath {
     var d = glyph.d || ''; // check if d is undefined (for example, space char -- just need horizontal advance :-)
     var size = params.fontSize / params.unitsPerEm;
     d = TextPath.DefTranslateAndScale(d, params.lastX, params.lastY, size, -size);
-    var ret = `<path style="${style}" d="${d}"/>` + '\n'; // this whole bit is a hack, should be one path for entire run of glyphs
     // compute how far to advance to draw the next character
     var horizAdvX = glyph['horiz-adv-x'] || params.horizAdvX;
     horizAdvX = +(horizAdvX);
@@ -338,7 +338,7 @@ class TextPath {
     horizAdvX -= hkern;
     params.lastX += horizAdvX * size;
 
-    return ret;
+    return d;
   }
 
   // the math lives here
@@ -400,22 +400,23 @@ class TextPath {
           pushPoint(0, +(coords.shift()));
         }
         // convert quadratic bezier curve (relative)
+        // TODO is this stanza even necessary
         else if (i === 'q') {
           pushPoint(+(coords.shift()), +(coords.shift()));
           pushPoint(+(coords.shift()), +(coords.shift()));
         }
         // TODO: handle 'a,A' (elliptic arc curve) commands
         // cf. http://www.w3.org/TR/SVG/paths.html#PathDataCurveCommands
-        // every other command -- M m L l c C s S -- come in multiples of two numbers (coordinate pair (x,y))
+        // every other command -- M m L l c C s S Q q T t -- come in multiples of two numbers (coordinate pair (x,y))
         else {
           pushPoint(+(coords.shift()), +(coords.shift()));
         }
       }
       // chop of weird digits after ten decimal places, then convert back to 'succinct' representation (skip trailing 0's)
       // remove useless commas (when dash for negative is there to separate the numbers)
-      ret.push(i + newCoords.map(x => +(+(x).toFixed(10))).join(',').replace(TextPath.CommaMinusRegex, '-'));
+      ret.push(i + newCoords.map(x => +(+(x).toFixed(7))).join(',').replace(TextPath.CommaMinusRegex, '-'));
     });
-    return ret.join('');
+    return ret.join('') + ' ';
   }
 
   // helpers
