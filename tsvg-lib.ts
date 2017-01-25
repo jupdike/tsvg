@@ -243,9 +243,8 @@ interface FontAndTextParams {
   x, y, fontSize, letterSpacing, lineHeight,
     unitsPerEm, ascent, descent, horizAdvX: number;
   emGlyph: any;
-  id: string;
-  style: string;
-  className: string;
+  // nullable args passed through if non-null
+  id, style, transform, className: string;
   // a little statefulness
   lastX, lastY: number;
 }
@@ -261,10 +260,11 @@ class TextPath {
     var id = attributes['font-id'];
     var className = attributes['className'] || null;
     var styleStr = attributes['style'];
+    var transform = attributes['transform'] || null;
     var style = TextPath.styleToObject(styleStr);
     // font-size in Ems
     var params: FontAndTextParams = {
-      id: null, style: null, className: className,
+      id: null, style: null, className: className, transform: transform,
       x: 0, y: 0, fontSize: 16, letterSpacing: 0, lineHeight: 1, unitsPerEm: 1, emGlyph: null,
       ascent: 0, descent: 0, horizAdvX: 1,
       // a little statefulness
@@ -305,7 +305,7 @@ class TextPath {
     params.ascent = +(params.ascent);
     params.descent = +(params.descent);
     TextPath.setAttrib(params, 'missingGlyph', font.meta, 'missing-glyph');
-    console.error(params);
+    //console.error(params);
     // ---- done pulling out params
 
     var indentStr = '';
@@ -318,21 +318,97 @@ class TextPath {
       // TODO test if s is really Just A Single String and not nest nodes/components (or throw error)
       // TODO then maybe one day, look for tspans and typeset those, or do line wrapping, whatever...
       for (var ix = 0; ix < s.length; ix++) {
-        var ch = s.charAt(ix); // TODO use EasySVG approach to pull out unicode from utf8 string
-        // TODO pass params instead of style
+        var ch = s.charAt(ix); // TODO ? use EasySVG approach to pull out unicode from utf8 string
         ret.push(TextPath.renderGlyph(font, params, ch));
       }
     });
     return ret;
   }
-  public static renderGlyph(font: any, params: FontAndTextParams, uni: string) {
+  static renderGlyph(font: any, params: FontAndTextParams, uni: string) {
     var style: string = params.style;
     var glyph = font.meta['missing-glyph'];
     if (font.glyphs.hasOwnProperty(uni)) {
       glyph = font.glyphs[uni];
     }
-    // TODO check if d is undefined (for example, space char -- just need horizontal advance :-)
-    return `<path style="${style}" d="${glyph.d}"/>` + '\n'; // this whole bit is a hack, should be one path for entire run of glyphs
+    var d = glyph.d || ''; // check if d is undefined (for example, space char -- just need horizontal advance :-)
+     d = TextPath.DefScale(d, 0.5, 0.5);
+     d = TextPath.DefTranslate(d, 5, 0);
+    return `<path style="${style}" d="${d}"/>` + '\n'; // this whole bit is a hack, should be one path for entire run of glyphs
+  }
+
+  // the math lives here
+  static DefTranslate(def: string, x: number = 0, y: number = 0) {
+    return TextPath.DefApplyMatrix(def, [1, 0, 0, 1, x, y]);
+  }
+  // this code may be unnecessary and we should probably just pass the  transform  attribute through from TSVG to SVG
+  static DefRotate(def: string, angleDegrees: number, x: number = 0, y: number = 0) {
+    if (x === 0 && y === 0){
+      let theta = angleDegrees * Math.PI / 180.0;
+      return TextPath.DefApplyMatrix(def, [Math.cos(theta), Math.sin(theta), -Math.sin(theta), Math.cos(theta), 0, 0]);
+    }
+    // rotate by a given point
+    var def2 = TextPath.DefTranslate(def, x, y);
+    def2 = TextPath.DefRotate(def, angleDegrees);
+    def2 = TextPath.DefTranslate(def, -x, -y);
+    return def2;
+  }
+  static DefScale(def, x: number = 1, y: number = 1) {
+    return TextPath.DefApplyMatrix(def, [x, 0, 0, y, 0, 0]);
+  }
+  static DefApplyMatrix(def, matrix: number[]) {
+    //console.error(def);
+    return (def.match(TextPath.MzZzZRegex) || [])
+              .map(shape => TextPath.DefApplyMatrix_OneShape(shape, matrix))
+              .join(' ');
+  }
+  static MzZzZRegex = new RegExp('M[^zZ]*[zZ]', 'g');
+  static AzAZazAZRegex = new RegExp('[a-zA-Z]+[^a-zA-Z]*', 'g');
+  static NotazAZRegex = new RegExp('[^a-zA-Z]*', 'g');
+  static NumberRegex = new RegExp('\-?[0-9\.]+', 'g');
+  static DefApplyMatrix_OneShape(def, matrix: number[]) {
+    var ret = [];
+    def.match(TextPath.AzAZazAZRegex).forEach(instruction => {
+      //console.error('---\n' + instruction);
+      var i = instruction.replace(TextPath.NotazAZRegex, '');
+      //console.error('i:', i);
+      var coords = instruction.match(TextPath.NumberRegex);
+      //console.error('coords:', coords);
+      var newCoords = [];
+      while (coords && coords.length > 0) {
+        let [a, b, c, d, e, f] = matrix;
+        if (i === i.toLowerCase()) { // do not translate relative instructions :-)
+          //console.error('Do Not Translate');
+          e = 0; f = 0;
+        }
+        let pushPoint = (x, y) => {
+          newCoords.push([ a*x + c*y + e, b*x + d*y + f ]);
+        }
+        // convert horizontal lineto to lineto (relative)
+        if (i === 'h') {
+          i = 'l';
+          pushPoint(+(coords.shift()), 0);
+        }
+        // convert vertical lineto to lineto (relative)
+        else if (i === 'v') {
+          i = 'l';
+          pushPoint(0, +(coords.shift()));
+        }
+        // convert quadratic bezier curve (relative)
+        else if (i === 'q') {
+          pushPoint(+(coords.shift()), +(coords.shift()));
+          pushPoint(+(coords.shift()), +(coords.shift()));
+        }
+        // TODO: handle 'a,c,s' (elliptic arc curve) commands
+        // cf. http://www.w3.org/TR/SVG/paths.html#PathDataCurveCommands
+        // every other command -- M m L l -- come in single coordinate pair (x,y)
+        else {
+          pushPoint(+(coords.shift()), +(coords.shift()));
+        }
+      }
+      ret.push(i + newCoords.join(',').replace(/,\-/g, '-')); // remove useless commas (when dash for negative is there to separate the numbers)
+      //console.error('ret:', ret);
+    });
+    return ret.join('');
   }
 
   // helpers
