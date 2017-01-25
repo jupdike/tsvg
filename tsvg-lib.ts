@@ -314,12 +314,13 @@ class TextPath {
       // TODO then maybe one day, look for tspans and typeset those, or do line wrapping, whatever...
       for (var ix = 0; ix < s.length; ix++) {
         var ch = s.charAt(ix); // TODO ? use EasySVG approach to pull out unicode from utf8 string
-        ret.push(TextPath.renderGlyph(font, params, ch));
+        var ch1 = ix < s.length - 1 ? ch1 = s.charAt(ix+1) : ''; // for kerning
+        ret.push(TextPath.renderGlyph(font, params, ch, ch1));
       }
     });
     return ret;
   }
-  static renderGlyph(font: any, params: FontAndTextParams, uni: string) {
+  static renderGlyph(font: any, params: FontAndTextParams, uni: string, uniNext: string) {
     var style: string = params.style;
     var glyph = font.glyphs[uni] || font.meta['missing-glyph'];
     var d = glyph.d || ''; // check if d is undefined (for example, space char -- just need horizontal advance :-)
@@ -329,6 +330,13 @@ class TextPath {
     // this is a hack too, since the math needs to be correct!
     var horizAdvX = glyph['horiz-adv-x'] || params.horizAdvX;
     horizAdvX = +(horizAdvX);
+    var hkern = 0;
+    var kernkey = uni+','+uniNext; 
+    if (font.hkern[kernkey]) {
+      hkern = font.hkern[kernkey];
+      hkern = +(hkern);
+    }
+    horizAdvX -= hkern;
     params.lastX += horizAdvX * size;
 
     return ret;

@@ -73,7 +73,7 @@ var that: any = FakeElement.combineAttrs(TSVG.Helpers, that2); // does a copy
 ${valStr};
 
 bind(that, function() {
-  TSVG.Fonts = ${JSON.stringify(fonts, null, 2)};
+  TSVG.Fonts = ${JSON.stringify(fonts, null, 2).replace(/ \-/g, '-')};
   TSVG.Templates['${inkey}'] = ${infilecontents}
 })();
 
@@ -81,6 +81,8 @@ console.log(TSVG.Templates['${inkey}'].render());
 
 })();
 `;
+
+// the stringify(..).replace(.., ..) code above removes unnecessary spaces before hyphens (minus signs) to save ~3% file size on some fonts
 
 var outfilename = inkey + ".tsx";
 fs.writeFileSync(outfilename, result);
