@@ -327,14 +327,13 @@ class TextPath {
     var size = params.fontSize / params.unitsPerEm;
     d = TextPath.DefTranslateAndScale(d, params.lastX, params.lastY, size, -size);
     var ret = `<path style="${style}" d="${d}"/>` + '\n'; // this whole bit is a hack, should be one path for entire run of glyphs
-    // this is a hack too, since the math needs to be correct!
+    // compute how far to advance to draw the next character
     var horizAdvX = glyph['horiz-adv-x'] || params.horizAdvX;
     horizAdvX = +(horizAdvX);
     var hkern = 0;
     var kernkey = uni+','+uniNext; 
     if (font.hkern[kernkey]) {
-      hkern = font.hkern[kernkey];
-      hkern = +(hkern);
+      hkern = +(font.hkern[kernkey]);
     }
     horizAdvX -= hkern;
     params.lastX += horizAdvX * size;
