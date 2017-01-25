@@ -329,10 +329,9 @@ class TextPath {
     var glyph = font.glyphs[uni] || font.meta['missing-glyph'];
     var d = glyph.d || ''; // check if d is undefined (for example, space char -- just need horizontal advance :-)
     var size = params.fontSize / params.unitsPerEm;
-    d = TextPath.DefScale(d, size, -size);
-    d = TextPath.DefTranslate(d, params.lastX, params.lastY);
-    //d = TextPath.DefTranslateAndScale(d, params.lastX, params.lastY, size, -size); // does not work
+    d = TextPath.DefTranslateAndScale(d, params.lastX, params.lastY, size, -size);
     var ret = `<path style="${style}" d="${d}"/>` + '\n'; // this whole bit is a hack, should be one path for entire run of glyphs
+    // this is a hack too, since the math needs to be correct!
     var horizAdvX = glyph['horiz-adv-x'] || params.horizAdvX;
     horizAdvX = +(horizAdvX);
     params.lastX += horizAdvX * size;
@@ -342,7 +341,7 @@ class TextPath {
 
   // the math lives here
   static DefTranslateAndScale(def, tx, ty, sx, sy) {
-    return TextPath.DefApplyMatrix(def, [sx, 0, tx, 0, sy, ty]); // does not work
+    return TextPath.DefApplyMatrix(def, [sx, 0, 0, sy, tx, ty]);
   }
   static DefTranslate(def: string, x: number = 0, y: number = 0) {
     return TextPath.DefApplyMatrix(def, [1, 0, 0, 1, x, y]);
