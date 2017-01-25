@@ -374,6 +374,7 @@ class TextPath {
   static AzAZazAZRegex = new RegExp('[a-zA-Z]+[^a-zA-Z]*', 'g');
   static NotazAZRegex = new RegExp('[^a-zA-Z]*', 'g');
   static NumberRegex = new RegExp('\-?[0-9\.]+', 'g');
+  static CommaMinusRegex = new RegExp(',\-', 'g');
   static DefApplyMatrix_OneShape(def, matrix: number[]) {
     var ret = [];
     def.match(TextPath.AzAZazAZRegex).forEach(instruction => {
@@ -410,7 +411,7 @@ class TextPath {
           pushPoint(+(coords.shift()), +(coords.shift()));
         }
       }
-      ret.push(i + newCoords.join(',').replace(/,\-/g, '-')); // remove useless commas (when dash for negative is there to separate the numbers)
+      ret.push(i + newCoords.join(',').replace(TextPath.CommaMinusRegex, '-')); // remove useless commas (when dash for negative is there to separate the numbers)
     });
     return ret.join('');
   }

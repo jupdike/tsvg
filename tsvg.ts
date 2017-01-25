@@ -56,9 +56,9 @@ infilecontents = infilecontents.replace(/\-\-\>/g, '*/}');
 
 infilecontents = infilecontents.replace(/@/g, 'this.');
 
-// TODO try    {"<!--   and  -->"}  to make it pass through...  (DOESN'T WORK since we have to count / escape quotes correctly...) NEEDS REGEX
+// TODO try    {"<!--   and  -->"}  to make it pass through...  (DOESN'T WORK since we have to count / escape quotes correctly...) NEEDS > REGEX
 //
-//  TODO? also remove newlines from within strings, since SVG allows this,
+//  TODO? also remove newlines from within attribute strings, since SVG allows this,
 //  but JSX does not
 
 var result = `
