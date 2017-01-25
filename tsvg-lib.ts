@@ -326,17 +326,24 @@ class TextPath {
   }
   static renderGlyph(font: any, params: FontAndTextParams, uni: string) {
     var style: string = params.style;
-    var glyph = font.meta['missing-glyph'];
-    if (font.glyphs.hasOwnProperty(uni)) {
-      glyph = font.glyphs[uni];
-    }
+    var glyph = font.glyphs[uni] || font.meta['missing-glyph'];
     var d = glyph.d || ''; // check if d is undefined (for example, space char -- just need horizontal advance :-)
-     d = TextPath.DefScale(d, 0.5, 0.5);
-     d = TextPath.DefTranslate(d, 5, 0);
-    return `<path style="${style}" d="${d}"/>` + '\n'; // this whole bit is a hack, should be one path for entire run of glyphs
+    var size = params.fontSize / params.unitsPerEm;
+    d = TextPath.DefScale(d, size, -size);
+    d = TextPath.DefTranslate(d, params.lastX, params.lastY);
+    //d = TextPath.DefTranslateAndScale(d, params.lastX, params.lastY, size, -size); // does not work
+    var ret = `<path style="${style}" d="${d}"/>` + '\n'; // this whole bit is a hack, should be one path for entire run of glyphs
+    var horizAdvX = glyph['horiz-adv-x'] || params.horizAdvX;
+    horizAdvX = +(horizAdvX);
+    params.lastX += horizAdvX * size;
+
+    return ret;
   }
 
   // the math lives here
+  static DefTranslateAndScale(def, tx, ty, sx, sy) {
+    return TextPath.DefApplyMatrix(def, [sx, 0, tx, 0, sy, ty]); // does not work
+  }
   static DefTranslate(def: string, x: number = 0, y: number = 0) {
     return TextPath.DefApplyMatrix(def, [1, 0, 0, 1, x, y]);
   }
@@ -368,16 +375,12 @@ class TextPath {
   static DefApplyMatrix_OneShape(def, matrix: number[]) {
     var ret = [];
     def.match(TextPath.AzAZazAZRegex).forEach(instruction => {
-      //console.error('---\n' + instruction);
       var i = instruction.replace(TextPath.NotazAZRegex, '');
-      //console.error('i:', i);
       var coords = instruction.match(TextPath.NumberRegex);
-      //console.error('coords:', coords);
       var newCoords = [];
       while (coords && coords.length > 0) {
         let [a, b, c, d, e, f] = matrix;
         if (i === i.toLowerCase()) { // do not translate relative instructions :-)
-          //console.error('Do Not Translate');
           e = 0; f = 0;
         }
         let pushPoint = (x, y) => {
@@ -398,15 +401,14 @@ class TextPath {
           pushPoint(+(coords.shift()), +(coords.shift()));
           pushPoint(+(coords.shift()), +(coords.shift()));
         }
-        // TODO: handle 'a,c,s' (elliptic arc curve) commands
+        // TODO: handle 'a,A' (elliptic arc curve) commands
         // cf. http://www.w3.org/TR/SVG/paths.html#PathDataCurveCommands
-        // every other command -- M m L l -- come in single coordinate pair (x,y)
+        // every other command -- M m L l c C s S -- come in multiples of two numbers (coordinate pair (x,y))
         else {
           pushPoint(+(coords.shift()), +(coords.shift()));
         }
       }
       ret.push(i + newCoords.join(',').replace(/,\-/g, '-')); // remove useless commas (when dash for negative is there to separate the numbers)
-      //console.error('ret:', ret);
     });
     return ret.join('');
   }

@@ -88,7 +88,7 @@
   </For>
 
   <TextPath font-id="FiraSansCondensed-Book"
-    x="50" y="50" font-size="100"
+    x="50" y="300" font-size="100"
     style={@textpathstyle}>
     Hello World
   </TextPath>
