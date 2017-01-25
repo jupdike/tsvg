@@ -11,18 +11,24 @@ var inkey = infilename.replace(".tsvg", "");
 var pre = fs.readFileSync('prepend.ts'); // TODO use the right path
 var lib = fs.readFileSync('tsvg-lib.ts');
 
-var regexDefine = new RegExp(`(@[a-zA-Z0-9_\-]+)[ ]*=[ ]*([^;]+);`, "g"); // this should be smarter and account for semicolons inside strings
+const regexDefine = new RegExp(`(@[a-zA-Z0-9_\-]+)[ ]*=[ ]*([^;]+);`, "g"); // this should be smarter and account for semicolons inside strings
 
 var infilecontents = fs.readFileSync(infilename) + "";
 
-var fonts = {};
-// TODO use actual file path(s) from <Font> tag(s) in .tsvg file
-//FontSVG.Load(fonts, '/Users/jupdike/Downloads/fira-sans-condensed/firasanscondensed-book.svg');
-FontSVG.Load(fonts, '/Users/jupdike/Documents/HelveticaNeue-dfont-split/HelveticaNeue.svg');
-///Users/jupdike/Documents/HelveticaNeue-dfont-split/HelveticaNeue.svg
-
-// TODO regex to find this (and NOT replace, so Font component inserts comment into output :-)
-// <Font path="/Users/jupdike/Downloads/fira-sans-condensed/firasanscondensed-book.svg"/>
+var fonts: any = {};
+// single and double quotes
+const regexFont = [new RegExp(`\<Font path\="([^"]*)\".*\/\>`, 'g'), new RegExp(`\<Font path\='([^']*)'.*\/\>`, 'g')];
+function getFontDefinitions(input, fonts) {
+  regexFont.forEach(reg => {
+    var match = null;
+    while ((match = reg.exec(input)) !== null) {
+      var full = match[0];
+      var path = match[1];
+      FontSVG.Load(fonts, path);
+    }
+  });
+}
+getFontDefinitions(infilecontents, fonts);
 
 // returns a copy of the input string with template stuff pulled out
 // and key values pairs added to vals

@@ -221,16 +221,14 @@ class For {
 
 class Font {
   public static renderSpecial(indent: number, attributes: any, children: Array<any>): Array<string> {
-    if (!attributes && attributes.hasOwnProperty('id') && attributes.hasOwnProperty('path')) {
-      throw "For expects id=string and path=string";
+    if (!attributes && !attributes.hasOwnProperty('path')) {
+      throw "Font expects path=string";
     }
     var indentStr = '';
     for (var i = 0; i < indent; i++) {
       indentStr += '  '; // 2 spaces per indent
     }
-    // TODO check that path exists and load it, strip out some messy garbage, etc.
-    // TODO load some stuff into TSVG.Fonts
-    return [indentStr, '<!-- Loaded SVG font from path "', attributes.path, '" as id "', attributes.id, '" -->'];
+    return [indentStr, '<!-- Loaded SVG font from path "', attributes.path, '" -->'];
   }
 }
 
@@ -327,7 +325,7 @@ class TextPath {
     var d = glyph.d || ''; // check if d is undefined (for example, space char -- just need horizontal advance :-)
     var size = params.fontSize / params.unitsPerEm;
     d = TextPath.DefTranslateAndScale(d, params.lastX, params.lastY, size, -size);
-    // compute how far to advance to draw the next character
+    // compute how far to advance horizontally to draw the next character
     var horizAdvX = glyph['horiz-adv-x'] || params.horizAdvX;
     horizAdvX = +(horizAdvX);
     var hkern = 0;
