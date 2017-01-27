@@ -235,11 +235,10 @@ class Font {
 interface FontAndTextParams {
   x, y, fontSize, letterSpacing, lineHeight,
     unitsPerEm, ascent, descent, horizAdvX: number;
+  textAnchor: string; // left (default) right, middle (allow center for kicks)
   emGlyph: any;
   // nullable args passed through if non-null
   id, style, transform, className: string;
-  // a little statefulness
-  lastX, lastY: number;
 }
 class TextPath {
   // based on (sort of) EasySVG by Simon Tarchichi <kartsims@gmail.com>
@@ -259,9 +258,7 @@ class TextPath {
     var params: FontAndTextParams = {
       id: null, style: null, className: className, transform: transform,
       x: 0, y: 0, fontSize: 16, letterSpacing: 0, lineHeight: 1, unitsPerEm: 1, emGlyph: null,
-      ascent: 0, descent: 0, horizAdvX: 1,
-      // a little statefulness
-      lastX: 0, lastY: 0};
+      ascent: 0, descent: 0, horizAdvX: 1, textAnchor: "left" };
     TextPath.setAttrib(params, 'id', attributes);
     TextPath.setAttrib(params, 'x', attributes);
     TextPath.setAttrib(params, 'y', attributes);
@@ -271,11 +268,11 @@ class TextPath {
     TextPath.setAttrib(params, 'letterSpacing', attributes, 'letter-spacing'); // attributes override CSS
     TextPath.setAttrib(params, 'lineHeight', style, 'line-height');
     TextPath.setAttrib(params, 'lineHeight', attributes, 'line-height'); // attributes override CSS
+    TextPath.setAttrib(params, 'textAnchor', style, 'text-anchor');
+    TextPath.setAttrib(params, 'textAnchor', attributes, 'text-anchor'); // attributes override CSS
     // get the string out of here
     params.x = +(params.x);
     params.y = +(params.y);
-    params.lastX = params.x;
-    params.lastY = params.y;
     params.fontSize = +(params.fontSize);
     params.letterSpacing = +(params.letterSpacing);
     params.lineHeight = +(params.lineHeight);
@@ -305,7 +302,25 @@ class TextPath {
     for (var i = 0; i < indent; i++) {
       indentStr += '  '; // 2 spaces per indent
     }
+
+    //var xSize = TextPath.textSize(children, font, params);
+    //console.error("xSize:", xSize);
+
+    var lastX = params.x;
+    var lastY = params.y;
     var ret = [indentStr, `<path style="${styleStr}" d="`];
+    TextPath.walkChildren(children, font, params, lastX, lastY,
+      (d, size, dx, dy) => {
+        // 'render' a glyph
+        ret.push(TextPath.DefTranslateAndScale(d, lastX, lastY, size, -size));
+        lastX += dx;
+        lastY += dy;
+      });
+    ret.push('"/>');
+
+    return ret;
+  }
+  static walkChildren(children: any, font, params, lastX, lastY, useGlyph: any) {
     // children are UTF8 strings... right?
     children.forEach(s => {
       // TODO test if s is really Just A Single String and not nest nodes/components (or throw error)
@@ -313,18 +328,20 @@ class TextPath {
       for (var ix = 0; ix < s.length; ix++) {
         var ch = s.charAt(ix); // TODO ? use EasySVG approach to pull out unicode from utf8 string
         var ch1 = ix < s.length - 1 ? ch1 = s.charAt(ix+1) : ''; // for kerning
-        ret.push(TextPath.renderGlyph(font, params, ch, ch1));
+        TextPath.advanceByGlyph(font, params, lastX, lastY, ch, ch1, useGlyph);
       }
     });
-    ret.push('"/>');
-    return ret;
   }
-  static renderGlyph(font: any, params: FontAndTextParams, uni: string, uniNext: string) {
+  static advanceByGlyph(font: any, params: FontAndTextParams, 
+    lastX: number, lastY: number,
+    uni: string, uniNext: string,
+    callMe: any) {
     var style: string = params.style;
     var glyph = font.glyphs[uni] || font.meta['missing-glyph'];
     var d = glyph.d || ''; // check if d is undefined (for example, space char -- just need horizontal advance :-)
     var size = params.fontSize / params.unitsPerEm;
-    d = TextPath.DefTranslateAndScale(d, params.lastX, params.lastY, size, -size);
+
+    //d = TextPath.DefTranslateAndScale(d, lastX, lastY, size, -size);
     // compute how far to advance horizontally to draw the next character
     var horizAdvX = glyph['horiz-adv-x'] || params.horizAdvX;
     horizAdvX = +(horizAdvX);
@@ -334,9 +351,19 @@ class TextPath {
       hkern = +(font.hkern[kernkey]);
     }
     horizAdvX -= hkern;
-    params.lastX += horizAdvX * size;
+    var dx = horizAdvX * size;
 
-    return d;
+    callMe(d, size, dx, 0); // result outline def ("d"), dx, dy
+  }
+  public static textSize(children: any, font: any, params: FontAndTextParams) {
+    var lastX = 0;
+    var lastY = 0;
+    TextPath.walkChildren(children, font, params, lastX, lastY,
+      (d, size, dx, dy) => {
+        lastX += dx;
+        lastY += dy;
+      });
+    return lastX;
   }
 
   // the math lives here
