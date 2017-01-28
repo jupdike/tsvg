@@ -258,7 +258,7 @@ class TextPath {
     var params: FontAndTextParams = {
       id: null, style: null, className: className, transform: transform,
       x: 0, y: 0, fontSize: 16, letterSpacing: 0, lineHeight: 1, unitsPerEm: 1, emGlyph: null,
-      ascent: 0, descent: 0, horizAdvX: 1, textAnchor: "left" };
+      ascent: 0, descent: 0, horizAdvX: 1, textAnchor: "start" };
     TextPath.setAttrib(params, 'id', attributes);
     TextPath.setAttrib(params, 'x', attributes);
     TextPath.setAttrib(params, 'y', attributes);
@@ -268,8 +268,10 @@ class TextPath {
     TextPath.setAttrib(params, 'letterSpacing', attributes, 'letter-spacing'); // attributes override CSS
     TextPath.setAttrib(params, 'lineHeight', style, 'line-height');
     TextPath.setAttrib(params, 'lineHeight', attributes, 'line-height'); // attributes override CSS
+    // start = left, middle = center, end = right
     TextPath.setAttrib(params, 'textAnchor', style, 'text-anchor');
     TextPath.setAttrib(params, 'textAnchor', attributes, 'text-anchor'); // attributes override CSS
+    params.textAnchor = params.textAnchor.toLowerCase();
     // get the string out of here
     params.x = +(params.x);
     params.y = +(params.y);
@@ -303,11 +305,21 @@ class TextPath {
       indentStr += '  '; // 2 spaces per indent
     }
 
-    //var xSize = TextPath.textSize(children, font, params);
-    //console.error("xSize:", xSize);
-
+    var width = 0;
+    // left or start or anything else draws text with anchor on the left
+    if (params.textAnchor == "middle" || params.textAnchor == "center" ||
+      params.textAnchor == "right" || params.textAnchor == "end") {
+      width = TextPath.textWidth(children, font, params); // don't compute this unless we need to
+    }
     var lastX = params.x;
+    if (params.textAnchor == "middle" || params.textAnchor == "center") {
+      lastX -= width / 2;
+    }
+    else if (params.textAnchor == "right" || params.textAnchor == "end") {
+      lastX -= width;
+    }
     var lastY = params.y;
+    
     var ret = [indentStr, `<path style="${styleStr}" d="`];
     TextPath.walkChildren(children, font, params, lastX, lastY,
       (d, size, dx, dy) => {
@@ -355,7 +367,7 @@ class TextPath {
 
     callMe(d, size, dx, 0); // result outline def ("d"), dx, dy
   }
-  public static textSize(children: any, font: any, params: FontAndTextParams) {
+  public static textWidth(children: any, font: any, params: FontAndTextParams) {
     var lastX = 0;
     var lastY = 0;
     TextPath.walkChildren(children, font, params, lastX, lastY,

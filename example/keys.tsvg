@@ -90,11 +90,12 @@
     </text>)(@triples[ix][0], @triples[ix][1], @triples[ix][2], @triples[ix][3]))}
   </For>
 
-  <text style={@samplestyle} font-family="Helvetica Neue" font-size="100" x="50" y="300">Hello World</text>
+  <text style={@samplestyle} text-anchor="start" font-family="Helvetica Neue" font-size="100" x="550" y="300">Hello World</text>
 
   <!-- font-id="FiraSansCondensed-Book" -->
   <TextPath font-id="HelveticaNeue"
-    x="50" y="300" font-size="100"
+    x="550" y="300" font-size="100"
+    text-anchor="start"
     style={@textpathstyle}>
     Hello World
   </TextPath>
