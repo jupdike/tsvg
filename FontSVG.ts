@@ -1,5 +1,7 @@
 const fs = require('fs');
 const xmlparse = require('xml-parser');
+const Entities = require('html-entities').AllHtmlEntities;
+const entities = new Entities();
 
 export class FontSVG {
   public static Load(fontsObject, svgXmlPath) {
@@ -8,6 +10,7 @@ export class FontSVG {
     var fontStr = fs.readFileSync(svgXmlPath) + "";
     fontStr = fontStr.replace(/\<\?.*?\?\>/g, '');
     fontStr = fontStr.replace(/\<!DOCTYPE.*?\>/g, '');
+    fontStr = entities.decode(fontStr);
     var fontJson = xmlparse(fontStr);
     //console.log(fontJson);
 
@@ -40,18 +43,29 @@ export class FontSVG {
       //console.log(node);
       if (node.attributes && node.attributes.unicode && node.attributes['glyph-name']) {
         var gname = node.attributes['glyph-name'];
-        gNameToUnicode[gname] = node.attributes.unicode;
+        const uni = node.attributes.unicode;
+        if (uni === entities.decode("&#x2028;") ||
+          uni === entities.decode("&#x2029;")) {
+          return; // skip verical line separator and paragraph separator
+          // http://www.fileformat.info/info/unicode/char/2028/index.htm ... screws up JavaScript output
+        }
+        gNameToUnicode[gname] = uni;
         //console.log('loaded glyph for unicode: '+node.attributes.unicode);
         //console.log(node.attributes);
-        font.glyphs[node.attributes.unicode] = node.attributes;
+        font.glyphs[uni] = node.attributes;
       }
-
-      // // by glyph-name ... (how to translate from unicode to this when no unicode specified?)
-      // if (node.attributes && node.attributes['glyph-name']) {
-      //   //console.log('loaded glyph for glyph-name: '+node.attributes['glyph-name']);
-      //   //console.log(node.attributes);
-      //   font.glyphs[node.attributes['glyph-name']] = node.attributes;
-      // }
+      // try converting the glyph name to unicode (we don't already have valid unicode for that glyph, above)
+      else if (node.attributes && node.attributes['glyph-name']) {
+        var gname = node.attributes['glyph-name'];
+        const fakeent = '&'+gname+';';
+        const uni = entities.decode(fakeent);
+        if (uni && fakeent != uni && uni.length <= 2) { // got back a real decoded character
+          gNameToUnicode[gname] = uni;
+          //console.log('* loaded glyph for _fake_ unicode: '+uni);
+          //console.log(node.attributes);
+          font.glyphs[uni] = node.attributes;
+        }
+      }
     });
     walker(fontJson.root, 'hkern', node => {
       //console.log(node);

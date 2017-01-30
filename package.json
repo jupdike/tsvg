@@ -11,6 +11,7 @@
     "url": "git+https://updike_org@bitbucket.org/updike_org/tsvg.git"
   },
   "dependencies": {
+    "html-entities": "^1.2.0",
     "typescript": "~2.1.4",
     "xml-parser": "^1.2.1"
   },
