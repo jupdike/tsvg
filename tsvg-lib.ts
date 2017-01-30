@@ -41,7 +41,8 @@ class TSVG {
     rotate: TSVG.rotate,
     range: TSVG.range,
     flatten: TSVG.flatten,
-    makeStyle: TSVG.makeStyle
+    makeStyle: TSVG.makeStyle,
+    textWidth: TSVG.textWidthHelper
   };
   public static Templates = {};
   public static translate(x: string, y: string) { return `translate(${x}, ${y})`; }
@@ -101,6 +102,23 @@ class TSVG {
       ret.push(k + ': ' + v);
     }
     return ret.join('; ');
+  }
+  public static textWidthHelper(fontId: string, fontSize: number, style: any, textStr: string): number {
+    var attributes: any = {'font-id': fontId, 'font-size': fontSize, 'style': ''};
+    if (typeof style === 'string' || style instanceof String) {
+      attributes['style'] = style;
+    }
+    else {
+      attributes['style'] = TSVG.makeStyle(style);
+    }
+    var params: FontAndTextParams = TextPath.parseParams(attributes);
+    if (!params) {
+      console.error('textWidth helper: invalid text params or missing font');
+      return -1;
+    }
+    const children = [textStr];
+    var width = TextPath.textWidth(children, params.font, params);
+    return width;
   }
 }
 
@@ -239,15 +257,10 @@ interface FontAndTextParams {
   emGlyph: any;
   // nullable args passed through if non-null
   id, style, transform, className: string;
+  font: any; // the glyph lookup and hkern lookup tables for the font (we have extracted any meta already)
 }
 class TextPath {
-  // based on (sort of) EasySVG by Simon Tarchichi <kartsims@gmail.com>
-  public static renderSpecial(indent: number, attributes: any, children: Array<any>): Array<string> {
-    if (!attributes || !attributes.hasOwnProperty('font-id') || !attributes.hasOwnProperty('style')) {
-      throw "TextPath expects font-id=string and style=string";
-    }
-
-    // ----
+  public static parseParams(attributes: any): FontAndTextParams {
     // pull out all the attributes, style fields, font metadata, and merge with defaults, etc.
     var id = attributes['font-id'];
     var className = attributes['className'] || null;
@@ -258,7 +271,7 @@ class TextPath {
     var params: FontAndTextParams = {
       id: null, style: null, className: className, transform: transform,
       x: 0, y: 0, fontSize: 16, letterSpacing: 0, lineHeight: 1, unitsPerEm: 1, emGlyph: null,
-      ascent: 0, descent: 0, horizAdvX: 1, textAnchor: "start" };
+      ascent: 0, descent: 0, horizAdvX: 1, textAnchor: "start", font: null };
     TextPath.setAttrib(params, 'id', attributes);
     TextPath.setAttrib(params, 'x', attributes);
     TextPath.setAttrib(params, 'y', attributes);
@@ -284,9 +297,10 @@ class TextPath {
     
     if (!TSVG.Fonts.hasOwnProperty(id)) {
       console.error("Could not find Font with id = "+id);
-      return [];
+      return null;
     }
     var font = TSVG.Fonts[id];
+    params.font = font;
     TextPath.setAttrib(params, 'emGlyph', font.glyphs, 'm');
     TextPath.setAttrib(params, 'horizAdvX', font.meta, 'horiz-adv-x');
     TextPath.setAttrib(params, 'unitsPerEm', font.meta['font-face'], 'units-per-em');
@@ -297,8 +311,20 @@ class TextPath {
     params.ascent = +(params.ascent);
     params.descent = +(params.descent);
     TextPath.setAttrib(params, 'missingGlyph', font.meta, 'missing-glyph');
-    //console.error(params);
-    // ---- done pulling out params
+    return params;
+  }
+  // based on (sort of) EasySVG by Simon Tarchichi <kartsims@gmail.com>
+  public static renderSpecial(indent: number, attributes: any, children: Array<any>): Array<string> {
+    if (!attributes || !attributes.hasOwnProperty('font-id') || !attributes.hasOwnProperty('style')) {
+      throw "TextPath expects font-id=string and style=string";
+    }
+    const params = TextPath.parseParams(attributes);
+    const font = params.font;
+    const styleStr = attributes['style'];
+    if (!params) {
+      console.error('Failed to parse params, so TextPath component render failes');
+      return [];
+    }
 
     var indentStr = '';
     for (var i = 0; i < indent; i++) {
@@ -319,7 +345,7 @@ class TextPath {
       lastX -= width;
     }
     var lastY = params.y;
-    
+
     var ret = [indentStr, `<path style="${styleStr}" d="`];
     TextPath.walkChildren(children, font, params, lastX, lastY,
       (d, size, dx, dy) => {
