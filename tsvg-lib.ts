@@ -34,6 +34,7 @@ class TSVG {
     //hack
     unescapeSharpsFlatsNats: TSVG.unescapeSharpsFlatsNats,
 
+    with: TSVG.with,
     closedPolyPath: TSVG.closedPolyPath,
     translate: TSVG.translate,
     line: TSVG.line,
@@ -49,6 +50,11 @@ class TSVG {
   public static rotate(x: string, ox=0, oy=0) { return `rotate(${x}, ${ox}, ${oy})`; }
   public static line(x1: string, y1: string, x2: string, y2: string, opts: { [k: string]: any; }) {
     return FakeElement.creator('line', { x1: x1, y1: y1, x2: x2, y2: y2 }, {'stroke-width': 1, stroke: "black" }, opts);
+  }
+  public static with(obj1: any, key: string, rhs: any) {
+    var obj2 = {};
+    obj2[key] = rhs;
+    return FakeElement.combineAttrs(obj1, obj2);
   }
   public static closedPolyPath(opts: { [k: string]: any; }, d: string[]) {
     if (d.length < 4) {

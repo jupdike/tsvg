@@ -43,13 +43,14 @@
   @texts = @flatten([@hyphens, @myzip('\\#\\#'), @myzip('\\#'), @myzip(''), @myzip('\\b'), @myzip('\\b\\b'), @hyphens]);
   @bgtextstyle = @makeStyle({'fill': '#999', 'font-family': "'Helevtica Neue', Arial, sans-serif", 'font-size': '55px'});
   @fgtextstyle = @makeStyle({'fill': '#222', 'font-family': "'Helevtica Neue', Arial, sans-serif", 'font-size': '55px'});
-  @romantextstyle = @makeStyle({'fill': 'red', 'font-family': "Georgia, 'Times New Roman', serif", 'font-size': '35px'});
+  @romantextstyle = {'fill': 'red', 'font-family': "Georgia, 'Times New Roman', serif", 'font-size': '35px'};
   @samplestyle = @makeStyle({'fill': 'orange'});
   @textpathstyle = @makeStyle({'fill': 'red'});
   @minorList = [0, 4, 7, 11];
   @majorList = [0, 3, 7, 10];
   @minorOffset = 65;
   @majorOffset = 155;
+  @pcColors = "#00c #a4f #f0f #a16 #e02 #f91 #c81 #094 #161 #0bb #0bb #28f".split(' ');
   <!-- this is sort of the only argument ... could be appended by other program to generate multiple .svg files, then .png, etc.
        from -10 (10 sharps) to 10 (10 flats), 0 = key of C (no sharps or flats) -->
   @keyIndex = 0;
@@ -85,7 +86,7 @@
         {@texts[i + @keyIndex + 20 +  @majorList[j]]}
       </text>)
       )(@triples[ix][0], @triples[ix][1], @triples[ix][2]))}
-    {ix => (((z,i,j,txt) => <text x={200*i + ((j+z)%2)*100} y={((z+1)%2 ? @minorOffset+54 : @majorOffset-65) + 172.3*j} text-anchor="middle" style={@romantextstyle}>
+    {ix => (((z,i,j,txt) => <text x={200*i + ((j+z)%2)*100} y={((z+1)%2 ? @minorOffset+54 : @majorOffset-65) + 172.3*j} text-anchor="middle" style={@makeStyle(@with(@romantextstyle, 'fill', @pcColors[(i+j+z)%12]))}>
       {@unescapeSharpsFlatsNats(txt)}
     </text>)(@triples[ix][0], @triples[ix][1], @triples[ix][2], @triples[ix][3]))}
   </For>
