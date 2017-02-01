@@ -1,0 +1,21 @@
+<svg id="kb-svg-horiz" class="kb-bottom" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="1100" height="694" viewBox="0 0 1100 694">
+  <!-- for testing against <text> tag! -->
+  <Font path='/Users/jupdike/Documents/HelveticaNeue-dfont-split/HelveticaNeue.svg'/>
+
+  <TextPath font-id="HelveticaNeue"
+    x="550" y="300"
+    font-size="100"
+    letter-spacing="1ex"
+    text-anchor="middle"
+    style="fill: orange">
+    Hello World
+  </TextPath>
+
+  <text
+  fill="transparent" stroke="black" stroke-width="1px" text-anchor="middle"
+  font-family="Helvetica Neue"
+  letter-spacing="1ex"
+  font-size="100"
+  x="550" y="300">Hello World</text>
+
+</svg>

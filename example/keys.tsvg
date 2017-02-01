@@ -91,21 +91,4 @@
     </text>)(@triples[ix][0], @triples[ix][1], @triples[ix][2], @triples[ix][3]))}
   </For>
 
-  <!-- font-id="FiraSansCondensed-Book" -->
-  <TextPath font-id="HelveticaNeue"
-    x="550" y="300"
-    font-size="100"
-    letter-spacing="1ex"
-    text-anchor="middle"
-    style={@textpathstyle}>
-    Hello World
-  </TextPath>
-
-  <text style={@samplestyle} fill="transparent" stroke="black" stroke-width="1px" text-anchor="middle"
-  font-family="Helvetica Neue"
-  letter-spacing="1ex"
-  font-size="100"
-  x="550" y="300">Hello World</text>
-
-
 </svg>
