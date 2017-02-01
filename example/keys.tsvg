@@ -1,7 +1,8 @@
 <svg id="kb-svg-horiz" class="kb-bottom" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="1100" height="694" viewBox="0 0 1100 694">
   <defs>
-    <Font path="/Users/jupdike/Downloads/fira-sans-condensed/firasanscondensed-book.svg"/>
-    <Font path='/Users/jupdike/Documents/HelveticaNeue-dfont-split/HelveticaNeue.svg'/>
+    <Font path="/Users/jupdike/Downloads/fira-sans-condensed/enhanced-firasanscondensed-book.svg"/>
+    <Font path="/Users/jupdike/Downloads/charter/ttf/Enhanced-CharterRegular.svg"/>
+    <!-- Font path='/Users/jupdike/Documents/HelveticaNeue-dfont-split/HelveticaNeue.svg'/ -->
 
     <g id="up-tri">
       <path style="fill: #ddd; stroke: #999; stroke-width: 3px" d="M 0,173.2 l 100,0 l -100,-173.2 l -100,173.2 z"/>
@@ -48,9 +49,10 @@
   @textpathstyle = @makeStyle({'fill': 'red'});
   @minorList = [0, 4, 7, 11];
   @majorList = [0, 3, 7, 10];
-  @minorOffset = 65;
-  @majorOffset = 155;
-  @pcColors = "#00c #a4f #f0f #a16 #e02 #f91 #c81 #094 #161 #0bb #0bb #28f".split(' ');
+  @minorOffset = 105;
+  @majorOffset = 115;
+  @pcColors = "#00c #a4f #f0f #a16 #e02 #f91 #c81 #094 #161 #077 #0bb #28f".split(' ');
+  @colorIndex = [2, 7, 0, 5, 10, 3, 8, 1, 6,  11, 4, 9];
   <!-- this is sort of the only argument ... could be appended by other program to generate multiple .svg files, then .png, etc.
        from -10 (10 sharps) to 10 (10 flats), 0 = key of C (no sharps or flats) -->
   @keyIndex = 0;
@@ -58,12 +60,16 @@
     <For from="0" upTo="6">
       {i => <use xlink:href="#up-tri"   transform={@translate(i*200 + ((j+1)%2)*100, 173.2*j)}/>}
       {i => <use xlink:href="#down-tri" transform={@translate(i*200 + ((j+0)%2)*100, 173.2*j)}/>}
-      {i => <text x={200*i + ((j+0)%2)*100} y={@minorOffset + 172.3*j} text-anchor="middle" style={@bgtextstyle}>
+      {i => <TextPath x={200*i + ((j+0)%2)*100} y={@minorOffset + 172.3*j}
+        font-id="FiraSansCondensed-Book"
+        text-anchor="middle" style={@bgtextstyle}>
         {@texts[i + @keyIndex + 16 +  @minorList[j]].toLowerCase()}
-      </text>}
-      {i => <text x={200*i + ((j+1)%2)*100} y={@majorOffset + 172.3*j} text-anchor="middle" style={@bgtextstyle}>
+      </TextPath>}
+      {i => <TextPath x={200*i + ((j+1)%2)*100} y={@majorOffset + 172.3*j}
+        font-id="FiraSansCondensed-Book"
+        text-anchor="middle" style={@bgtextstyle}>
         {@texts[i + @keyIndex + 20 +  @majorList[j]]}
-      </text>}
+      </TextPath>}
     </For>
   }</For>
   @refs = "#down-tri-2 #up-tri-2 #down-tri-3 #up-tri-3 #down-tri-4 #up-tri-4 #down-tri-5 #up-tri-5".split(' ');
@@ -79,16 +85,22 @@
     {ix => (((z,i,j) => <use xlink:href={@refs[z]} transform={@translate(i*200 + ((j+z)%2)*100, 173.2*j)}/>)(@triples[ix][0], @triples[ix][1], @triples[ix][2]))}
     {ix => (((z,i,j) =>
       ((z+1)%2 ?
-        <text x={200*i + ((j+z)%2)*100} y={@minorOffset + 172.3*j} text-anchor="middle" style={@fgtextstyle}>
+        <TextPath font-id="FiraSansCondensed-Book"
+          x={200*i + ((j+z)%2)*100} y={@minorOffset + 172.3*j} text-anchor="middle" style={@fgtextstyle}>
           {@texts[i + @keyIndex + 16 +  @minorList[j]].toLowerCase()}
-        </text> :
-        <text x={200*i + ((j+z)%2)*100} y={@majorOffset + 172.3*j} text-anchor="middle" style={@fgtextstyle}>
-        {@texts[i + @keyIndex + 20 +  @majorList[j]]}
-      </text>)
+        </TextPath> :
+        <TextPath font-id="FiraSansCondensed-Book" x={200*i + ((j+z)%2)*100} y={@majorOffset + 172.3*j}
+          text-anchor="middle" style={@fgtextstyle}>
+          {@texts[i + @keyIndex + 20 +  @majorList[j]]}
+        </TextPath>)
       )(@triples[ix][0], @triples[ix][1], @triples[ix][2]))}
-    {ix => (((z,i,j,txt) => <text x={200*i + ((j+z)%2)*100} y={((z+1)%2 ? @minorOffset+54 : @majorOffset-65) + 172.3*j} text-anchor="middle" style={@makeStyle(@with(@romantextstyle, 'fill', @pcColors[(i+j+z)%12]))}>
+    {ix => (((z,i,j,txt) => <TextPath x={200*i + ((j+z)%2)*100} y={((z+1)%2 ? 47 : 161) + 172.3*j} text-anchor="middle" letter-spacing={txt.toUpperCase() == txt ? "-0.07em" : "0"} font-id="Charter"
+    style={@makeStyle(@with(@romantextstyle, 'fill', @pcColors[ @colorIndex[
+      (z+1)%2 ? 
+        (i + @keyIndex + 16 + @minorList[j])%12 :
+        (i + @keyIndex + 20 + @majorList[j])%12 ] ]))}>
       {@unescapeSharpsFlatsNats(txt)}
-    </text>)(@triples[ix][0], @triples[ix][1], @triples[ix][2], @triples[ix][3]))}
+    </TextPath>)(@triples[ix][0], @triples[ix][1], @triples[ix][2], @triples[ix][3]))}
   </For>
 
 </svg>

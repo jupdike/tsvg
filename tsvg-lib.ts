@@ -20,13 +20,12 @@ class TSVG {
 
   // hack! -- TSVG needs a way to supply helper methods in user code from an external file (outside of TSVG file itself)
   public static unescapeSharpsFlatsNats(s) {
-    s = s.replace(/\\#\\#/gi, '&#9839;&#9839;'); // double sharp
-    s = s.replace(/\\b\\b/gi, '&#9837;&#9837;'); // double flat
-    s = s.replace(/\\b/gi, '&#9837;'); // \b = \ then b characters
-    s = s.replace(/\\n/gi, '&#9838;');  // not newline, but actual \ and then n characters
-    s = s.replace(/\\#/gi, '&#9839;'); // \# = \ then # symbol
-    s = s.replace(/\\o/gi, '&#176;'); // \o = \ then o character
-    s = s.replace(/\\\//gi, '&#8730;'); // \/ = \ then / character -- sqaure root symbol, U+2713
+    s = s.replace(/\\#\\#/gi, '𝄪'); // double sharp
+    s = s.replace(/\\b\\b/gi, '𝄫'); // double flat
+    s = s.replace(/\\b/gi, '♭'); // \b = \ then b characters
+    s = s.replace(/\\n/gi, '♮');  // not newline, but actual \ and then n characters
+    s = s.replace(/\\#/gi, '♯'); // \# = \ then # symbol
+    s = s.replace(/\\o/gi, '°'); // \o = \ then o character
     return s;
   }
 
