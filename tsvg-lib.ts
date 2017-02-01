@@ -258,14 +258,51 @@ class Font {
 
 interface FontAndTextParams {
   x, y, fontSize, letterSpacing, lineHeight,
+    em, ex, // based on current font size
     unitsPerEm, ascent, descent, horizAdvX: number;
   textAnchor: string; // left (default) right, middle (allow center for kicks)
-  emGlyph: any;
   // nullable args passed through if non-null
   id, style, transform, className: string;
   font: any; // the glyph lookup and hkern lookup tables for the font (we have extracted any meta already)
 }
 class TextPath {
+  // https://www.w3.org/TR/SVG/coords.html#Units
+  // "1pt" equals "1.25px" (and therefore 1.25 user units)
+  // "1pc" equals "15px" (and therefore 15 user units)
+  // "1mm" would be "3.543307px" (3.543307 user units)
+  // "1cm" equals "35.43307px" (and therefore 35.43307 user units)
+  // "1in" equals "90px" (and therefore 90 user units)
+  // NOTE: em is based on the font and font size
+  public static makePixels(str: string, em: number, ex: number): number {
+    const strPartAsDouble: number = +((''+str).match(TextPath.NumberRegex));
+    const otherPart = str.replace(TextPath.NumberRegex, '').toLowerCase().trim();
+    var scale = 1.0; // 'px' or other unknown duded
+    if (otherPart === 'pt') {
+      scale = 1.25;
+    }
+    else if (otherPart === 'pc') {
+      scale = 15;
+    }
+    else if (otherPart === 'mm') {
+      scale = 3.543307;
+    }
+    else if (otherPart === 'cm') {
+      scale = 35.43307;
+    }
+    else if (otherPart === 'in') {
+      scale = 90;
+    }
+    else if (otherPart === 'rem') { // root em, defined to be 16px, I think...
+      scale = 16;
+    }
+    else if (otherPart === 'em') {
+      scale = em;
+    }
+    else if (otherPart === 'ex') {
+      scale = ex;
+    }
+    return strPartAsDouble * scale;
+  }
   public static parseParams(attributes: any): FontAndTextParams {
     // pull out all the attributes, style fields, font metadata, and merge with defaults, etc.
     var id = attributes['font-id'];
@@ -276,7 +313,7 @@ class TextPath {
     // font-size in px, 16 px = 1 em
     var params: FontAndTextParams = {
       id: null, style: null, className: className, transform: transform,
-      x: 0, y: 0, fontSize: 16, letterSpacing: 0, lineHeight: 1, unitsPerEm: 1, emGlyph: null,
+      x: 0, y: 0, fontSize: 16, letterSpacing: 0, lineHeight: 1, unitsPerEm: 1, ex: 1, em: 1,
       ascent: 0, descent: 0, horizAdvX: 1, textAnchor: "start", font: null };
     TextPath.setAttrib(params, 'id', attributes);
     TextPath.setAttrib(params, 'x', attributes);
@@ -294,9 +331,10 @@ class TextPath {
     // get the string out of here
     params.x = +(params.x);
     params.y = +(params.y);
-    params.fontSize = +(params.fontSize);
-    params.letterSpacing = +(params.letterSpacing);
     params.lineHeight = +(params.lineHeight);
+    params.fontSize = TextPath.makePixels(params.fontSize, 1, 1); // circular logic: let em be 1 if they use it, since it makes no sense for the font size, since other 'em' units are defined in terms of params.em, which is based on font size (same with x)
+    params.em = params.fontSize; // 1 em is by definition the font height = font size :-) that is what an em is!
+    //console.error('params:', params);
 
     // TODO copy attributes like stroke-width, fill and stroke (color) to style (object -> back to string), but only if style is missing those fields, then add that string in here
     params.style = styleStr;
@@ -307,16 +345,23 @@ class TextPath {
     }
     var font = TSVG.Fonts[id];
     params.font = font;
-    TextPath.setAttrib(params, 'emGlyph', font.glyphs, 'm');
-    TextPath.setAttrib(params, 'horizAdvX', font.meta, 'horiz-adv-x');
     TextPath.setAttrib(params, 'unitsPerEm', font.meta['font-face'], 'units-per-em');
-    TextPath.setAttrib(params, 'ascent', font.meta['font-face']);
-    TextPath.setAttrib(params, 'descent', font.meta['font-face']);
-    params.horizAdvX = +(params.horizAdvX);
     params.unitsPerEm = +(params.unitsPerEm);
+    TextPath.setAttrib(params, 'horizAdvX', font.meta, 'horiz-adv-x');
+    params.horizAdvX = +(params.horizAdvX);
+    TextPath.setAttrib(params, 'ascent', font.meta['font-face']);
     params.ascent = +(params.ascent);
+    TextPath.setAttrib(params, 'descent', font.meta['font-face']);
     params.descent = +(params.descent);
+    TextPath.setAttrib(params, 'ex', font.meta['font-face'], 'x-height');
+    params.ex = +(params.ex);
+    params.ex = params.ex * params.fontSize / params.unitsPerEm;
     TextPath.setAttrib(params, 'missingGlyph', font.meta, 'missing-glyph');
+
+    if (params.letterSpacing) {
+      params.letterSpacing = TextPath.makePixels(params.letterSpacing, params.em, params.ex);
+    }
+
     return params;
   }
   // based on (sort of) EasySVG by Simon Tarchichi <kartsims@gmail.com>
@@ -395,7 +440,8 @@ class TextPath {
       hkern = +(font.hkern[kernkey]);
     }
     horizAdvX -= hkern;
-    var dx = horizAdvX * size;
+    // letterSpacing is in pixels already, or if in ems, converted to pixels based on font size
+    var dx = horizAdvX * size + (uniNext != '' ? params.letterSpacing : 0);
 
     callMe(d, size, dx, 0); // result outline def ("d"), dx, dy
   }

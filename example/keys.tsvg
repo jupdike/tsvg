@@ -44,7 +44,7 @@
   @bgtextstyle = @makeStyle({'fill': '#999', 'font-family': "'Helevtica Neue', Arial, sans-serif", 'font-size': '55px'});
   @fgtextstyle = @makeStyle({'fill': '#222', 'font-family': "'Helevtica Neue', Arial, sans-serif", 'font-size': '55px'});
   @romantextstyle = {'fill': 'red', 'font-family': "Georgia, 'Times New Roman', serif", 'font-size': '35px'};
-  @samplestyle = @makeStyle({'fill': 'orange'});
+  @samplestyle = @makeStyle({});
   @textpathstyle = @makeStyle({'fill': 'red'});
   @minorList = [0, 4, 7, 11];
   @majorList = [0, 3, 7, 10];
@@ -91,15 +91,21 @@
     </text>)(@triples[ix][0], @triples[ix][1], @triples[ix][2], @triples[ix][3]))}
   </For>
 
-  <text style={@samplestyle} text-anchor="middle" font-family="Helvetica Neue" font-size="100" x="550" y="300">Hello World</text>
-
   <!-- font-id="FiraSansCondensed-Book" -->
   <TextPath font-id="HelveticaNeue"
     x="550" y="300"
     font-size="100"
+    letter-spacing="1ex"
     text-anchor="middle"
     style={@textpathstyle}>
     Hello World
   </TextPath>
+
+  <text style={@samplestyle} fill="transparent" stroke="black" stroke-width="1px" text-anchor="middle"
+  font-family="Helvetica Neue"
+  letter-spacing="1ex"
+  font-size="100"
+  x="550" y="300">Hello World</text>
+
 
 </svg>
