@@ -419,13 +419,13 @@ class TextPath {
         var ch2 = ix < s.length - 2 ? ch2 = s.charAt(ix+2) : ''; // could be a ligature or UTF
         if (params.letterSpacing == 0 &&
           ix < s.length - 2 && font.glyphs[ch+ch1]) { // if ligature or 'wide' unicode character exists -- don't use ligature if letter-spacing set to something interesting :-)
-          console.error('found '+ch+ch1);
+          //console.error('found '+ch+ch1);
           TextPath.advanceByGlyph(font, params, lastX, lastY, ch+ch1, ch2, useGlyph);
           ix++; // extra++
         }
         if (params.letterSpacing == 0 &&
           ix < s.length - 1 && font.glyphs[ch+ch1]) { // if ligature or 'wide' unicode character exists -- don't use ligature if letter-spacing set to something interesting :-)
-          console.error('found '+ch+ch1);
+          //console.error('found '+ch+ch1);
           TextPath.advanceByGlyph(font, params, lastX, lastY, ch+ch1, '', useGlyph);
           ix++; // extra++
         }
