@@ -44,6 +44,8 @@ export class FontSVG {
       if (node.attributes && node.attributes.unicode && node.attributes['glyph-name']) {
         var gname = node.attributes['glyph-name'];
         const uni = node.attributes.unicode;
+        delete node.attributes['unicode'];
+        delete node.attributes['glyph-name'];
         if (uni === entities.decode("&#x2028;") ||
           uni === entities.decode("&#x2029;")) {
           return; // skip verical line separator and paragraph separator
@@ -57,6 +59,7 @@ export class FontSVG {
       // try converting the glyph name to unicode (we don't already have valid unicode for that glyph, above)
       else if (node.attributes && node.attributes['glyph-name']) {
         var gname = node.attributes['glyph-name'];
+        delete node.attributes['glyph-name'];
         const fakeent = '&'+gname+';';
         const uni = entities.decode(fakeent);
         if (uni && fakeent != uni && uni.length <= 2) { // got back a real decoded character
