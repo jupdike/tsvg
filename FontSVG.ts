@@ -4,8 +4,13 @@ const Entities = require('html-entities').AllHtmlEntities;
 const entities = new Entities();
 
 export class FontSVG {
-  public static Load(fontsObject, svgXmlPath) {
+  public static Load(fontsObject, svgXmlPath, whitelist) {
     var font = { glyphs: {}, hkern: {}, meta: {}};
+
+    //console.error(svgXmlPath);
+    if (whitelist) {
+      console.error('whitelisting these characters: '+ whitelist);
+    }
 
     var fontStr = fs.readFileSync(svgXmlPath) + "";
     fontStr = fontStr.replace(/\<\?.*?\?\>/g, '');
@@ -44,6 +49,9 @@ export class FontSVG {
       if (node.attributes && node.attributes.unicode && node.attributes['glyph-name']) {
         var gname = node.attributes['glyph-name'];
         const uni = node.attributes.unicode;
+        if (whitelist && whitelist.indexOf(uni) < 0) {
+          return;
+        }
         delete node.attributes['unicode'];
         delete node.attributes['glyph-name'];
         if (uni === entities.decode("&#x2028;") ||
@@ -63,6 +71,9 @@ export class FontSVG {
         const fakeent = '&'+gname+';';
         const uni = entities.decode(fakeent);
         if (uni && fakeent != uni && uni.length <= 2) { // got back a real decoded character
+          if (whitelist && whitelist.indexOf(uni) < 0) {
+            return;
+          }
           gNameToUnicode[gname] = uni;
           //console.log('* loaded glyph for _fake_ unicode: '+uni);
           //console.log(node.attributes);

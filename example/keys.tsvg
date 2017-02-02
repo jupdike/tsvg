@@ -1,39 +1,47 @@
-<svg id="kb-svg-horiz" class="kb-bottom" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="1100" height="694" viewBox="0 0 1100 694">
+<svg id="kb-svg-horiz" class="kb-bottom" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="1100" height="698" viewBox="0 -2 1100 696">
+  <!-- was 1100 x 694
+       must make it 1100 x 1100 to run this:
+         qlmanage -t -s 1100 -o . keys.svg 2> /dev/null
+       output svg @ 79KB -> output png @ 168KB
+       x 21 = svgs = 1,659KB vs. pngs = 3,528KB
+       v. keys.js = 264KB
+  -->
   <defs>
-    <Font path="/Users/jupdike/Downloads/fira-sans-condensed/enhanced-firasanscondensed-book.svg"/>
-    <Font path="/Users/jupdike/Downloads/charter/ttf/Enhanced-CharterRegular.svg"/>
-    <!-- Font path='/Users/jupdike/Documents/HelveticaNeue-dfont-split/HelveticaNeue.svg'/ -->
+  
+    <Font white-list-chars="abcdefgABCDEFG𝄪𝄫♭♯" path="/Users/jupdike/Downloads/fira-sans-condensed/enhanced-firasanscondensed-book.svg"/>
+    <Font white-list-chars="-abcdefgABCDEFG" path="/Users/jupdike/Downloads/fira-sans/FiraSans-Book.svg"/>
+    <Font white-list-chars="IViv/°♭♯" path="/Users/jupdike/Downloads/charter/ttf/Enhanced-CharterRegular.svg"/>
 
     <g id="up-tri">
-      <path style="fill: #ddd; stroke: #999; stroke-width: 3px" d="M 0,173.2 l 100,0 l -100,-173.2 l -100,173.2 z"/>
+      <path style="fill: #ddd; stroke: #999; stroke-width: 5px" d="M 0,173.2 l 100,0 l -100,-173.2 l -100,173.2 z"/>
     </g>
     <g id="down-tri">
-      <path style="fill: #ddd; stroke: #999; stroke-width: 3px" d="M 0,173.2 l 100,-173.2 l -200,0 z"/>
+      <path style="fill: #ddd; stroke: #999; stroke-width: 5px" d="M 0,173.2 l 100,-173.2 l -200,0 z"/>
     </g>
     <g id="up-tri-2">
-      <path style="fill: #fff; stroke: #444; stroke-width: 3px" d="M 0,173.2 l 100,0 l -100,-173.2 l -100,173.2 z"/>
+      <path style="fill: #fff; stroke: #444; stroke-width: 5px" d="M 0,173.2 l 100,0 l -100,-173.2 l -100,173.2 z"/>
     </g>
     <g id="down-tri-2">
-      <path style="fill: #fff; stroke: #444; stroke-width: 3px" d="M 0,173.2 l 100,-173.2 l -200,0 z"/>
+      <path style="fill: #fff; stroke: #444; stroke-width: 5px" d="M 0,173.2 l 100,-173.2 l -200,0 z"/>
     </g>
     <g id="up-tri-3">
-      <path style="fill: #fff; stroke: #ddd; stroke-width: 3px" d="M 0,173.2 l 100,0 l -100,-173.2 l -100,173.2 z"/>
+      <path style="fill: #fff; stroke: #ddd; stroke-linejoin: bevel; stroke-width: 5px" d="M 0,173.2 l 100,0 l -100,-173.2 l -100,173.2 z"/>
     </g>
     <g id="down-tri-3">
-      <path style="fill: #fff; stroke: #ddd; stroke-width: 3px" d="M 0,173.2 l 100,-173.2 l -200,0 z"/>
+      <path style="fill: #fff; stroke: #ddd; stroke-linejoin: bevel; stroke-width: 5px" d="M 0,173.2 l 100,-173.2 l -200,0 z"/>
     </g>
 
     <g id="up-tri-4">
-      <path style="fill: #fff; stroke: #000; stroke-width: 5px" d="M 0,173.2 l 100,0 l -100,-173.2 l -100,173.2 z"/>
+      <path style="fill: #fff; stroke: #000; stroke-width: 7px" d="M 0,173.2 l 100,0 l -100,-173.2 l -100,173.2 z"/>
     </g>
     <g id="down-tri-4">
-      <path style="fill: #fff; stroke: #000; stroke-width: 5px" d="M 0,173.2 l 100,-173.2 l -200,0 z"/>
+      <path style="fill: #fff; stroke: #000; stroke-width: 7px" d="M 0,173.2 l 100,-173.2 l -200,0 z"/>
     </g>
     <g id="up-tri-5">
-      <path stroke-dasharray='2.5,5,4.5,0' style="fill: transparent; stroke: #fff; stroke-width: 6px" d="M 0,173.2 l 100,0 l -100,-173.2 l -100,173.2 z"/>
+      <path stroke-dasharray='2.5,5,4.5,0' style="fill: transparent; stroke: #fff; stroke-width: 8px" d="M 0,173.2 l 100,0 l -100,-173.2 l -100,173.2 z"/>
     </g>
     <g id="down-tri-5">
-      <path stroke-dasharray='7,5' style="fill: transparent; stroke: #fff; stroke-width: 6px" d="M 0,173.2 l 100,-173.2 l -200,0 z"/>
+      <path stroke-dasharray='7,5' style="fill: transparent; stroke: #fff; stroke-width: 8px" d="M 0,173.2 l 100,-173.2 l -200,0 z"/>
     </g>
   </defs>
   <rect x="0" y="0" width="1100" height="694" fill="red"/>
@@ -49,27 +57,27 @@
   @textpathstyle = @makeStyle({'fill': 'red'});
   @minorList = [0, 4, 7, 11];
   @majorList = [0, 3, 7, 10];
-  @minorOffset = 105;
-  @majorOffset = 115;
+  @minorOffset = 102;
+  @majorOffset = 112;
   @pcColors = "#00c #a4f #f0f #a16 #e02 #f91 #c81 #094 #161 #077 #0bb #28f".split(' ');
   @colorIndex = [2, 7, 0, 5, 10, 3, 8, 1, 6,  11, 4, 9];
   <!-- this is sort of the only argument ... could be appended by other program to generate multiple .svg files, then .png, etc.
        from -10 (10 sharps) to 10 (10 flats), 0 = key of C (no sharps or flats) -->
-  @keyIndex = -4;
+  @keyIndex = -10;
   <For from="0" upTo="3">{j =>
     <For from="0" upTo="6">
       {i => <use xlink:href="#up-tri"   transform={@translate(i*200 + ((j+1)%2)*100, 173.2*j)}/>}
       {i => <use xlink:href="#down-tri" transform={@translate(i*200 + ((j+0)%2)*100, 173.2*j)}/>}
-      {i => <TextPath x={200*i + ((j+0)%2)*100} y={@minorOffset + 172.3*j}
-        font-id="FiraSansCondensed-Book"
+      {i => ((txt => <TextPath x={200*i + ((j+0)%2)*100} y={@minorOffset + 172.3*j}
+        font-id={txt.length === 1 ? "FiraSans-Book" : "FiraSansCondensed-Book"}
         text-anchor="middle" style={@bgtextstyle}>
-        {@texts[i + @keyIndex + 16 +  @minorList[j]].toLowerCase()}
-      </TextPath>}
-      {i => <TextPath x={200*i + ((j+1)%2)*100} y={@majorOffset + 172.3*j}
-        font-id="FiraSansCondensed-Book"
+        {txt}
+      </TextPath>)( @texts[i + @keyIndex + 16 +  @minorList[j]].toLowerCase()) ) }
+      {i => ((txt => <TextPath x={200*i + ((j+1)%2)*100} y={@majorOffset + 172.3*j}
+        font-id={txt.length === 1 ? "FiraSans-Book" : "FiraSansCondensed-Book"}
         text-anchor="middle" style={@bgtextstyle}>
-        {@texts[i + @keyIndex + 20 +  @majorList[j]]}
-      </TextPath>}
+        {txt}
+      </TextPath>)( @texts[i + @keyIndex + 20 +  @majorList[j]]) ) }
     </For>
   }</For>
   @refs = "#down-tri-2 #up-tri-2 #down-tri-3 #up-tri-3 #down-tri-4 #up-tri-4 #down-tri-5 #up-tri-5".split(' ');
@@ -85,16 +93,16 @@
     {ix => (((z,i,j) => <use xlink:href={@refs[z]} transform={@translate(i*200 + ((j+z)%2)*100, 173.2*j)}/>)(@triples[ix][0], @triples[ix][1], @triples[ix][2]))}
     {ix => (((z,i,j) =>
       ((z+1)%2 ?
-        <TextPath font-id="FiraSansCondensed-Book"
+        (txt => <TextPath font-id={txt.length === 1 ? "FiraSans-Book" : "FiraSansCondensed-Book"}
           x={200*i + ((j+z)%2)*100} y={@minorOffset + 172.3*j} text-anchor="middle" style={@fgtextstyle}>
-          {@texts[i + @keyIndex + 16 +  @minorList[j]].toLowerCase()}
-        </TextPath> :
-        <TextPath font-id="FiraSansCondensed-Book" x={200*i + ((j+z)%2)*100} y={@majorOffset + 172.3*j}
+          {txt}
+        </TextPath>)( @texts[i + @keyIndex + 16 +  @minorList[j]].toLowerCase() ) :
+        (txt => <TextPath font-id={txt.length === 1 ? "FiraSans-Book" : "FiraSansCondensed-Book"} x={200*i + ((j+z)%2)*100} y={@majorOffset + 172.3*j}
           text-anchor="middle" style={@fgtextstyle}>
-          {@texts[i + @keyIndex + 20 +  @majorList[j]]}
-        </TextPath>)
+          {txt}
+        </TextPath>)( @texts[i + @keyIndex + 20 +  @majorList[j]] ))
       )(@triples[ix][0], @triples[ix][1], @triples[ix][2]))}
-    {ix => (((z,i,j,txt) => <TextPath x={200*i + ((j+z)%2)*100} y={((z+1)%2 ? 47 : 161) + 172.3*j} text-anchor="middle" letter-spacing={txt.toUpperCase() == txt ? "-0.07em" : "0"} font-id="Charter"
+    {ix => (((z,i,j,txt) => <TextPath x={200*i + ((j+z)%2)*100} y={((z+1)%2 ? 44 : 158) + 172.3*j} text-anchor="middle" letter-spacing={txt.toUpperCase() === txt ? "-0.07em" : "0"} font-id="Charter"
     style={@makeStyle(@with(@romantextstyle, 'fill', @pcColors[ @colorIndex[
       (z+1)%2 ? 
         (i + @keyIndex + 16 + @minorList[j])%12 :

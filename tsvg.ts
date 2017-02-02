@@ -16,15 +16,37 @@ const regexDefine = new RegExp(`(@[a-zA-Z0-9_\-]+)[ ]*=[ ]*([^;]+);`, "g"); // t
 var infilecontents = fs.readFileSync(infilename) + "";
 
 var fonts: any = {};
+var pathsSeen = {};
 // single and double quotes
-const regexFont = [new RegExp(`\<Font path\="([^"]*)\".*\/\>`, 'g'), new RegExp(`\<Font path\='([^']*)'.*\/\>`, 'g')];
+const regexFont = [new RegExp(`\<Font path\="([^"]*)\".*\/\>`, 'g'),
+                   new RegExp(`\<Font path\='([^']*)'.*\/\>`, 'g'),
+                   // this is such a hack since the order matters and both must use either single or double quotes. Oops
+                   new RegExp(`\<Font white-list-chars\="([^"]*)" path\="([^"]*)".*\/\>`, 'g'),
+                   new RegExp(`\<Font white-list-chars\='([^']*)' path\='([^']*)'.*\/\>`, 'g')];
 function getFontDefinitions(input, fonts) {
   regexFont.forEach(reg => {
     var match = null;
     while ((match = reg.exec(input)) !== null) {
-      var full = match[0];
-      var path = match[1];
-      FontSVG.Load(fonts, path);
+      if (match.length === 3) {
+        var full = match[0];
+        var whitelist = match[1];
+        var path = match[2];
+        //console.error('match:', full);
+        if (pathsSeen.hasOwnProperty(path)) {
+          continue; // don't load font twice
+        }
+        pathsSeen[path] = true;
+        FontSVG.Load(fonts, path, whitelist);
+      } else if (match.length === 2) {
+        var full = match[0];
+        var path = match[1];
+        //console.error('match:', full);
+        if (pathsSeen.hasOwnProperty(path)) {
+          continue; // don't load font twice
+        }
+        pathsSeen[path] = true;
+        FontSVG.Load(fonts, path, whitelist);
+      }
     }
   });
 }
