@@ -55,7 +55,7 @@
   @colorIndex = [2, 7, 0, 5, 10, 3, 8, 1, 6,  11, 4, 9];
   <!-- this is sort of the only argument ... could be appended by other program to generate multiple .svg files, then .png, etc.
        from -10 (10 sharps) to 10 (10 flats), 0 = key of C (no sharps or flats) -->
-  @keyIndex = 0;
+  @keyIndex = -4;
   <For from="0" upTo="3">{j =>
     <For from="0" upTo="6">
       {i => <use xlink:href="#up-tri"   transform={@translate(i*200 + ((j+1)%2)*100, 173.2*j)}/>}
@@ -102,5 +102,7 @@
       {@unescapeSharpsFlatsNats(txt)}
     </TextPath>)(@triples[ix][0], @triples[ix][1], @triples[ix][2], @triples[ix][3]))}
   </For>
+
+  <!--TextPath font-id="FiraSansCondensed-Book" x="0" y="-200" font-size="600" style="fill: red">𝄪</TextPath-->
 
 </svg>

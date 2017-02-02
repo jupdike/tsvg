@@ -5,17 +5,17 @@
   <TextPath font-id="HelveticaNeue"
     x="550" y="300"
     font-size="100"
-    letter-spacing="1ex"
+    letter-spacing="0"
     text-anchor="middle"
     style="fill: orange">
-    Hello World
+    Hello World fi
   </TextPath>
 
   <text
   fill="transparent" stroke="black" stroke-width="1px" text-anchor="middle"
   font-family="Helvetica Neue"
-  letter-spacing="1ex"
+  letter-spacing="0"
   font-size="100"
-  x="550" y="300">Hello World</text>
+  x="550" y="300">Hello World fi</text>
 
 </svg>

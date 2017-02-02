@@ -416,7 +416,22 @@ class TextPath {
       for (var ix = 0; ix < s.length; ix++) {
         var ch = s.charAt(ix); // TODO ? use EasySVG approach to pull out unicode from utf8 string
         var ch1 = ix < s.length - 1 ? ch1 = s.charAt(ix+1) : ''; // for kerning
-        TextPath.advanceByGlyph(font, params, lastX, lastY, ch, ch1, useGlyph);
+        var ch2 = ix < s.length - 2 ? ch2 = s.charAt(ix+2) : ''; // could be a ligature or UTF
+        if (params.letterSpacing == 0 &&
+          ix < s.length - 2 && font.glyphs[ch+ch1]) { // if ligature or 'wide' unicode character exists -- don't use ligature if letter-spacing set to something interesting :-)
+          console.error('found '+ch+ch1);
+          TextPath.advanceByGlyph(font, params, lastX, lastY, ch+ch1, ch2, useGlyph);
+          ix++; // extra++
+        }
+        if (params.letterSpacing == 0 &&
+          ix < s.length - 1 && font.glyphs[ch+ch1]) { // if ligature or 'wide' unicode character exists -- don't use ligature if letter-spacing set to something interesting :-)
+          console.error('found '+ch+ch1);
+          TextPath.advanceByGlyph(font, params, lastX, lastY, ch+ch1, '', useGlyph);
+          ix++; // extra++
+        }
+        else {
+          TextPath.advanceByGlyph(font, params, lastX, lastY, ch, ch1, useGlyph);
+        }
       }
     });
   }
