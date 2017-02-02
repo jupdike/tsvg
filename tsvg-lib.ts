@@ -496,7 +496,7 @@ class TextPath {
     //console.error(def);
     return (def.match(TextPath.MzZzZRegex) || [])
               .map(shape => TextPath.DefApplyMatrix_OneShape(shape, matrix))
-              .join(' ');
+              .join(' ').trim();
   }
   static MzZzZRegex = new RegExp('M[^zZ]*[zZ]', 'g');
   static AzAZazAZRegex = new RegExp('[a-zA-Z]+[^a-zA-Z]*', 'g');
