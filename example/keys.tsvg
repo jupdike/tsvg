@@ -9,10 +9,10 @@
   <defs>
   
     <Font white-list-chars="abcdefgABCDEFG𝄪𝄫♭♯" path="/Users/jupdike/Downloads/fira-sans-condensed/enhanced-firasanscondensed-book.svg"/>
-    <!--Font white-list-chars="-abcdefgABCDEFG" path="/Users/jupdike/Downloads/fira-sans/FiraSans-Book.svg"/-->
+    <Font white-list-chars="-abcdefgABCDEFG" path="/Users/jupdike/Downloads/fira-sans/FiraSans-Book.svg"/>
     <Font white-list-chars="IViv/°♭♯" path="/Users/jupdike/Downloads/charter/ttf/Enhanced-CharterRegular.svg"/>
 
-    @normal = "FiraSansCondensed-Book";
+    @normal = "FiraSans-Book";
     @narrow = "FiraSansCondensed-Book";
 
     <g id="up-tri">
@@ -119,6 +119,6 @@
       [7,4,8,3], [8,3,10,3], [10,3,9,2], [9,2,10,1], [10,1,8,1], [8,1,9,0] ]
        .map(quad => [quad[0]*100, quad[1]*173.2, quad[2]*100, quad[3]*173.2]) )}
 
-  <!--TextPath font-id="FiraSansCondensed-Book" x="0" y="-200" font-size="600" style="fill: red">𝄪</TextPath-->
+  <!--TextPath font-id="FiraSansCondensed-Book" x="0" y="70" font-size="460" style="fill: red">𝄫</TextPath-->
 
 </svg>
