@@ -105,7 +105,7 @@ function processOneInfile(infilename) {
   //  TODO? also remove newlines from within attribute strings, since SVG allows this,
   //  but JSX does not
 
-  var argy = {};
+  const argy = {};
   if (options.arg) {
     options.arg.forEach(s => {
       const ps = s.split(':');
@@ -116,7 +116,8 @@ function processOneInfile(infilename) {
       }
     });
   }
-  var loggy = options.quiet ? '' : `console.log(TSVG.Templates['${inkey}'](${JSON.stringify(argy, null, 2)}).render());`
+  const loggy = options.quiet ? '' : `console.log(TSVG.Templates['${inkey}'](${JSON.stringify(argy, null, 2)}).render());`
+  const windy = options.window ? `window['TSVG'] = TSVG;` : '';
 
   var result = `
 ${pre}
@@ -146,6 +147,7 @@ bind(that, function() {
 })(); // protect that->this prepper from infecting global namespace
 
 ${loggy}
+${windy}
 
 })(); // protect TSVG, React, etc. from infecting global namespace
 `;
