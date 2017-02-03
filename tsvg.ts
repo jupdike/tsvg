@@ -89,11 +89,16 @@ infilecontents = infilecontents.replace(/@/g, 'this.');
 //  TODO? also remove newlines from within attribute strings, since SVG allows this,
 //  but JSX does not
 
+var loggy = `console.log(TSVG.Templates['${inkey}']({}).render());`
+// TODO if option for no log,  loggy = '';
+
 var result = `
 ${pre}
-(function() {
+(function() { // protect TSVG lib + React, TextPath, For, Font, etc. from infecting global
 
 ${lib}
+
+(function() { // protect that->this prepper from infecting global namespace
 
 var that2: any = {};
 // allow @xyz = rhs; for rhs to use TSVG.Helpers!
@@ -102,12 +107,21 @@ ${valStr};
 
 bind(that, function() {
   TSVG.Fonts = ${JSON.stringify(fonts, null, 2).replace(/ \-/g, '-')};
-  TSVG.Templates['${inkey}'] = ${infilecontents}
+  TSVG.Templates['${inkey}'] = (arg) => {
+    if (arg) { // optionally augment or overwrite fields in 'this' (e.g. @xyz = this.xyz)
+      for (let k in arg) {
+        this[k] = arg[k];
+      }
+    }
+    return ${infilecontents}
+  };
 })();
 
-console.log(TSVG.Templates['${inkey}'].render());
+})(); // protect that->this prepper from infecting global namespace
 
-})();
+${loggy}
+
+})(); // protect TSVG, React, etc. from infecting global namespace
 `;
 
 // the stringify(..).replace(.., ..) code above removes unnecessary spaces before hyphens (minus signs) to save ~3% file size on some fonts
