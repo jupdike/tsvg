@@ -1,28 +1,33 @@
-if (process.argv.length < 3 || process.argv[2].indexOf('.tsvg') < 0) {
+if (process.argv.length < 3) { // || process.argv[2].indexOf('.tsvg') < 0) {
     console.error(`Expected\n\t${process.argv[1]} infile.tsvg`);
     process.exit(1);
 }
+
+const commandLineArgs = require('command-line-args');
+const optionDefinitions = [
+  { name: 'quiet', alias: 'q', type: Boolean }, // do not call console.log(TSVG.Templates[<mine>]().render());
+  { name: 'src', type: String, multiple: true, defaultOption: true },
+  { name: 'arg', alias: 'a', multiple:true, type: String }, // --arg k:v
+  { name: 'window', alias: 'w', type: Boolean }, // generate code:   window.TSVG = TSVG;
+  { name: 'jshelper', alias: 'j', type: String } // a helper file (.js or .ts) that gets prepended
+];
+const options = commandLineArgs(optionDefinitions);
+console.error('FOUND THESE OPTIONS:', options);
+
+// TODO major -- remove reliance on tsvg.sh so this script (./tsvg.js or just node tsvg.js mapped to tsvg executable)
+//               can stand on its own, compile multiple files, allow optional -o = --output, etc.
+
 const fs = require('fs');
 import {FontSVG} from './FontSVG';
-
-var infilename = process.argv[2];
-var inkey = infilename.replace(".tsvg", "");
-
-var pre = fs.readFileSync('prepend.ts'); // TODO use the right path
-var lib = fs.readFileSync('tsvg-lib.ts');
-
-const regexDefine = new RegExp(`(@[a-zA-Z0-9_\-]+)[ ]*=[ ]*([^;]+);`, "g"); // this should be smarter and account for semicolons inside strings
-
-var infilecontents = fs.readFileSync(infilename) + "";
 
 var fonts: any = {};
 var pathsSeen = {};
 // single and double quotes
 const regexFont = [new RegExp(`\<Font path\="([^"]*)\".*\/\>`, 'g'),
-                   new RegExp(`\<Font path\='([^']*)'.*\/\>`, 'g'),
-                   // this is such a hack since the order matters and both must use either single or double quotes. Oops
-                   new RegExp(`\<Font white-list-chars\="([^"]*)" path\="([^"]*)".*\/\>`, 'g'),
-                   new RegExp(`\<Font white-list-chars\='([^']*)' path\='([^']*)'.*\/\>`, 'g')];
+                  new RegExp(`\<Font path\='([^']*)'.*\/\>`, 'g'),
+                  // this is such a hack since the order matters and both must use either single or double quotes. Oops
+                  new RegExp(`\<Font white-list-chars\="([^"]*)" path\="([^"]*)".*\/\>`, 'g'),
+                  new RegExp(`\<Font white-list-chars\='([^']*)' path\='([^']*)'.*\/\>`, 'g')];
 function getFontDefinitions(input, fonts) {
   regexFont.forEach(reg => {
     var match = null;
@@ -50,49 +55,70 @@ function getFontDefinitions(input, fonts) {
     }
   });
 }
-getFontDefinitions(infilecontents, fonts);
 
-// returns a copy of the input string with template stuff pulled out
-// and key values pairs added to vals
-function getGlobals(input, vals) {
-  var match;
-  var copyInput = input;
-  while ((match = regexDefine.exec(input)) !== null) {
-    var full = match[0];
-    var lhs = match[1];
-    var rhs = match[2].replace(/@/g, 'that.');
-    var k = lhs.replace('@','');
-    copyInput = copyInput.replace(full, '');
-    vals[k] = rhs; // possibly overwrite previous value
+function processOneInfile(infilename) {
+  var inkey = infilename.replace(".tsvg", "");
+
+  var pre = fs.readFileSync('prepend.ts'); // TODO use the right path
+  var lib = fs.readFileSync('tsvg-lib.ts');
+
+  const regexDefine = new RegExp(`(@[a-zA-Z0-9_\-]+)[ ]*=[ ]*([^;]+);`, "g"); // this should be smarter and account for semicolons inside strings
+
+  var infilecontents = fs.readFileSync(infilename) + "";
+
+  getFontDefinitions(infilecontents, fonts);
+
+  // returns a copy of the input string with template stuff pulled out
+  // and key values pairs added to vals
+  function getGlobals(input, vals) {
+    var match;
+    var copyInput = input;
+    while ((match = regexDefine.exec(input)) !== null) {
+      var full = match[0];
+      var lhs = match[1];
+      var rhs = match[2].replace(/@/g, 'that.');
+      var k = lhs.replace('@','');
+      copyInput = copyInput.replace(full, '');
+      vals[k] = rhs; // possibly overwrite previous value
+    }
+    return copyInput;
   }
-  return copyInput;
-}
 
-var kvs = {};
-infilecontents = getGlobals(infilecontents, kvs);
-var valbits = [];
-for (let prop in kvs) {
-  valbits.push('that["' + prop + '"] = ' + kvs[prop] + ';');
-}
-var valStr = valbits.join('\n');
+  var kvs = {};
+  infilecontents = getGlobals(infilecontents, kvs);
+  var valbits = [];
+  for (let prop in kvs) {
+    valbits.push('that["' + prop + '"] = ' + kvs[prop] + ';');
+  }
+  var valStr = valbits.join('\n');
 
-// fix for certain XML v. JSX 'problems' in infilecontents, like these:
-infilecontents = infilecontents.replace(/xmlns:/g, 'xmlns_');
-infilecontents = infilecontents.replace(/xlink:/g, 'xlink_');
-infilecontents = infilecontents.replace(/\<\!\-\-/g, '{/*');
-infilecontents = infilecontents.replace(/\-\-\>/g, '*/}');
+  // fix for certain XML v. JSX 'problems' in infilecontents, like these:
+  infilecontents = infilecontents.replace(/xmlns:/g, 'xmlns_');
+  infilecontents = infilecontents.replace(/xlink:/g, 'xlink_');
+  infilecontents = infilecontents.replace(/\<\!\-\-/g, '{/*');
+  infilecontents = infilecontents.replace(/\-\-\>/g, '*/}');
 
-infilecontents = infilecontents.replace(/@/g, 'this.');
+  infilecontents = infilecontents.replace(/@/g, 'this.');
 
-// TODO try    {"<!--   and  -->"}  to make it pass through...  (DOESN'T WORK since we have to count / escape quotes correctly...) NEEDS > REGEX
-//
-//  TODO? also remove newlines from within attribute strings, since SVG allows this,
-//  but JSX does not
+  // TODO try    {"<!--   and  -->"}  to make it pass through...  (DOESN'T WORK since we have to count / escape quotes correctly...) NEEDS > REGEX
+  //
+  //  TODO? also remove newlines from within attribute strings, since SVG allows this,
+  //  but JSX does not
 
-var loggy = `console.log(TSVG.Templates['${inkey}']({}).render());`
-// TODO if option for no log,  loggy = '';
+  var argy = {};
+  if (options.arg) {
+    options.arg.forEach(s => {
+      const ps = s.split(':');
+      if (ps.length >= 2) {
+        const k = ps[0];
+        const v = ps[1];
+        argy[k] = v;
+      }
+    });
+  }
+  var loggy = options.quiet ? '' : `console.log(TSVG.Templates['${inkey}'](${JSON.stringify(argy, null, 2)}).render());`
 
-var result = `
+  var result = `
 ${pre}
 (function() { // protect TSVG lib + React, TextPath, For, Font, etc. from infecting global
 
@@ -124,7 +150,12 @@ ${loggy}
 })(); // protect TSVG, React, etc. from infecting global namespace
 `;
 
-// the stringify(..).replace(.., ..) code above removes unnecessary spaces before hyphens (minus signs) to save ~3% file size on some fonts
+  // the stringify(..).replace(.., ..) code above removes unnecessary spaces before hyphens (minus signs) to save ~3% file size on some fonts
 
-var outfilename = inkey + ".tsx";
-fs.writeFileSync(outfilename, result);
+  var outfilename = inkey + ".tsx";
+  fs.writeFileSync(outfilename, result);
+}
+var infilename = process.argv[2];
+options.src.forEach(infilename => {
+  processOneInfile(infilename);
+});

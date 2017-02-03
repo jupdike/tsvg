@@ -1,4 +1,4 @@
-<svg id="kb-svg-horiz" class="kb-bottom" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="1100" height="696" viewBox="0 -1 1100 695">
+<svg id="todo1" class="todo2" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="1100" height="696" viewBox="0 -1 1100 695">
   <!-- was 1100 x 694
        must make it 1100 x 1100 to run this:
          qlmanage -t -s 1100 -o . keys.svg 2> /dev/null
@@ -75,12 +75,12 @@
         font-id={txt.length === 1 ? @normal : @narrow}
         text-anchor="middle" style={@bgtextstyle}>
         {txt}
-      </TextPath>)( @texts[i + @keyIndex + 16 +  @minorList[j]].toLowerCase()) ) }
+      </TextPath>)( @texts[i + (+(@keyIndex)) + 16 +  @minorList[j]].toLowerCase()) ) }
       {i => ((txt => <TextPath x={200*i + ((j+1)%2)*100} y={@majorOffset + 173.2*j}
         font-id={txt.length === 1 ? @normal : @narrow}
         text-anchor="middle" style={@bgtextstyle}>
         {txt}
-      </TextPath>)( @texts[i + @keyIndex + 20 +  @majorList[j]]) ) }
+      </TextPath>)( @texts[i + (+(@keyIndex)) + 20 +  @majorList[j]]) ) }
     </For>
   }</For>
   @refs = "#down-tri-2 #up-tri-2 #down-tri-3 #up-tri-3 #down-tri-4 #up-tri-4 #down-tri-5 #up-tri-5".split(' ');
@@ -99,17 +99,17 @@
         (txt => <TextPath font-id={txt.length === 1 ? @normal : @narrow}
           x={200*i + ((j+z)%2)*100} y={@minorOffset + 173.2*j} text-anchor="middle" style={@fgtextstyle}>
           {txt}
-        </TextPath>)( @texts[i + @keyIndex + 16 +  @minorList[j]].toLowerCase() ) :
+        </TextPath>)( @texts[i + (+(@keyIndex)) + 16 +  @minorList[j]].toLowerCase() ) :
         (txt => <TextPath font-id={txt.length === 1 ? @normal : @narrow} x={200*i + ((j+z)%2)*100} y={@majorOffset + 173.2*j}
           text-anchor="middle" style={@fgtextstyle}>
           {txt}
-        </TextPath>)( @texts[i + @keyIndex + 20 +  @majorList[j]] ))
+        </TextPath>)( @texts[i + (+(@keyIndex)) + 20 +  @majorList[j]] ))
       )(@triples[ix][0], @triples[ix][1], @triples[ix][2]))}
     {ix => (((z,i,j,txt) => <TextPath x={200*i + ((j+z)%2)*100} y={((z+1)%2 ? 44 : 158) + 173.2*j} text-anchor="middle" letter-spacing={txt.toUpperCase() === txt ? "-0.07em" : "0"} font-id="Charter"
     style={@makeStyle(@with(@romantextstyle, 'fill', @pcColors[ @colorIndex[
       (z+1)%2 ? 
-        (i + @keyIndex + 16 + @minorList[j])%12 :
-        (i + @keyIndex + 20 + @majorList[j])%12 ] ]))}>
+        (i + (+(@keyIndex)) + 16 + @minorList[j])%12 :
+        (i + (+(@keyIndex)) + 20 + @majorList[j])%12 ] ]))}>
       {@unescapeSharpsFlatsNats(txt)}
     </TextPath>)(@triples[ix][0], @triples[ix][1], @triples[ix][2], @triples[ix][3]))}
   </For>

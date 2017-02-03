@@ -9,5 +9,5 @@ if [ -z "$1" ]; then
     exit 1
 fi
 one=`echo $1 | sed s/[.]tsvg//`
-tsc --sourceMap tsvg.ts tsvg-lib.ts prepend.ts && node tsvg.js $one.tsvg
+tsc --sourceMap tsvg.ts tsvg-lib.ts prepend.ts && node tsvg.js $@
 tsc --sourceMap --jsx react $one.tsx && node $one.js > $one.svg
