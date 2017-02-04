@@ -50,9 +50,9 @@
   <rect x="0" y="0" width="1100" height="694" fill="red"/>
 
   @beadgcf = "B E A D G C F".split(' ');
-  @myzip = (ch) => @beadgcf.map(x => x + @unescapeSharpsFlatsNats(ch));
+  @myzip = (ch) => @beadgcf.map(x => x + ch);
   @hyphens = "- - - - - - -".split(' ');
-  @texts = @flatten([@hyphens, @myzip('\\#\\#'), @myzip('\\#'), @myzip(''), @myzip('\\b'), @myzip('\\b\\b'), @hyphens]);
+  @texts = @flatten([@hyphens, @myzip('𝄪'), @myzip('♯'), @myzip(''), @myzip('♭'), @myzip('𝄫'), @hyphens]);
   @bgtextstyle = @makeStyle({'fill': '#999', 'font-family': "'Helevtica Neue', Arial, sans-serif", 'font-size': '55px'});
   @fgtextstyle = @makeStyle({'fill': '#222', 'font-family': "'Helevtica Neue', Arial, sans-serif", 'font-size': '55px'});
   @romantextstyle = {'fill': 'red', 'font-family': "Georgia, 'Times New Roman', serif", 'font-size': '35px'};
@@ -110,7 +110,7 @@
       (z+1)%2 ? 
         (i + (+(@keyIndex)) + 16 + @minorList[j])%12 :
         (i + (+(@keyIndex)) + 20 + @majorList[j])%12 ] ]))}>
-      {@unescapeSharpsFlatsNats(txt)}
+      {txt}
     </TextPath>)(@triples[ix][0], @triples[ix][1], @triples[ix][2], @triples[ix][3]))}
   </For>
 

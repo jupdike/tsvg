@@ -18,21 +18,7 @@ class TSVG {
 
   public static Fonts: any = {};
 
-  // hack! -- TSVG needs a way to supply helper methods in user code from an external file (outside of TSVG file itself)
-  public static unescapeSharpsFlatsNats(s) {
-    s = s.replace(/\\#\\#/gi, '𝄪'); // double sharp
-    s = s.replace(/\\b\\b/gi, '𝄫'); // double flat
-    s = s.replace(/\\b/gi, '♭'); // \b = \ then b characters
-    s = s.replace(/\\n/gi, '♮');  // not newline, but actual \ and then n characters
-    s = s.replace(/\\#/gi, '♯'); // \# = \ then # symbol
-    s = s.replace(/\\o/gi, '°'); // \o = \ then o character
-    return s;
-  }
-
   public static Helpers = {
-    //hack
-    unescapeSharpsFlatsNats: TSVG.unescapeSharpsFlatsNats,
-
     with: TSVG.with,
     closedPolyPath: TSVG.closedPolyPath,
     translate: TSVG.translate,

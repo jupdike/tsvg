@@ -8,8 +8,8 @@ const optionDefinitions = [
   { name: 'quiet', alias: 'q', type: Boolean }, // do not call console.log(TSVG.Templates[<mine>]().render());
   { name: 'src', type: String, multiple: true, defaultOption: true },
   { name: 'arg', alias: 'a', multiple:true, type: String }, // --arg k:v
-  { name: 'global', alias: 'g', type: String }, // generate code:   window['TSVG'] = TSVG;
-  { name: 'jshelper', alias: 'j', type: String } // a helper file (.js or .ts) that gets prepended
+  { name: 'global', alias: 'g', type: String } // generate code:   window['TSVG'] = TSVG;
+  //{ name: 'jshelper', alias: 'j', type: String } // a helper file (.js or .ts) that gets prepended
 ];
 const options = commandLineArgs(optionDefinitions);
 console.error('FOUND THESE OPTIONS:', options);
