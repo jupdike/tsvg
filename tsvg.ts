@@ -8,7 +8,7 @@ const optionDefinitions = [
   { name: 'quiet', alias: 'q', type: Boolean }, // do not call console.log(TSVG.Templates[<mine>]().render());
   { name: 'src', type: String, multiple: true, defaultOption: true },
   { name: 'arg', alias: 'a', multiple:true, type: String }, // --arg k:v
-  { name: 'window', alias: 'w', type: Boolean }, // generate code:   window.TSVG = TSVG;
+  { name: 'global', alias: 'g', type: String }, // generate code:   window['TSVG'] = TSVG;
   { name: 'jshelper', alias: 'j', type: String } // a helper file (.js or .ts) that gets prepended
 ];
 const options = commandLineArgs(optionDefinitions);
@@ -117,7 +117,7 @@ function processOneInfile(infilename) {
     });
   }
   const loggy = options.quiet ? '' : `console.log(TSVG.Templates['${inkey}'](${JSON.stringify(argy, null, 2)}).render());`
-  const windy = options.window ? `window['TSVG'] = TSVG;` : '';
+  const global = options.global ? `${options.global}['TSVG'] = TSVG;` : '';
 
   var result = `
 ${pre}
@@ -147,7 +147,7 @@ bind(that, function() {
 })(); // protect that->this prepper from infecting global namespace
 
 ${loggy}
-${windy}
+${global}
 
 })(); // protect TSVG, React, etc. from infecting global namespace
 `;
