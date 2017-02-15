@@ -1,4 +1,4 @@
-<svg id="todo1" class="todo2" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="1100" height="696" viewBox="0 -1 1100 695">
+<svg id="todo1" class="todo2" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width={@makeWidth(@height)} height={@height} viewBox="-100 -1 1300 695">
   <!-- was 1100 x 694
        must make it 1100 x 1100 to run this:
          qlmanage -t -s 1100 -o . keys.svg 2> /dev/null
@@ -11,6 +11,9 @@
     <Font white-list-chars="abcdefgABCDEFG𝄪𝄫♭♯" path="/Users/jupdike/Downloads/fira-sans-condensed/enhanced-firasanscondensed-book.svg"/>
     <Font white-list-chars="-abcdefgABCDEFG" path="/Users/jupdike/Downloads/fira-sans/FiraSans-Book.svg"/>
     <Font white-list-chars="IViv/°♭♯" path="/Users/jupdike/Downloads/charter/ttf/Enhanced-CharterRegular.svg"/>
+
+    @height = 480;
+    @makeWidth = (height) => 1400 * height / 694;
 
     @normal = "FiraSans-Book";
     @narrow = "FiraSansCondensed-Book";
@@ -47,7 +50,7 @@
       <path stroke-dasharray='7,5' style="fill: transparent; stroke: #fff; stroke-linejoin: round; stroke-width: 8px" d="M 0,173.2 l 100,-173.2 l -200,0 z"/>
     </g>
   </defs>
-  <rect x="0" y="0" width="1100" height="694" fill="red"/>
+  <!--rect x="0" y="0" width=width height=height fill="red"/-->
 
   @beadgcf = "B E A D G C F".split(' ');
   @myzip = (ch) => @beadgcf.map(x => x + ch);
@@ -64,11 +67,10 @@
   @majorOffset = 112;
   @pcColors = "#00c #a4f #f0f #a16 #e02 #f91 #c81 #094 #161 #077 #0bb #28f".split(' ');
   @colorIndex = [2, 7, 0, 5, 10, 3, 8, 1, 6,  11, 4, 9];
-  <!-- this is sort of the only argument ... could be appended by other program to generate multiple .svg files, then .png, etc.
-       from -10 (10 sharps) to 10 (10 flats), 0 = key of C (no sharps or flats) -->
+  <!-- this is sort of the only argument, from -11 (11 sharps) to 11 (11 flats), 0 = key of C (no sharps or flats) -->
   @keyIndex = 0;
   <For from="0" upTo="3">{j =>
-    <For from="0" upTo="6">
+    <For from="-1" upTo="6">
       {i => <use xlink:href="#up-tri"   transform={@translate(i*200 + ((j+1)%2)*100, 173.2*j)}/>}
       {i => <use xlink:href="#down-tri" transform={@translate(i*200 + ((j+0)%2)*100, 173.2*j)}/>}
       {i => ((txt => <TextPath x={200*i + ((j+0)%2)*100} y={@minorOffset + 173.2*j}
