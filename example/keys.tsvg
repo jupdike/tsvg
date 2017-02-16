@@ -1,4 +1,4 @@
-<svg id="todo1" class="todo2" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width={@makeWidth(@height)} height={@height} viewBox="-100 -1 1300 695">
+<svg id="todo1" class="todo2" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width={@makeWidth(+(@height))} height={@height} viewBox="-100 -1 1300 695">
   <!-- was 1100 x 694
        must make it 1100 x 1100 to run this:
          qlmanage -t -s 1100 -o . keys.svg 2> /dev/null
@@ -10,6 +10,7 @@
   
     <Font white-list-chars="abcdefgABCDEFG𝄪𝄫♭♯" path="/Users/jupdike/Downloads/fira-sans-condensed/enhanced-firasanscondensed-book.svg"/>
     <Font white-list-chars="-abcdefgABCDEFG" path="/Users/jupdike/Downloads/fira-sans/FiraSans-Book.svg"/>
+    <!-- actually used VI/ from Charter Bold, and b# from Helvetica Neue, and iv° from FF Meta Bold -->
     <Font white-list-chars="IViv/°♭♯" path="/Users/jupdike/Downloads/charter/ttf/Enhanced-CharterRegular.svg"/>
 
     @height = 480;
