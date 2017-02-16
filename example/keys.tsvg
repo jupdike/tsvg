@@ -107,7 +107,7 @@
           {txt}
         </TextPath>)( @texts[i + (+(@keyIndex)) + 20 +  @majorList[j]] ))
       )(@triples[ix][0], @triples[ix][1], @triples[ix][2]))}
-    {ix => (((z,i,j,txt) => <TextPath x={200*i + ((j+z)%2)*100} y={((z+1)%2 ? 44 : 158) + 173.2*j} text-anchor="middle" letter-spacing={txt.toUpperCase() === txt ? "-0.07em" : "0"} font-id="Charter"
+    {ix => (((z,i,j,txt) => <TextPath x={200*i + ((j+z)%2)*100} y={((z+1)%2 ? 44 : 158) + 173.2*j} text-anchor="middle" letter-spacing={txt.toUpperCase() === txt ? "0" : "0"} font-id="Charter"
     style={@makeStyle(@with(@romantextstyle, 'fill', @pcColors[ @colorIndex[
       (z+1)%2 ? 
         (i + (+(@keyIndex)) + 16 + @minorList[j])%12 :
