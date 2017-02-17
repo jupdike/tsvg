@@ -259,7 +259,8 @@ class TextPath {
   // "1in" equals "90px" (and therefore 90 user units)
   // NOTE: em is based on the font and font size
   public static makePixels(str: string, em: number, ex: number): number {
-    const strPartAsDouble: number = +((''+str).match(TextPath.NumberRegex));
+    str = "" + str; // force it to be a string if it is a number
+    const strPartAsDouble: number = +(str.match(TextPath.NumberRegex));
     const otherPart = str.replace(TextPath.NumberRegex, '').toLowerCase().trim();
     var scale = 1.0; // 'px' or other unknown duded
     if (otherPart === 'pt') {
