@@ -3,6 +3,7 @@ if (process.argv.length < 3) { // || process.argv[2].indexOf('.tsvg') < 0) {
     process.exit(1);
 }
 
+const path = require('path');
 const execFile = require('child_process').execFile;
 const commandLineArgs = require('command-line-args');
 const optionDefinitions = [
@@ -77,7 +78,9 @@ function getGlobals(input, vals) {
 }
 
 function prepOneInfile(infilename) {
-  var inkey = infilename.replace(".tsvg", "");
+  var parts = path.parse(infilename);
+  var inkey = parts.base.replace(parts.ext, "");
+
   var infilecontents = fs.readFileSync(infilename) + "";
 
   getFontDefinitions(infilecontents, fonts); // they all get added into one big dictionary of all the objects
@@ -128,8 +131,7 @@ bind(that, function() {
   return meat;
 }
 
-function wrapMeat(infilename, meat) {
-  var inkey = infilename.replace(".tsvg", "");
+function wrapMeat(inkey, meat) {
   var pre = fs.readFileSync('prepend.ts'); // TODO use the right path
   var lib = fs.readFileSync('tsvg-lib.ts');
 
@@ -168,10 +170,11 @@ ${global}
 }
 
 function processOneInfile(infilename) {
-  var inkey = infilename.replace(".tsvg", "");
+  var parts = path.parse(infilename);
+  var inkey = parts.base.replace(parts.ext, "");
   var outfilename = inkey + ".tsx";
   var meat = prepOneInfile(infilename);
-  var result = wrapMeat(infilename, meat);
+  var result = wrapMeat(inkey, meat);
   fs.writeFileSync(outfilename, result);
 }
 
@@ -232,7 +235,6 @@ execFile(tsc, ['--sourceMap', 'tsvg-lib.ts', 'prepend.ts'], function (error, std
     var meats = [];
     options.src.forEach(infilename => {
       console.error('Input file stem: ' + infilename);
-      var inkey = infilename.replace(".tsvg", "");
       var meat = prepOneInfile(infilename);
       meats.push(meat);
     });
