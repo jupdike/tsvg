@@ -225,7 +225,7 @@ execFile(tsc, ['--sourceMap', 'tsvg-lib.ts', 'prepend.ts'], function (error, std
 
         });
       });
-  } else {
+  } else if (options.output) {
     // make a big .tsx file, and convert that to a single .js file. Do not run the .js output
     var outtsx = options.output.replace('.js','.tsx');
 
@@ -249,6 +249,15 @@ execFile(tsc, ['--sourceMap', 'tsvg-lib.ts', 'prepend.ts'], function (error, std
         console.error(stdout);
         process.exit(1);
       }
+      if (options.global) {
+        // now replace   var exports;   or    var window;   or whatever with empty string
+        var unneeded = `var ${options.global};`;
+        var all = ''+fs.readFileSync(options.output);
+        all = all.replace(unneeded, '');
+        fs.writeFileSync(options.output, all);
+      }
     });
+  } else {
+    console.error('Nothing to do. Choose a different combination of option flags, or add -o outputfilename.js');
   }
 });
