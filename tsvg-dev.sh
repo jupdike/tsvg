@@ -12,4 +12,4 @@
 #tsc --sourceMap tsvg.ts tsvg-lib.ts prepend.ts && node tsvg.js $@
 #tsc --sourceMap --jsx react $one.tsx && node $one.js > $one.svg
 
-node tsvg.js $@
+tsc --sourceMap tsvg.ts && node tsvg.js --dev $@

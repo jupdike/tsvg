@@ -7,6 +7,7 @@ const path = require('path');
 const execFile = require('child_process').execFile;
 const commandLineArgs = require('command-line-args');
 const optionDefinitions = [
+  { name: 'dev', alias: 'd', type: Boolean },
   { name: 'quiet', alias: 'q', type: Boolean }, // do not call console.log(TSVG.Templates[<mine>]().render());
   { name: 'src', type: String, multiple: true, defaultOption: true },
   { name: 'arg', alias: 'a', multiple:true, type: String }, // --arg k:v
@@ -190,7 +191,17 @@ function processOneInfile(infilename) {
 var tsc = '/usr/local/bin/tsc';
 var node = '/usr/local/bin/node';
 
-execFile(tsc, ['--sourceMap', 'tsvg-lib.ts', 'prepend.ts'], function (error, stdout, stderr) {
+function ifhelper(cond: boolean, action, callback) {
+  if (cond) {
+    action(callback);
+  }
+  else {
+    callback(null, '', '');
+  }
+}
+
+ifhelper(options.dev, (cb) => execFile(tsc, ['--sourceMap', 'tsvg-lib.ts', 'prepend.ts'], cb),
+  function (error, stdout, stderr) {
   if (error) {
     console.error('Problem compiling tsvg-lib.ts or prepend.ts:');
     console.error(error);

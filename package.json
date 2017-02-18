@@ -13,6 +13,7 @@
   "dependencies": {
     "command-line-args": "^4.0.1",
     "html-entities": "^1.2.0",
+    "js-md5": "^0.4.2",
     "typescript": "~2.1.4",
     "xml-parser": "^1.2.1"
   },
