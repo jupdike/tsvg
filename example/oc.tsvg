@@ -1,5 +1,5 @@
 <svg id="todo1" class="todo2" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="70" height="70" viewBox="-7 -7 114 114">
-  <Font white-list-chars="IViv/°♭♯" path="/Users/jupdike/Downloads/charter/ttf/Enhanced-CharterRegular.svg"/>
+  <Font white-list-chars="IViv/°♭♯" path="/Users/jupdike/Documents/dev/rowboat/domain/tsvg/svg-fonts/Enhanced-CharterRegular.svg"/>
   @txt = "I";
   @tla = 'dia';
   @ix = '2';

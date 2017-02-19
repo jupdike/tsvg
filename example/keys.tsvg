@@ -8,10 +8,10 @@
   -->
   <defs>
   
-    <Font white-list-chars="abcdefgABCDEFG𝄪𝄫♭♯" path="/Users/jupdike/Downloads/fira-sans-condensed/enhanced-firasanscondensed-book.svg"/>
-    <Font white-list-chars="-abcdefgABCDEFG" path="/Users/jupdike/Downloads/fira-sans/FiraSans-Book.svg"/>
-    <!-- actually used VI/ from Charter Bold, and b# from Helvetica Neue, and iv° from FF Meta Bold -->
-    <Font white-list-chars="IViv/°♭♯" path="/Users/jupdike/Downloads/charter/ttf/Enhanced-CharterRegular.svg"/>
+    <Font white-list-chars="abcdefgABCDEFG𝄪𝄫♭♯" path="/Users/jupdike/Documents/dev/rowboat/domain/tsvg/svg-fonts/enhanced-firasanscondensed-book.svg"/>
+    <Font white-list-chars="-abcdefgABCDEFG" path="/Users/jupdike/Documents/dev/rowboat/domain/tsvg/svg-fonts/FiraSans-Book.svg"/>
+    <!-- actually uses VI/ from Charter Bold, and b# from Helvetica Neue, and iv° from FF Meta Bold -->
+    <Font white-list-chars="IViv/°♭♯" path="/Users/jupdike/Documents/dev/rowboat/domain/tsvg/svg-fonts/Enhanced-CharterRegular.svg"/>
 
     @height = 480;
     @makeWidth = (height) => 1400 * height / 694;
