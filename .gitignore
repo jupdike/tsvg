@@ -6,3 +6,4 @@ example/*.json
 *.js.map
 *.js
 lib/*.ts
+tsvg-*.tgz

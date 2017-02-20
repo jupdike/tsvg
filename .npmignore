@@ -1,0 +1,7 @@
+tsvg-*.tgz
+example/*.svg
+example/*.tsx
+example/*.js*
+*.js.map
+lib/*.js*
+bin/*.ts*
