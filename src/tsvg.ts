@@ -4,19 +4,20 @@ const commandLineArgs = require('command-line-args');
 const getUsage = require('command-line-usage')
 
 const optionDefinitions = [
-  { name: 'dev', alias: 'd', type: Boolean,
-    description: "a special flag for development, to force TypeScript files to be recompiled each time tsvg binary runs" },
-  { name: 'quiet', alias: 'q', type: Boolean,
-    description: "produce no .svg ouput; generated .js code does not call  console.log(TSVG.Templates[<mine>]().render());  as is the default" },
-  { name: 'src', alias: 's', type: String, multiple: true, defaultOption: true, typeLabel: '[underline]{file} ...',
-    description: "(default if not flag specified) the input .tsvg files to process; by default x.tsvg will output x.svg (see --output below)"},
+  { name: 'help', alias: 'h', type: Boolean, description: "print this usage help and exit"},
+  { name: 'src', alias: 's', type: String, multiple: true, defaultOption: true, typeLabel: '[underline]{file.tsvg} ...',
+    description: "(default if no flag specified) the input .tsvg files to process; by default x.tsvg will output x.svg (see --output below)"},
   { name: 'args', alias: 'a', multiple:true, type: String, typeLabel: '[underline]{k:v} ...',
     description: "one or more k:v pairs passed to the template, where @k takes the value v, e.g.  tsvg --arg k:v  results in {k: 'v'}  passed to template"},
+  { name: 'quiet', alias: 'q', type: Boolean,
+    description: "produce no .svg ouput; generated .js code does not call  console.log(TSVG.Templates[<mine>]().render());  as is the default, for generating .svg files" },
   { name: 'output', alias: 'o', type: String, typeLabel: '[underline]{to/file.js}',
     description: "combine all .js code from all .tsvg src files into a single .js file, instead of generating .svg file(s); turns on --quiet as well" },
-  { name: 'help', alias: 'h', type: Boolean, description: "print this usage help and exit"},
   { name: 'global', alias: 'g', type: String,
-    description: "define the global object to attach templates code to; --global window generates code   window['TSVG'] = TSVG;  for example; turns on --quiet as well" }
+    description: "define the global object to attach templates code to; for example  --global window generates code   window['TSVG'] = TSVG;  this turns on --quiet as well" },
+  { name: 'dev', alias: 'd', type: Boolean,
+    description: "a special flag for development, to force TypeScript files to be recompiled each time tsvg binary runs" },
+
   //{ name: 'jshelper', alias: 'j', type: String } // a helper file (.js or .ts) that gets prepended
 ];
 
