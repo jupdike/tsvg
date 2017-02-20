@@ -1,28 +1,77 @@
 #!/usr/local/bin/node
 
+const commandLineArgs = require('command-line-args');
+const getUsage = require('command-line-usage')
+
+const optionDefinitions = [
+  { name: 'dev', alias: 'd', type: Boolean,
+    description: "a special flag for development, to force TypeScript files to be recompiled each time tsvg binary runs" },
+  { name: 'quiet', alias: 'q', type: Boolean,
+    description: "produce no .svg ouput; generated .js code does not call  console.log(TSVG.Templates[<mine>]().render());  as is the default" },
+  { name: 'src', alias: 's', type: String, multiple: true, defaultOption: true, typeLabel: '[underline]{file} ...',
+    description: "(default if not flag specified) the input .tsvg files to process; by default x.tsvg will output x.svg (see --output below)"},
+  { name: 'args', alias: 'a', multiple:true, type: String, typeLabel: '[underline]{k:v} ...',
+    description: "one or more k:v pairs passed to the template, where @k takes the value v, e.g.  tsvg --arg k:v  results in {k: 'v'}  passed to template"},
+  { name: 'output', alias: 'o', type: String, typeLabel: '[underline]{to/file.js}',
+    description: "combine all .js code from all .tsvg src files into a single .js file, instead of generating .svg file(s); turns on --quiet as well" },
+  { name: 'help', alias: 'h', type: Boolean, description: "print this usage help and exit"},
+  { name: 'global', alias: 'g', type: String,
+    description: "define the global object to attach templates code to; --global window generates code   window['TSVG'] = TSVG;  for example; turns on --quiet as well" }
+  //{ name: 'jshelper', alias: 'j', type: String } // a helper file (.js or .ts) that gets prepended
+];
+
+const sections = [
+  {
+    header: 'TSVG',
+    content: 'Turing-complete SVG preprocessor, using [italic]{JSX} and [italic]{JavaScript}'
+  },
+  {
+    header: 'Examples',
+    content: [
+      {
+        desc: '$ tsvg input.tsvg',
+        example: '1. Convert input.tsvg to input.svg.'
+      },
+      {
+        desc: '$ tsvg input.tsvg -a width:100',
+        example: '2. Convert input2.tsvg to input2.svg; pass argument "width" as "100".'
+      },
+      {
+        desc: '$ tsvg *.tsvg -o tsvg-all.js -g window',
+        example: '3. Convert multiple .tsvg files to one .js file (call window.TSVG.Templates["fname"]({additional: "args"}).render() to generate SVG string)'
+      },
+    ]
+  },
+  {
+    header: 'Options',
+    optionList: optionDefinitions
+  },
+  {
+    content: 'Project home: [underline]{https://bitbucket.org/updike_org/tsvg#readme}'
+  }
+]
+
 if (process.argv.length < 3) { // || process.argv[2].indexOf('.tsvg') < 0) {
-  console.error(`Expected\n\t${process.argv[1]} infile.tsvg`);
+  const usage = getUsage(sections);
+  console.error(usage);
+  console.error('Error: expected a source file.');
   process.exit(1);
 }
 
-const path = require('path');
-const execFile = require('child_process').execFile;
-const commandLineArgs = require('command-line-args');
-const optionDefinitions = [
-  { name: 'dev', alias: 'd', type: Boolean },
-  { name: 'quiet', alias: 'q', type: Boolean }, // do not call console.log(TSVG.Templates[<mine>]().render());
-  { name: 'src', type: String, multiple: true, defaultOption: true },
-  { name: 'arg', alias: 'a', multiple:true, type: String }, // --arg k:v
-  { name: 'output', alias: 'o', type: String },
-  { name: 'global', alias: 'g', type: String } // generate code:   window['TSVG'] = TSVG;
-  //{ name: 'jshelper', alias: 'j', type: String } // a helper file (.js or .ts) that gets prepended
-];
 const options = commandLineArgs(optionDefinitions);
 if (options.output || options.global) {
   options.quiet = true;
 }
+if (options.help) {
+  const usage = getUsage(sections);
+  console.error(usage);
+  process.exit(1);
+}
 console.error('FOUND THESE OPTIONS:', options);
+// got the options
 
+const path = require('path');
+const execFile = require('child_process').execFile;
 const fs = require('fs');
 import {FontSVG} from './FontSVG';
 
