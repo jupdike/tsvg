@@ -225,7 +225,7 @@ ${global}
 function processOneInfile(infilename) {
   var parts = path.parse(infilename);
   var inkey = parts.base.replace(parts.ext, "");
-  var outfilename = inkey + ".tsx";
+  var outfilename = infilename.replace(".tsvg", ".tsx");
   var meat = prepOneInfile(infilename);
   var result = wrapMeat(inkey, meat);
   fs.writeFileSync(outfilename, result);
@@ -240,7 +240,7 @@ function processOneInfile(infilename) {
 
 
 // tsc --sourceMap tsvg.ts tsvg-lib.ts prepend.ts && ...
-var tsc = '/usr/local/bin/tsc';
+var tsc = __dirname + '/../node_modules/typescript/bin/tsc';  // global would be '/usr/local/bin/tsc';
 var node = '/usr/local/bin/node';
 
 function ifhelper(cond: boolean, action, callback) {
