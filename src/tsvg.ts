@@ -1,6 +1,8 @@
+#!/usr/local/bin/node
+
 if (process.argv.length < 3) { // || process.argv[2].indexOf('.tsvg') < 0) {
-    console.error(`Expected\n\t${process.argv[1]} infile.tsvg`);
-    process.exit(1);
+  console.error(`Expected\n\t${process.argv[1]} infile.tsvg`);
+  process.exit(1);
 }
 
 const path = require('path');
@@ -133,8 +135,8 @@ bind(that, function() {
 }
 
 function wrapMeat(inkey, meat) {
-  var pre = fs.readFileSync('prepend.ts'); // TODO use the right path
-  var lib = fs.readFileSync('tsvg-lib.ts');
+  var pre = fs.readFileSync(__dirname + '/../lib/prepend.ts');
+  var lib = fs.readFileSync(__dirname + '/../lib/tsvg-lib.ts');
 
   const argy = {};
   if (options.arg) {

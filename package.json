@@ -2,9 +2,11 @@
   "name": "tsvg",
   "version": "0.1.0",
   "description": "TSVG: Turing-complete SVG preprocessor",
-  "main": "abc.js",
+  "main": "./bin/tsvg.js",
+  "bin": { "tsvg": "./bin/tsvg.js" },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublish": "sh build.sh"
   },
   "repository": {
     "type": "git",
@@ -17,7 +19,12 @@
     "typescript": "~2.1.4",
     "xml-parser": "^1.2.1"
   },
+  "directories": {
+    "bin": "./bin",
+    "lib": "./lib"
+  },
+  "engines" : { "node" : ">=5.5.0" },
   "author": "Jared Updike",
-  "license": "ISC",
+  "license": "BSD-3-Clause",
   "homepage": "https://bitbucket.org/updike_org/tsvg#readme"
 }

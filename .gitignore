@@ -5,3 +5,4 @@ example/*.js
 example/*.json
 *.js.map
 *.js
+lib/*.ts
