@@ -5,6 +5,7 @@ const getUsage = require('command-line-usage')
 
 const optionDefinitions = [
   { name: 'help', alias: 'h', type: Boolean, description: "print this usage help and exit"},
+  { name: 'keep', alias: 'k', type: Boolean, description: "do not delete .js.map, .js and .tsx temp files (.tsvg -> .tsx -> .js -> .svg); overwrite them if they exist (default is to delete upon success, and to bail if those files exist -- so as not to delete anything important)"},
   { name: 'src', alias: 's', type: String, multiple: true, defaultOption: true, typeLabel: '[underline]{file.tsvg} ...',
     description: "(default if no flag specified) the input .tsvg files to process; by default x.tsvg will output x.svg (see --output below)"},
   { name: 'args', alias: 'a', multiple:true, type: String, typeLabel: '[underline]{k:v} ...',
@@ -17,7 +18,6 @@ const optionDefinitions = [
     description: "define the global object to attach templates code to; for example  --global window generates code   window['TSVG'] = TSVG;  this turns on --quiet as well" },
   { name: 'dev', alias: 'd', type: Boolean,
     description: "a special flag for development, to force TypeScript files to be recompiled each time tsvg binary runs" },
-
   //{ name: 'jshelper', alias: 'j', type: String } // a helper file (.js or .ts) that gets prepended
 ];
 
@@ -34,12 +34,12 @@ const sections = [
         example: '1. Convert input.tsvg to input.svg.'
       },
       {
-        desc: '$ tsvg input.tsvg -a width:100',
-        example: '2. Convert input2.tsvg to input2.svg; pass argument "width" as "100".'
+        desc: '$ tsvg input2.tsvg -a width:100',
+        example: '2. Convert input2.tsvg to input2.svg; pass argument "@width" as "100".'
       },
       {
         desc: '$ tsvg *.tsvg -o tsvg-all.js -g window',
-        example: '3. Convert multiple .tsvg files to one .js file (call window.TSVG.Templates["fname"]({additional: "args"}).render() to generate SVG string)'
+        example: '3. Convert multiple .tsvg files to one .js file (can call window.TSVG.Templates["fname"]({additional: "args"}).render() to generate SVG string).'
       },
     ]
   },
@@ -222,10 +222,18 @@ ${global}
   return result;
 }
 
+function avoiding(outfilename) {
+  return 'Avoiding overwriting file "'+outfilename+'". Use --keep or delete the file manually to proceed. (TSVG makes temp files with this extension but only cleans them up upon successful compilation.)';
+}
+
 function processOneInfile(infilename) {
   var parts = path.parse(infilename);
   var inkey = parts.base.replace(parts.ext, "");
   var outfilename = infilename.replace(".tsvg", ".tsx");
+  if (!options.keep && fs.existsSync(outfilename)) {
+    console.error(avoiding(outfilename));
+    process.exit(1);
+  }
   var meat = prepOneInfile(infilename);
   var result = wrapMeat(inkey, meat);
   fs.writeFileSync(outfilename, result);
@@ -257,6 +265,8 @@ ifhelper(options.dev, (cb) => execFile(tsc, ['--sourceMap', 'tsvg-lib.ts', 'prep
   if (error) {
     console.error('Problem compiling tsvg-lib.ts or prepend.ts:');
     console.error(error);
+    console.error(stdout);
+    console.error(stderr);
     process.exit(1);
   }
 
@@ -269,33 +279,50 @@ ifhelper(options.dev, (cb) => execFile(tsc, ['--sourceMap', 'tsvg-lib.ts', 'prep
       var stem = infilename.replace('.tsvg', '');
       console.error('Input file stem: ' + stem);
 
-        // tsc --sourceMap --jsx react $one.tsx && ...
-        execFile(tsc, ['--sourceMap', '--jsx', 'react', stem+'.tsx'], function (error, stdout, stderr) {
+      // avoid overwriting whatever.js
+      var outfilename = stem+'.js';
+      if (!options.keep && fs.existsSync(outfilename)) {
+        console.error(avoiding(outfilename));
+        process.exit(1);
+      }
+      // avoid overwriting whatever.js.map
+      var outfilename = stem+'.js.map';
+      if (!options.keep && fs.existsSync(outfilename)) {
+        console.error(avoiding(outfilename));
+        process.exit(1);
+      }
+
+      // tsc --sourceMap --jsx react $one.tsx && ...
+      execFile(tsc, ['--sourceMap', '--jsx', 'react', stem+'.tsx'], function (error, stdout, stderr) {
+        if (error) {
+          console.error('Problem compiling .tsx file to .js:');
+          console.error(error);
+          console.error(stdout);
+          console.error(stderr);
+          process.exit(1);
+        }
+
+        // ... && node $one.js > $one.svg
+        execFile(node, [stem+'.js'], function (error, stdout, stderr) {
           if (error) {
-            console.error('Problem compiling .tsx file to .js:');
+            console.error('Problem running .js file:');
             console.error(error);
+            console.error(stdout);
+            console.error(stderr);
             process.exit(1);
           }
-
-          //if (todo == 0) { // do this once, when the last one ends
-            // ... && node $one.js > $one.svg
-            execFile(node, [stem+'.js'], function (error, stdout, stderr) {
-              if (error) {
-                console.error('Problem running .js file:');
-                console.error(error);
-                process.exit(1);
-              }
-              // success! write out the .svg
-              fs.writeFileSync(stem+'.svg', stdout);
-              // upon success, remove the temp files
-              fs.unlinkSync(stem+'.js', stdout);
-              fs.unlinkSync(stem+'.js.map', stdout);
-              fs.unlinkSync(stem+'.tsx', stdout);
-            });
-          //}
-
+          // success! write out the .svg
+          fs.writeFileSync(stem+'.svg', stdout);
+          if (!options.keep) {
+            // upon success, remove the temp files
+            fs.unlinkSync(stem+'.js', stdout);
+            fs.unlinkSync(stem+'.js.map', stdout);
+            fs.unlinkSync(stem+'.tsx', stdout);
+          }
         });
+
       });
+    });
   } else if (options.output) {
     // make a big .tsx file, and convert that to a single .js file. Do not run the .js output
     var outtsx = options.output.replace('.js','.tsx');
@@ -307,6 +334,24 @@ ifhelper(options.dev, (cb) => execFile(tsc, ['--sourceMap', 'tsvg-lib.ts', 'prep
       meats.push(meat);
     });
 
+    // avoid overwriting whatever.tsx
+    if (!options.keep && fs.existsSync(outtsx)) {
+      console.error(avoiding(outtsx));
+      process.exit(1);
+    }
+    // avoid overwriting whatever.js
+    var outfilename = outtsx.replace('.tsx','.js');
+    if (!options.keep && fs.existsSync(outfilename)) {
+      console.error(avoiding(outfilename));
+      process.exit(1);
+    }
+    // avoid overwriting whatever.js.map
+    outfilename = outtsx.replace('.tsx','.js.map');
+    if (!options.keep && fs.existsSync(outfilename)) {
+      console.error(avoiding(outfilename));
+      process.exit(1);
+    }
+    
     var result = wrapMeat('', meats.join('\n'));
     fs.writeFileSync(outtsx, result);
 
@@ -325,9 +370,11 @@ ifhelper(options.dev, (cb) => execFile(tsc, ['--sourceMap', 'tsvg-lib.ts', 'prep
         var all = ''+fs.readFileSync(options.output);
         all = all.replace(unneeded, '');
         fs.writeFileSync(options.output, all);
-        // upon success, remove the temp files
-        fs.unlinkSync(options.output.replace('.js','.js.map'), stdout);
-        fs.unlinkSync(outtsx, stdout);
+        if (!options.keep) {
+          // upon success, remove the temp files
+          fs.unlinkSync(options.output.replace('.js','.js.map'), stdout);
+          fs.unlinkSync(outtsx, stdout);
+        }
       }
     });
   } else {
