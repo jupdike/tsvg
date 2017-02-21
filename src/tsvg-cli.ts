@@ -1,7 +1,5 @@
-#!/usr/local/bin/node
-
 const commandLineArgs = require('command-line-args');
-const getUsage = require('command-line-usage')
+const getUsage = require('command-line-usage');
 
 const optionDefinitions = [
   { name: 'help', alias: 'h', type: Boolean, description: "print this usage help and exit"},
@@ -59,7 +57,7 @@ if (process.argv.length < 3) { // || process.argv[2].indexOf('.tsvg') < 0) {
   process.exit(1);
 }
 
-const options = commandLineArgs(optionDefinitions);
+export const options = commandLineArgs(optionDefinitions);
 if (options.output || options.global) {
   options.quiet = true;
 }
@@ -269,7 +267,7 @@ function ifhelper(cond: boolean, action, callback) {
   }
 }
 
-function main(options) {
+export function main(options) {
   ifhelper(options.dev, (cb) => execFile(tsc, ['--sourceMap', 'tsvg-lib.ts', 'prepend.ts'], cb),
     function (error, stdout, stderr) {
     if (error) {

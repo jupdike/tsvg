@@ -4,6 +4,8 @@ example/*.tsx
 example/*.js
 example/*.json
 *.js.map
-*.js
 lib/*.ts
 tsvg-*.tgz
+bin/*.js
+lib/*.js
+bin/tsvg
