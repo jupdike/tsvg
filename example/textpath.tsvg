@@ -1,21 +1,26 @@
-<svg id="kb-svg-horiz" class="kb-bottom" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="1100" height="694" viewBox="0 0 1100 694">
+<svg id="kb-svg-horiz" class="kb-bottom" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="600" height="180" viewBox="0 0 600 180">
   <!-- for testing against <text> tag! -->
-  <Font path='/Users/jupdike/Documents/HelveticaNeue-dfont-split/HelveticaNeue.svg'/>
+ 
+  <!-- Font path='/Users/jupdike/Documents/HelveticaNeue-dfont-split/HelveticaNeue.svg'/ -->
+  <Font white-list-chars='HeloWrd ' path='./svg-fonts/firasanscondensed-bold.svg'/>
 
-  <TextPath font-id="HelveticaNeue"
-    x="550" y="300"
+  <TextPath
+    x="300" y="120"
     font-size="100"
     letter-spacing="0"
     text-anchor="middle"
-    style="fill: orange">
-    Hello World fi
-  </TextPath>
+    font-id="FiraSansCondensed-Bold"
+    style="fill: orange"
+    >Hello World</TextPath>
 
   <text
-  fill="transparent" stroke="black" stroke-width="1px" text-anchor="middle"
-  font-family="Helvetica Neue"
-  letter-spacing="0"
-  font-size="100"
-  x="550" y="300">Hello World fi</text>
+    x="300" y="120"
+    font-size="100"
+    letter-spacing="0"
+    text-anchor="middle"
+    font-family="Fira Sans Condensed"
+    weight="bold"
+    fill="transparent" stroke="black" stroke-width="1px" 
+    >Hello World</text>
 
 </svg>

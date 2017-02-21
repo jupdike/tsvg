@@ -5,3 +5,4 @@ example/*.js*
 *.js.map
 lib/*.js*
 bin/*.ts*
+example/svg-fonts/font-*.json

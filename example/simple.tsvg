@@ -5,8 +5,6 @@
 
   <rect x="-1" y="-1" width="802" height="802" fill="#eee" />
 
-  { @line(50, 50, 85, 670, {stroke: '#eee'}) }
-
   { @closedPolyPath({stroke: '#eee', fill: 'transparent'},
     @range(3, 7).map( x => [x*50, 0, 0, @height - x*50] ).flatten()
   ) }
@@ -17,5 +15,7 @@
       @range(64).map( x => [x * @height / 64, 0, 0, @height * (1 - x/64) , @height / 64] ))
     }
   </For>
+
+  { @line(@height/4, @height/4, @height*3/4, @height*3/4, {stroke: '#aaa'}) }
 
 </svg>

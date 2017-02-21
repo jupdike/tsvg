@@ -9,3 +9,4 @@ tsvg-*.tgz
 bin/*.js
 lib/*.js
 bin/tsvg
+example/svg-fonts/font-*.json
