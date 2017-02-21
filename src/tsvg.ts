@@ -260,124 +260,128 @@ function ifhelper(cond: boolean, action, callback) {
   }
 }
 
-ifhelper(options.dev, (cb) => execFile(tsc, ['--sourceMap', 'tsvg-lib.ts', 'prepend.ts'], cb),
-  function (error, stdout, stderr) {
-  if (error) {
-    console.error('Problem compiling tsvg-lib.ts or prepend.ts:');
-    console.error(error);
-    console.error(stdout);
-    console.error(stderr);
-    process.exit(1);
-  }
+function main(options) {
+  ifhelper(options.dev, (cb) => execFile(tsc, ['--sourceMap', 'tsvg-lib.ts', 'prepend.ts'], cb),
+    function (error, stdout, stderr) {
+    if (error) {
+      console.error('Problem compiling tsvg-lib.ts or prepend.ts:');
+      console.error(error);
+      console.error(stdout);
+      console.error(stderr);
+      process.exit(1);
+    }
 
-  // default: convert each .tsvg to .svg via .tsx and .js
-  if (!options.output && !options.quiet && !options.global) {
-    // ... && node tsvg.js $@
-    options.src.forEach(infilename => {
-      processOneInfile(infilename); // writes out a .tsx file
+    // default: convert each .tsvg to .svg via .tsx and .js
+    if (!options.output && !options.quiet && !options.global) {
+      // ... && node tsvg.js $@
+      options.src.forEach(infilename => {
+        processOneInfile(infilename); // writes out a .tsx file
 
-      var stem = infilename.replace('.tsvg', '');
-      console.error('Input file stem: ' + stem);
+        var stem = infilename.replace('.tsvg', '');
+        console.error('Input file stem: ' + stem);
 
-      // avoid overwriting whatever.js
-      var outfilename = stem+'.js';
-      if (!options.keep && fs.existsSync(outfilename)) {
-        console.error(avoiding(outfilename));
-        process.exit(1);
-      }
-      // avoid overwriting whatever.js.map
-      var outfilename = stem+'.js.map';
-      if (!options.keep && fs.existsSync(outfilename)) {
-        console.error(avoiding(outfilename));
-        process.exit(1);
-      }
-
-      // tsc --sourceMap --jsx react $one.tsx && ...
-      execFile(tsc, ['--sourceMap', '--jsx', 'react', stem+'.tsx'], function (error, stdout, stderr) {
-        if (error) {
-          console.error('Problem compiling .tsx file to .js:');
-          console.error(error);
-          console.error(stdout);
-          console.error(stderr);
+        // avoid overwriting whatever.js
+        var outfilename = stem+'.js';
+        if (!options.keep && fs.existsSync(outfilename)) {
+          console.error(avoiding(outfilename));
+          process.exit(1);
+        }
+        // avoid overwriting whatever.js.map
+        var outfilename = stem+'.js.map';
+        if (!options.keep && fs.existsSync(outfilename)) {
+          console.error(avoiding(outfilename));
           process.exit(1);
         }
 
-        // ... && node $one.js > $one.svg
-        execFile(node, [stem+'.js'], function (error, stdout, stderr) {
+        // tsc --sourceMap --jsx react $one.tsx && ...
+        execFile(tsc, ['--sourceMap', '--jsx', 'react', stem+'.tsx'], function (error, stdout, stderr) {
           if (error) {
-            console.error('Problem running .js file:');
+            console.error('Problem compiling .tsx file to .js:');
             console.error(error);
             console.error(stdout);
             console.error(stderr);
             process.exit(1);
           }
-          // success! write out the .svg
-          fs.writeFileSync(stem+'.svg', stdout);
-          if (!options.keep) {
-            // upon success, remove the temp files
-            fs.unlinkSync(stem+'.js', stdout);
-            fs.unlinkSync(stem+'.js.map', stdout);
-            fs.unlinkSync(stem+'.tsx', stdout);
-          }
+
+          // ... && node $one.js > $one.svg
+          execFile(node, [stem+'.js'], function (error, stdout, stderr) {
+            if (error) {
+              console.error('Problem running .js file:');
+              console.error(error);
+              console.error(stdout);
+              console.error(stderr);
+              process.exit(1);
+            }
+            // success! write out the .svg
+            fs.writeFileSync(stem+'.svg', stdout);
+            if (!options.keep) {
+              // upon success, remove the temp files
+              fs.unlinkSync(stem+'.js', stdout);
+              fs.unlinkSync(stem+'.js.map', stdout);
+              fs.unlinkSync(stem+'.tsx', stdout);
+            }
+          });
+
         });
-
       });
-    });
-  } else if (options.output) {
-    // make a big .tsx file, and convert that to a single .js file. Do not run the .js output
-    var outtsx = options.output.replace('.js','.tsx');
+    } else if (options.output) {
+      // make a big .tsx file, and convert that to a single .js file. Do not run the .js output
+      var outtsx = options.output.replace('.js','.tsx');
 
-    var meats = [];
-    options.src.forEach(infilename => {
-      console.error('Input file stem: ' + infilename);
-      var meat = prepOneInfile(infilename);
-      meats.push(meat);
-    });
+      var meats = [];
+      options.src.forEach(infilename => {
+        console.error('Input file stem: ' + infilename);
+        var meat = prepOneInfile(infilename);
+        meats.push(meat);
+      });
 
-    // avoid overwriting whatever.tsx
-    if (!options.keep && fs.existsSync(outtsx)) {
-      console.error(avoiding(outtsx));
-      process.exit(1);
-    }
-    // avoid overwriting whatever.js
-    var outfilename = outtsx.replace('.tsx','.js');
-    if (!options.keep && fs.existsSync(outfilename)) {
-      console.error(avoiding(outfilename));
-      process.exit(1);
-    }
-    // avoid overwriting whatever.js.map
-    outfilename = outtsx.replace('.tsx','.js.map');
-    if (!options.keep && fs.existsSync(outfilename)) {
-      console.error(avoiding(outfilename));
-      process.exit(1);
-    }
-    
-    var result = wrapMeat('', meats.join('\n'));
-    fs.writeFileSync(outtsx, result);
-
-    // tsc --sourceMap --jsx react $one.tsx && ...
-    execFile(tsc, ['--sourceMap', '--jsx', 'react', outtsx], function (error, stdout, stderr) {
-      if (error) {
-        console.error('Problem compiling .tsx file to .js:');
-        console.error(error);
-        console.error(stderr);
-        console.error(stdout);
+      // avoid overwriting whatever.tsx
+      if (!options.keep && fs.existsSync(outtsx)) {
+        console.error(avoiding(outtsx));
         process.exit(1);
       }
-      if (options.global) {
-        // now replace   var exports;   or    var window;   or whatever with empty string
-        var unneeded = `var ${options.global};`;
-        var all = ''+fs.readFileSync(options.output);
-        all = all.replace(unneeded, '');
-        fs.writeFileSync(options.output, all);
-        if (!options.keep) {
-          // upon success, remove the temp files
-          fs.unlinkSync(options.output.replace('.js','.js.map'), stdout);
-          fs.unlinkSync(outtsx, stdout);
-        }
+      // avoid overwriting whatever.js
+      var outfilename = outtsx.replace('.tsx','.js');
+      if (!options.keep && fs.existsSync(outfilename)) {
+        console.error(avoiding(outfilename));
+        process.exit(1);
       }
-    });
-  } else {
-    console.error('Nothing to do. Choose a different combination of option flags, or add -o outputfilename.js');
-  }
-});
+      // avoid overwriting whatever.js.map
+      outfilename = outtsx.replace('.tsx','.js.map');
+      if (!options.keep && fs.existsSync(outfilename)) {
+        console.error(avoiding(outfilename));
+        process.exit(1);
+      }
+      
+      var result = wrapMeat('', meats.join('\n'));
+      fs.writeFileSync(outtsx, result);
+
+      // tsc --sourceMap --jsx react $one.tsx && ...
+      execFile(tsc, ['--sourceMap', '--jsx', 'react', outtsx], function (error, stdout, stderr) {
+        if (error) {
+          console.error('Problem compiling .tsx file to .js:');
+          console.error(error);
+          console.error(stderr);
+          console.error(stdout);
+          process.exit(1);
+        }
+        if (options.global) {
+          // now replace   var exports;   or    var window;   or whatever with empty string
+          var unneeded = `var ${options.global};`;
+          var all = ''+fs.readFileSync(options.output);
+          all = all.replace(unneeded, '');
+          fs.writeFileSync(options.output, all);
+          if (!options.keep) {
+            // upon success, remove the temp files
+            fs.unlinkSync(options.output.replace('.js','.js.map'), stdout);
+            fs.unlinkSync(outtsx, stdout);
+          }
+        }
+      });
+    } else {
+      console.error('Nothing to do. Choose a different combination of option flags, or add -o outputfilename.js');
+    }
+  });
+}
+
+main(options);
