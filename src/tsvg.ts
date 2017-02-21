@@ -84,7 +84,7 @@ const regexFont = [new RegExp(`\<Font path\="([^"]*)\".*\/\>`, 'g'),
                   // this is such a hack since the order matters and both must use either single or double quotes. Oops
                   new RegExp(`\<Font white-list-chars\="([^"]*)" path\="([^"]*)".*\/\>`, 'g'),
                   new RegExp(`\<Font white-list-chars\='([^']*)' path\='([^']*)'.*\/\>`, 'g')];
-function getFontDefinitions(input, fonts) {
+function getFontDefinitions(inputTSVGFilePath, input, fonts) {
   regexFont.forEach(reg => {
     var match = null;
     while ((match = reg.exec(input)) !== null) {
@@ -92,6 +92,10 @@ function getFontDefinitions(input, fonts) {
         var full = match[0];
         var whitelist = match[1];
         var path = match[2];
+        // allow relative paths starting with ./whatever or ../whatever or ../../whatever
+        if (path && path.length > 1 && path.charAt(0) == '.') {
+          path = inputTSVGFilePath + '/' + path;
+        }
         //console.error('match:', full);
         if (pathsSeen.hasOwnProperty(path)) {
           continue; // don't load font twice
@@ -101,6 +105,10 @@ function getFontDefinitions(input, fonts) {
       } else if (match.length === 2) {
         var full = match[0];
         var path = match[1];
+        // allow relative paths starting with ./whatever or ../whatever or ../../whatever
+        if (path && path.length > 1 && path.charAt(0) == '.') {
+          path = inputTSVGFilePath + '/' + path;
+        }
         //console.error('match:', full);
         if (pathsSeen.hasOwnProperty(path)) {
           continue; // don't load font twice
@@ -132,11 +140,12 @@ function getGlobals(input, vals) {
 
 function prepOneInfile(infilename) {
   var parts = path.parse(infilename);
+  var inputTSVGFilePath = parts.dir;
   var inkey = parts.base.replace(parts.ext, "");
 
   var infilecontents = fs.readFileSync(infilename) + "";
 
-  getFontDefinitions(infilecontents, fonts); // they all get added into one big dictionary of all the objects
+  getFontDefinitions(inputTSVGFilePath, infilecontents, fonts); // they all get added into one big dictionary of all the objects
 
   var kvs = {};
   infilecontents = getGlobals(infilecontents, kvs);
@@ -338,18 +347,6 @@ function main(options) {
       // avoid overwriting whatever.tsx
       if (!options.keep && fs.existsSync(outtsx)) {
         console.error(avoiding(outtsx));
-        process.exit(1);
-      }
-      // avoid overwriting whatever.js
-      var outfilename = outtsx.replace('.tsx','.js');
-      if (!options.keep && fs.existsSync(outfilename)) {
-        console.error(avoiding(outfilename));
-        process.exit(1);
-      }
-      // avoid overwriting whatever.js.map
-      outfilename = outtsx.replace('.tsx','.js.map');
-      if (!options.keep && fs.existsSync(outfilename)) {
-        console.error(avoiding(outfilename));
         process.exit(1);
       }
       
