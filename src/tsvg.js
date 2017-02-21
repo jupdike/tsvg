@@ -1,2 +1,3 @@
 #!/usr/bin/env node
-require('./tsvg-cli.js')
+var cli = require('./tsvg-cli.js');
+cli.main();

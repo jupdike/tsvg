@@ -50,25 +50,6 @@ const sections = [
   }
 ]
 
-if (process.argv.length < 3) { // || process.argv[2].indexOf('.tsvg') < 0) {
-  const usage = getUsage(sections);
-  console.error(usage);
-  console.error('Error: expected a source file.');
-  process.exit(1);
-}
-
-export const options = commandLineArgs(optionDefinitions);
-if (options.output || options.global) {
-  options.quiet = true;
-}
-if (options.help) {
-  const usage = getUsage(sections);
-  console.error(usage);
-  process.exit(1);
-}
-console.error('FOUND THESE OPTIONS:', options);
-// got the options
-
 const path = require('path');
 const execFile = require('child_process').execFile;
 const fs = require('fs');
@@ -191,7 +172,7 @@ bind(that, function() {
   return meat;
 }
 
-function wrapMeat(inkey, meat) {
+function wrapMeat(options, inkey, meat) {
   var pre = fs.readFileSync(__dirname + '/../lib/prepend.ts');
   var lib = fs.readFileSync(__dirname + '/../lib/tsvg-lib.ts');
 
@@ -233,7 +214,7 @@ function avoiding(outfilename) {
   return 'Avoiding overwriting file "'+outfilename+'". Use --keep or delete the file manually to proceed. (TSVG makes temp files with this extension but only cleans them up upon successful compilation.)';
 }
 
-function processOneInfile(infilename) {
+function processOneInfile(options, infilename) {
   var parts = path.parse(infilename);
   var inkey = parts.base.replace(parts.ext, "");
   var outfilename = infilename.replace(".tsvg", ".tsx");
@@ -242,7 +223,7 @@ function processOneInfile(infilename) {
     process.exit(1);
   }
   var meat = prepOneInfile(infilename);
-  var result = wrapMeat(inkey, meat);
+  var result = wrapMeat(options, inkey, meat);
   fs.writeFileSync(outfilename, result);
 }
 
@@ -267,7 +248,25 @@ function ifhelper(cond: boolean, action, callback) {
   }
 }
 
-export function main(options) {
+export function main(options: any) {
+  if (!options) {
+    if (process.argv.length < 3) {
+      const usage = getUsage(sections);
+      console.error(usage);
+      console.error('Error: expected one or more source files.');
+      process.exit(1);
+    }
+    options = commandLineArgs(optionDefinitions);
+    if (options.output || options.global) {
+      options.quiet = true;
+    }
+    if (options.help) {
+      const usage = getUsage(sections);
+      console.error(usage);
+      process.exit(1);
+    }
+    console.error('FOUND THESE OPTIONS:', options);
+  }
   ifhelper(options.dev, (cb) => execFile(tsc, ['--sourceMap', 'tsvg-lib.ts', 'prepend.ts'], cb),
     function (error, stdout, stderr) {
     if (error) {
@@ -282,7 +281,7 @@ export function main(options) {
     if (!options.output && !options.quiet && !options.global) {
       // ... && node tsvg.js $@
       options.src.forEach(infilename => {
-        processOneInfile(infilename); // writes out a .tsx file
+        processOneInfile(options, infilename); // writes out a .tsx file
 
         var stem = infilename.replace('.tsvg', '');
         console.error('Input file stem: ' + stem);
@@ -348,7 +347,7 @@ export function main(options) {
         process.exit(1);
       }
       
-      var result = wrapMeat('', meats.join('\n'));
+      var result = wrapMeat(options, '', meats.join('\n'));
       fs.writeFileSync(outtsx, result);
 
       // tsc --sourceMap --jsx react $one.tsx && ...
@@ -378,5 +377,3 @@ export function main(options) {
     }
   });
 }
-
-main(options);
