@@ -285,7 +285,12 @@ ifhelper(options.dev, (cb) => execFile(tsc, ['--sourceMap', 'tsvg-lib.ts', 'prep
                 console.error(error);
                 process.exit(1);
               }
-              fs.writeFileSync(stem+'.svg', stdout)
+              // success! write out the .svg
+              fs.writeFileSync(stem+'.svg', stdout);
+              // upon success, remove the temp files
+              fs.unlinkSync(stem+'.js', stdout);
+              fs.unlinkSync(stem+'.js.map', stdout);
+              fs.unlinkSync(stem+'.tsx', stdout);
             });
           //}
 
@@ -320,6 +325,9 @@ ifhelper(options.dev, (cb) => execFile(tsc, ['--sourceMap', 'tsvg-lib.ts', 'prep
         var all = ''+fs.readFileSync(options.output);
         all = all.replace(unneeded, '');
         fs.writeFileSync(options.output, all);
+        // upon success, remove the temp files
+        fs.unlinkSync(options.output.replace('.js','.js.map'), stdout);
+        fs.unlinkSync(outtsx, stdout);
       }
     });
   } else {
