@@ -261,6 +261,10 @@ In order to convert .otf and .ttf fonts to .svg fonts, just search online for co
 
 ## Future Work
 
+- More interesting, better examples -- as a sort of test suite
+
+- Gallery of awesome examples
+
 - <code>&lt;If&gt;</code> tag would be easy and useful -- include or not include based on
 
     <If cond={JavaScript code here}>
@@ -268,8 +272,11 @@ In order to convert .otf and .ttf fonts to .svg fonts, just search online for co
     </If>
 
 - TextPath could use font-family and weight to find the right font-id instead of the current method, which is more confusing since you have to check the .svg font file for the right font-id string.
+
 - TextPath could maybe have some way to use alternate glyphs (lower v. upper case numbers, etc.)
+
 - replace TypeScript with custom Bablyon parser to fix all the parsing issues (esp. ; in right-hand side of @abc = rhs; and quoted @ symbols getting turned into this.)
+
 - improve error reporting significantly, esp. by making sure new babelscript based TSVG system would correctly carry source maps through from .tsvg to .js so figuring
 
 ## Shout Out
