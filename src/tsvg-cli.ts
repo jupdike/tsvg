@@ -248,7 +248,8 @@ function ifhelper(cond: boolean, action, callback) {
   }
 }
 
-export function main(options: any) {
+// callback takes error as a first argument
+export function main(options: any, callback: any) {
   if (!options) {
     if (process.argv.length < 3) {
       const usage = getUsage(sections);
@@ -372,6 +373,9 @@ export function main(options: any) {
           }
         }
       });
+      if (callback) {
+        callback(null);
+      }
     } else {
       console.error('Nothing to do. Choose a different combination of option flags, or add -o outputfilename.js');
     }
