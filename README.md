@@ -10,6 +10,8 @@ The "T" stands for:
 
 Notes:
 
+- TSVG's approach to parsing SVG fonts (especially creating transformed path objects) is based on a partial port of <a href="https://github.com/kartsims/easysvg">EasySVG.php</a>, although TSVG's TextPath supports the hkern attribute and is more accurate.
+
 - Eventually will probably replace use of TypeScript with Babel/Babylon grammar extension => pure JS for all code
 
   FYI TypeScript type for a Dictionary<string, any> =    myKVDict: {[k: string]: any}
