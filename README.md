@@ -250,6 +250,8 @@ In order to convert .otf and .ttf fonts to .svg fonts, just search online for co
 
 ## Future Work
 
+- --jshelper ClassName (-j flag) to allow one to specify external JS (ES6) code, a class to pull methods out of and add to generated code and 'this' object.
+
 - More interesting, better examples -- as a sort of test suite
 
 - Gallery of awesome examples
