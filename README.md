@@ -268,7 +268,7 @@ In order to convert .otf and .ttf fonts to .svg fonts, just search online for co
 
 - replace TypeScript with custom Bablyon parser to fix all the parsing issues (esp. ; in right-hand side of @abc = rhs; and quoted @ symbols getting turned into this.)
 
-- improve error reporting significantly, esp. by making sure new babelscript based TSVG system would correctly carry source maps through from .tsvg to .js so figuring
+- improve error reporting significantly, esp. by making sure new babelscript-based TSVG system would correctly carry source maps through from .tsvg to .js so figuring out where a problem happened would be easier
 
 ## Shout Out
 
