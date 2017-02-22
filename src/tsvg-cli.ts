@@ -46,7 +46,7 @@ const sections = [
     optionList: optionDefinitions
   },
   {
-    content: 'Project home: [underline]{https://bitbucket.org/updike_org/tsvg#readme}'
+    content: 'Project home: [underline]{https://github.com/jupdike/tsvg}'
   }
 ]
 
