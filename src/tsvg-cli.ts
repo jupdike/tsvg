@@ -236,7 +236,7 @@ function processOneInfile(options, infilename) {
 
 
 // tsc --sourceMap tsvg.ts tsvg-lib.ts prepend.ts && ...
-var tsc = __dirname + '/../node_modules/typescript/bin/tsc';  // global would be '/usr/local/bin/tsc';
+var tsc = __dirname + '/../../typescript/bin/tsc';  // global would be '/usr/local/bin/tsc';
 var node = '/usr/local/bin/node';
 
 function ifhelper(cond: boolean, action, callback) {
