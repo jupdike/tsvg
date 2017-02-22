@@ -1,6 +1,6 @@
 {
   "name": "tsvg",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "TSVG: Turing-complete SVG preprocessor",
   "main": "./bin/tsvg.js",
   "bin": {
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://updike_org@bitbucket.org/updike_org/tsvg.git"
+    "url": "https://github.com/jupdike/tsvg.git"
   },
   "dependencies": {
     "command-line-args": "^4.0.1",
@@ -31,5 +31,5 @@
   },
   "author": "Jared Updike",
   "license": "BSD-3-Clause",
-  "homepage": "https://bitbucket.org/updike_org/tsvg#readme"
+  "homepage": "https://github.com/jupdike/tsvg"
 }
