@@ -209,23 +209,14 @@ In order to convert .otf and .ttf fonts to .svg fonts, just search online for co
 
 <code>
     @translate(x: string, y: string)
-    
     @rotate(x: string, ox=0, oy=0)
-    
     @line(x1: string, y1: string, x2: string, y2: string, opts: { [k: string]: any; })
-    
     @with(obj1: any, key: string, rhs: any)
-    
     @closedPolyPath(opts: { [k: string]: any; }, d: string[])
-    
     @lines(opts: { [k: string]: any; }, pointPairs: Array<[any, any, any, any]>)
-    
     @range(a: number, b: number = undefined)
-    
     @flatten(array: any)
-    
     @makeStyle(kvs)
-    
     @textWidthHelper(fontId: string, fontSize: number, style: any, textStr: string): number
 </code>
 
