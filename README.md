@@ -207,7 +207,6 @@ In order to convert .otf and .ttf fonts to .svg fonts, just search online for co
 
 ## Helper Methods
 
-<pre>
     @translate(x: string, y: string)
     @rotate(x: string, ox=0, oy=0)
     @line(x1: string, y1: string, x2: string, y2: string, opts: { [k: string]: any; })
@@ -218,7 +217,6 @@ In order to convert .otf and .ttf fonts to .svg fonts, just search online for co
     @flatten(array: any)
     @makeStyle(kvs)
     @textWidthHelper(fontId: string, fontSize: number, style: any, textStr: string): number
-</pre>
 
 ## Command-line arguments
 
