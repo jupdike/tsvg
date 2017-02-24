@@ -1,3 +1,3 @@
 #!/bin/sh
 
-./bin/tsvg.js example/*.tsvg
+./bin/tsvg -f example/*.tsvg

@@ -4,6 +4,7 @@ const getUsage = require('command-line-usage');
 const optionDefinitions = [
   { name: 'help', alias: 'h', type: Boolean, description: "print this usage help and exit"},
   { name: 'keep', alias: 'k', type: Boolean, description: "do not delete .js.map, .js and .tsx temp files (.tsvg -> .tsx -> .js -> .svg); overwrite them if they exist (default is to delete upon success, and to bail if those files exist -- so as not to delete anything important)"},
+  { name: 'force', alias: 'f', type: Boolean, description: "Always overwrite .js.map, .js and .tsx temp files (.tsvg -> .tsx -> .js -> .svg); they do not contain anything important"},
   { name: 'src', alias: 's', type: String, multiple: true, defaultOption: true, typeLabel: '[underline]{file.tsvg} ...',
     description: "(default if no flag specified) the input .tsvg files to process; by default x.tsvg will output x.svg (see --output below)"},
   { name: 'args', alias: 'a', multiple:true, type: String, typeLabel: '[underline]{k:v} ...',
@@ -218,7 +219,7 @@ function processOneInfile(options, infilename) {
   var parts = path.parse(infilename);
   var inkey = parts.base.replace(parts.ext, "");
   var outfilename = infilename.replace(".tsvg", ".tsx");
-  if (!options.keep && fs.existsSync(outfilename)) {
+  if (!options.keep && !options.force && fs.existsSync(outfilename)) {
     console.error(avoiding(outfilename));
     process.exit(1);
   }
@@ -231,12 +232,19 @@ function processOneInfile(options, infilename) {
 // do the stuff!
 // replace the two lines of shell script with all of this stuff!
 
-// TODO major -- remove reliance on tsvg.sh so this script (./tsvg.js or just node tsvg.js mapped to tsvg executable)
-//               can stand on its own, compile multiple files, allow optional -o = --output, etc.
-
-
 // tsc --sourceMap tsvg.ts tsvg-lib.ts prepend.ts && ...
 var tsc = __dirname + '/../../typescript/bin/tsc';  // global would be '/usr/local/bin/tsc';
+var tsc1 = tsc;
+if (!fs.existsSync(tsc)) {
+  // could not find tsc in typescript folder, as installed 'tsvg' package; could be tsvg development version
+  tsc = __dirname + '/../node_modules/typescript/bin/tsc';  // global would be '/usr/local/bin/tsc';
+}
+if (!fs.existsSync(tsc)) {
+  console.error('Could not find: '+tsc1);
+  console.error('Could not find: '+tsc);
+  console.error('Ensure that TypeScript is install in node_modules and that the path is relative to bin/tsvg as above.');
+  process.exit(1);
+}
 var node = '/usr/local/bin/node';
 
 function ifhelper(cond: boolean, action, callback) {
@@ -289,13 +297,13 @@ export function main(options: any, callback: any) {
 
         // avoid overwriting whatever.js
         var outfilename = stem+'.js';
-        if (!options.keep && fs.existsSync(outfilename)) {
+        if (!options.keep && !options.force && fs.existsSync(outfilename)) {
           console.error(avoiding(outfilename));
           process.exit(1);
         }
         // avoid overwriting whatever.js.map
         var outfilename = stem+'.js.map';
-        if (!options.keep && fs.existsSync(outfilename)) {
+        if (!options.keep && !options.force && fs.existsSync(outfilename)) {
           console.error(avoiding(outfilename));
           process.exit(1);
         }
@@ -343,7 +351,7 @@ export function main(options: any, callback: any) {
       });
 
       // avoid overwriting whatever.tsx
-      if (!options.keep && fs.existsSync(outtsx)) {
+      if (!options.keep && !options.force && fs.existsSync(outtsx)) {
         console.error(avoiding(outtsx));
         process.exit(1);
       }

@@ -176,7 +176,7 @@ Here is a simple example of the drop-in SVG <code>&lt;text&gt;</code> replacemen
         >Hello World</text>
     </svg>
 
-If the Font path attribute starts with a . or .., the path of the current .tsvg file is prepended.
+If the Font path attribute starts with a . or .., the path of the current .tsvg file is prepended. If you install the included .otf file on your system, then you can see how the two compare by loading the output of <code>npm test</code>, textpath.svg, in your browser.
 
 You can also whitelist characters, in order to keep the output .JS files small:
 
@@ -186,15 +186,15 @@ Notice that you cannot put a newline inside this tag between white-list-chars an
 
 The Font tag will parse the .svg font file specified by path, as XML, and convert it to a normalized .JSON representation. TSVG will cache this as font-abcdef1234567890.json to speed up subsequent runs of <code>tsvg</code>. (The hash includes the contents of the file and the white listed characters, if any, so should be stable.)
 
-The TextPath tag uses the same attributes as the <a href="">SVG text tag</a>, including those in the example above, as well as letter-spacing. (Ligatures like fi ff are supported, but not when letter-spacing is used. This matches the text tag) The TextPath-specific attribute font-id is mandatory (to know which font to use) but could later use the same system as the text tag, with family and weight.
+The TextPath tag uses (some of) the same attributes as the <a href="https://www.w3.org/TR/SVG/text.html#AlignmentProperties">SVG text tag</a>, including those in the example above, as well as letter-spacing. (Ligatures like fi ff are supported, but not when letter-spacing is used. This matches the text tag) The TextPath-specific attribute **font-id** is mandatory (to know which font to use) but could later use the same system as the &lt;text&gt; tag, with family and weight.
 
-In order to convert .otf and .ttf fonts to .svg fonts, just search online for converters, or use <a href="https://fontforge.github.io/en-US/">FontForge</a> at home. (FF's UI is terrible on the Mac, so I use it from the command-line. YMMV.) Remember that professional fonts have license restrictions, so good luck with that.
+In order to convert .otf and .ttf fonts to .svg fonts, just search online for converters, or use <a href="https://fontforge.github.io/en-US/">FontForge</a> at home. (FF's UI is terrible on the Mac, so I use it from the command-line. YMMV.) Remember that professional fonts have license restrictions, so good luck navigating that.
 
 ## Caveats
 
 (!) do not put newlines inside of attributes, for example <code>&lt;path d="whatever NEWLINE whatever"/&gt;</code> because it will not parse correclty. This is a limitation of JSX.
 
-(!) do not include <code>&lt;!DOCTYPE&gt;</code> or <code>&lt;?xml ...&gt;</code> -- just remove them completely. The generated JSX code looks like: <code>TSVG.Templates['my-file-name'] = &lt;svg ...&gt;</code> before it is compiled to vanilla JS, so this must be exactly one tag!
+(!) do not include <code>&lt;!DOCTYPE&gt;</code> or <code>&lt;?xml ...&gt;</code> -- just remove them completely. The generated JSX code looks like: <code>TSVG.Templates['my-file-name'] = &lt;svg ...&gt;...&lt;/svg&gt;</code> before it is compiled to vanilla JS, so this must be exactly one element (does not have to be **svg**, could be **path** or whatever, must be a single element)
 
 (!) @xyz = rhs; -- right hand side cannot have ; characters, even inside a string. Use @makeStyle({a: b, c: d}) instead.
 
@@ -263,6 +263,8 @@ In order to convert .otf and .ttf fonts to .svg fonts, just search online for co
     </If>
 
 - TextPath could use font-family and weight to find the right font-id instead of the current method, which is more confusing since you have to check the .svg font file for the right font-id string.
+
+- TextPath could match more and more of the attributes <a href="https://www.w3.org/TR/SVG/text.html#AlignmentProperties">in the W3 spec</a>, especially the alignment and letter spacing properties.
 
 - TextPath could maybe have some way to use alternate glyphs (lower v. upper case numbers, etc.)
 
