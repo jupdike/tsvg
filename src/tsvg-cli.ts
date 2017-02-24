@@ -212,7 +212,7 @@ ${global}
 }
 
 function avoiding(outfilename) {
-  return 'Avoiding overwriting file "'+outfilename+'". Use --keep or delete the file manually to proceed. (TSVG makes temp files with this extension but only cleans them up upon successful compilation.)';
+  return 'Avoiding overwriting file "'+outfilename+'". Use --force or --keep or delete the file manually to proceed. (TSVG makes temp files with this extension but only cleans them up upon successful compilation.)';
 }
 
 function processOneInfile(options, infilename) {
@@ -242,7 +242,7 @@ if (!fs.existsSync(tsc)) {
 if (!fs.existsSync(tsc)) {
   console.error('Could not find: '+tsc1);
   console.error('Could not find: '+tsc);
-  console.error('Ensure that TypeScript is install in node_modules and that the path is relative to bin/tsvg as above.');
+  console.error('Ensure that TypeScript is install in node_modules and that the path is relative to bin/tsvg as one of the above.');
   process.exit(1);
 }
 var node = '/usr/local/bin/node';
