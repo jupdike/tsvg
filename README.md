@@ -35,7 +35,7 @@ pairs and, by calling .render(), returns a string of SVG. This works in the brow
 
 TSVG embeds the expressive parts of JS, allowing anything from lightweight use to heavy use of JavaScript. For example
 
-    <svg id="kb-svg-horiz" class="kb-bottom" version="1.1" xmlns="http://www.w3.org/2000/svg"
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
         xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="800" height="800"
         viewBox="0 0 800 800" preserveAspectRatio="xMidYMid none">
       <line x1="0" y1="200" x2="780" y2="200"/>
@@ -45,7 +45,7 @@ TSVG embeds the expressive parts of JS, allowing anything from lightweight use t
 
 could become
 
-    <svg id="kb-svg-horiz" class="kb-bottom" version="1.1" xmlns="http://www.w3.org/2000/svg" 
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" 
         xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="800" height="800"
         viewBox="0 0 800 800" preserveAspectRatio="xMidYMid none">
       <line x1="0" y1={200*1} x2="780" y2={200*1} />
@@ -77,7 +77,7 @@ can call the built-in helper <code>lines(..)</code>
 
 Using <code>@abc = arbitrary("JavaScript", "goes", here");</code> you can make your own 'global' constants and helpers.
 
-    <svg id="kb-svg-horiz" class="kb-bottom" version="1.1" xmlns="http://www.w3.org/2000/svg" 
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" 
         xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="800" height="800"
         viewBox="0 0 800 800" preserveAspectRatio="xMidYMid none">
       @verticalGap = 200;
@@ -88,7 +88,7 @@ Using <code>@abc = arbitrary("JavaScript", "goes", here");</code> you can make y
 
 To make a helper, use arrow syntax on the right hand side:
 
-    <svg id="kb-svg-horiz" class="kb-bottom" version="1.1" xmlns="http://www.w3.org/2000/svg" 
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" 
         xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="800" height="800"
         viewBox="0 0 800 800" preserveAspectRatio="xMidYMid none">
       @verticalGap = 800;
@@ -104,7 +104,7 @@ The semicolon used to declare a constant is required, but do not put semicolons 
 
 Continuing the running example, you can use the For component (built-in tag) as follows:
 
-    <svg id="kb-svg-horiz" class="kb-bottom" version="1.1" xmlns="http://www.w3.org/2000/svg" 
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" 
         xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="800" height="800"
         viewBox="0 0 800 800" preserveAspectRatio="xMidYMid none">
       @verticalGap = 800;
@@ -155,7 +155,7 @@ In addition, in order to handle string arguments as numbers, convert them to dou
 
 Here is a simple example of the drop-in SVG <code>&lt;text&gt;</code> replacement tag, TextPath:
 
-    <svg id="kb-svg-horiz" class="kb-bottom" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="600" height="180" viewBox="0 0 600 180">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="600" height="180" viewBox="0 0 600 180">
       <Font path='./svg-fonts/firasanscondensed-bold.svg'/>
       <TextPath
         x="300" y="120"

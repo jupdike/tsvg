@@ -20,13 +20,16 @@ export class FontSVG {
     }
   }
   public static Load(fontsObject, svgXmlPath, whitelist) {
-    //console.error(svgXmlPath);
     if (whitelist) {
       console.error('whitelisting these characters: '+ whitelist);
     }
 
-    var fontStr = fs.readFileSync(svgXmlPath) + "";
     var dir = path.dirname(svgXmlPath);
+    if (dir === '/.') {
+      dir = '.';
+      svgXmlPath = svgXmlPath.replace('/.', '.');
+    }
+    var fontStr = fs.readFileSync(svgXmlPath) + "";
     var cachedName = path.join(dir, 'font-' + FontSVG.GetMD5Hash(fontStr + whitelist) + '.json'); // same if font contents and whitelist are the same
 
     if (!fs.existsSync(cachedName)) {
