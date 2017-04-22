@@ -178,7 +178,7 @@ class FakeElement {
       // TODO style 'tag' string according to whether children and/or attributes or not!
       //      e.g.  <br /> (desired)  vs.  <br></br> (current)
       for (let prop in this.attributes) {
-        let prop2 = prop.replace(/xmlns_/g, 'xmlns:').replace(/xlink_/g, 'xlink:');
+        let prop2 = prop.replace(/xmlns_/g, 'xmlns:').replace(/xml_/g, 'xml:').replace(/xlink_/g, 'xlink:');
         ret.push(' ', prop2, '="', FakeElement.addSlashes(this.attributes[prop]), '"'); // escape the string
       }
       if (this.children.length == 0) { // no nesting

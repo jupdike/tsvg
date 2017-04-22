@@ -136,6 +136,7 @@ function prepOneInfile(infilename) {
   var valStr = valbits.join('\n');
 
   // fix for certain XML v. JSX 'problems' in infilecontents, like these:
+  infilecontents = infilecontents.replace(/xml:/g, 'xml_');
   infilecontents = infilecontents.replace(/xmlns:/g, 'xmlns_');
   infilecontents = infilecontents.replace(/xlink:/g, 'xlink_');
   infilecontents = infilecontents.replace(/\<\!\-\-/g, '{/*');
