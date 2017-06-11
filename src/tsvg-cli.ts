@@ -52,7 +52,7 @@ const sections = [
 ]
 
 const path = require('path');
-const execFile = require('child_process').execFile;
+const execFile = (file, args, cb) => { return require('child_process').execFile(file, args, {maxBuffer: 1024 * 1024}, cb); }
 const fs = require('fs');
 import {FontSVG} from './FontSVG';
 

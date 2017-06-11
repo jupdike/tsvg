@@ -1,5 +1,9 @@
 # TSVG: Turing-complete SVG preprocessor, using JSX and JavaScript.
 
+## Turing-complete SVG preprocessor
+
+TSVG is a Turing-comple SVG preprocessor, using JSX and JavaScript. Much like [LessJS](http://lesscss.org/) is a superset of CSS with very useful abstractions and error- and time-saving features, TSVG is a superset of [SVG](https://www.w3.org/TR/SVG/).
+
 ## Features and Benefits
 
 The "T" stands for:
@@ -204,6 +208,10 @@ In order to convert .otf and .ttf fonts to .svg fonts, just search online for co
     <Font white-list-chars="" path="" />  (not path followed by white-list-chars)
     <Font path='' />
     <Font white-list-chars='' path='' />  (don't mix single and double quotes)
+
+(!) another quirk: in order to white-list the space character (ASCII = 32, you know the one), you must put it at the end of the white-list string
+
+(!) if you are whitelisting the same font and using it in multiple files, which get compiled into a single .js file with embedded fonts (using --ouput or -o), make sure the whitelist characters are the same in each TSVG file for that font, so that the order of compiling the input .tsvg files will not matter and you won't be missing glyphs (characters) from that font
 
 ## Helper Methods
 

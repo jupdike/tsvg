@@ -1,6 +1,6 @@
 {
   "name": "tsvg",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "TSVG: Turing-complete SVG preprocessor",
   "main": "./bin/tsvg.js",
   "bin": {
