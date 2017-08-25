@@ -28,7 +28,7 @@ class TSVG {
     range: TSVG.range,
     flatten: TSVG.flatten,
     makeStyle: TSVG.makeStyle,
-    textWidth: TSVG.textWidthHelper
+    textWidthHelper: TSVG.textWidthHelper
   };
   public static Templates = {};
   public static translate(x: string, y: string) { return `translate(${x}, ${y})`; }

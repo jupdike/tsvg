@@ -61,8 +61,8 @@ export class FontSVG {
       var gNameToUnicode = {}
       FontSVG.walker(fontJson.root, 'glyph', node => {
         //console.log(node);
-        if (node.attributes && node.attributes.unicode && node.attributes['glyph-name']) {
-          var gname = node.attributes['glyph-name'];
+        if (node.attributes && node.attributes.unicode) {
+          var gname = node.attributes['glyph-name']; // might be undefined
           const uni = node.attributes.unicode;
           if (whitelist && whitelist.indexOf(uni) < 0) {
             return;
@@ -74,8 +74,12 @@ export class FontSVG {
             return; // skip verical line separator and paragraph separator
             // http://www.fileformat.info/info/unicode/char/2028/index.htm ... screws up JavaScript output
           }
-          gNameToUnicode[gname] = uni;
-          //console.log('loaded glyph for unicode: '+node.attributes.unicode);
+          if (gname) {
+            gNameToUnicode[gname] = uni;
+            //console.log('loaded glyph for unicode: '+node.attributes.unicode);
+          }
+          // TODO test this new tweak (to allow <glyph> tags without glyph-name attributes...
+          // make sure nothing broke on old SVG fonts, then remove this comment and build, commit, ship, etc.
           //console.log(node.attributes);
           font.glyphs[uni] = node.attributes;
         }

@@ -2,7 +2,7 @@
 
 ## Turing-complete SVG preprocessor
 
-TSVG is a Turing-comple SVG preprocessor, using JSX and JavaScript. Much like [LessJS](http://lesscss.org/) is a superset of CSS with very useful abstractions and error- and time-saving features, TSVG is a superset of [SVG](https://www.w3.org/TR/SVG/).
+TSVG is a Turing-complete SVG preprocessor, using JSX and JavaScript. Much like [LessJS](http://lesscss.org/) is a superset of CSS with very useful abstractions and error- and time-saving features, TSVG is a superset of [SVG](https://www.w3.org/TR/SVG/).
 
 ## Features and Benefits
 
@@ -34,6 +34,11 @@ TSVG augments SVG with JavaScript code via <a href="https://facebook.github.io/r
 
 When you create a TSVG file, you are creating a pure JavaScript function that takes an (optional) object with key value
 pairs and, by calling .render(), returns a string of SVG. This works in the browser or on the server.
+
+## Example of Some Advanced Results You Can Achieve with TSVG
+
+- [Ebookshelf](https://updike-org.s3-us-west-2.amazonaws.com/Publish/Ebookshelf/index.html)<br/>
+  A Virtual Bookshelf view of the books available at [Standard Ebooks](https://standardebooks.org/) as a Virtual Bookshelf, a graphic design project by Jared Updike. The spine of each book is an SVG image, rendered by JS code output by TSVG (each book's title, author, etc. is passed in as arguments to the render function).
 
 ## Basic "preprocessor" approach
 
@@ -131,7 +136,7 @@ Your generated JS code can be called with
 
     window.TSVG.Templates['my-file-name']({'abc': 123, 'efg': 456}).render();
 
-in order to pass parameters to your TSVG code. (It is recommended to put in default values for @abc and @efg so you can generate SVG directly without changing specific the parameters external, making development and testing easier.)
+in order to pass parameters to your TSVG code. (It is recommended to put in default values for @abc and @efg so you can generate SVG directly without changing the specific parameters externally, making development and testing easier.)
 
 ### Template / parameters Caveat
 
