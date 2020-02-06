@@ -1,3 +1,7 @@
+// needed to get this older code to compile on TypeScript 2.x
+// see https://stackoverflow.com/questions/31173738/typescript-getting-error-ts2304-cannot-find-name-require
+declare var require: any
+
 const fs = require('fs');
 const xmlparse = require('xml-parser');
 const Entities = require('html-entities').AllHtmlEntities;

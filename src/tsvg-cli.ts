@@ -1,3 +1,9 @@
+// needed to get this older code to compile on TypeScript 2.x
+// see https://stackoverflow.com/questions/31173738/typescript-getting-error-ts2304-cannot-find-name-require
+declare var require: any
+declare var __dirname: any
+declare var process: any
+
 const commandLineArgs = require('command-line-args');
 const getUsage = require('command-line-usage');
 
