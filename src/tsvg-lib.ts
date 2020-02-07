@@ -404,11 +404,13 @@ class TextPath {
 
     return ret;
   }
+  static readonly minimalHtmlEntityMap = {amp: '&', lt: '<', gt: '>', quot: '"', '#039': "'"};
   static walkChildren(children: any, font, params, lastX, lastY, useGlyph: any) {
     // children are UTF8 strings... right?
-    children.forEach(s => {
+    children.forEach(sorig => {
       // TODO test if s is really Just A Single String and not nest nodes/components (or throw error)
       // TODO then maybe one day, look for tspans and typeset those, or do line wrapping, whatever...
+      var s = sorig.replace(/&([^;]+);/g, (m, c) => TextPath.minimalHtmlEntityMap[c]);
       for (var ix = 0; ix < s.length; ix++) {
         var ch = s.charAt(ix); // TODO ? use EasySVG approach to pull out unicode from utf8 string
         var ch1 = ix < s.length - 1 ? ch1 = s.charAt(ix+1) : ''; // for kerning
