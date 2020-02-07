@@ -247,7 +247,7 @@ interface FontAndTextParams {
     unitsPerEm, ascent, descent, horizAdvX: number;
   textAnchor: string; // left (default) right, middle (allow center for kicks)
   // nullable args passed through if non-null
-  id, style, transform, className: string;
+  id, fontId, style, transform, className: string;
   font: any; // the glyph lookup and hkern lookup tables for the font (we have extracted any meta already)
 }
 class TextPath {
@@ -291,17 +291,18 @@ class TextPath {
   }
   public static parseParams(attributes: any): FontAndTextParams {
     // pull out all the attributes, style fields, font metadata, and merge with defaults, etc.
-    var id = attributes['font-id'];
-    var className = attributes['className'] || null;
+    var fontId = attributes['font-id'];
+    var className = attributes['class'] || null;
     var styleStr = attributes['style'];
     var transform = attributes['transform'] || null;
     var style = TextPath.styleToObject(styleStr);
     // font-size in px, 16 px = 1 em
     var params: FontAndTextParams = {
-      id: null, style: null, className: className, transform: transform,
+      id: null, fontId: null, style: null, className: className, transform: transform,
       x: 0, y: 0, fontSize: 16, letterSpacing: 0, lineHeight: 1, unitsPerEm: 1, ex: 1, em: 1,
       ascent: 0, descent: 0, horizAdvX: 1, textAnchor: "start", font: null };
     TextPath.setAttrib(params, 'id', attributes);
+    TextPath.setAttrib(params, 'fontId', attributes);
     TextPath.setAttrib(params, 'x', attributes);
     TextPath.setAttrib(params, 'y', attributes);
     TextPath.setAttrib(params, 'fontSize', style, 'font-size');
@@ -325,11 +326,11 @@ class TextPath {
     // TODO copy attributes like stroke-width, fill and stroke (color) to style (object -> back to string), but only if style is missing those fields, then add that string in here
     params.style = styleStr;
     
-    if (!TSVG.Fonts.hasOwnProperty(id)) {
-      console.error("Could not find Font with id = "+id);
+    if (!TSVG.Fonts.hasOwnProperty(fontId)) {
+      console.error("Could not find Font with fontId = "+fontId);
       return null;
     }
-    var font = TSVG.Fonts[id];
+    var font = TSVG.Fonts[fontId];
     params.font = font;
     TextPath.setAttrib(params, 'unitsPerEm', font.meta['font-face'], 'units-per-em');
     params.unitsPerEm = +(params.unitsPerEm);
@@ -359,7 +360,7 @@ class TextPath {
     const font = params.font;
     const styleStr = attributes['style'];
     if (!params) {
-      console.error('Failed to parse params, so TextPath component render failes');
+      console.error('Failed to parse params, so TextPath component render failed');
       return [];
     }
 
@@ -383,7 +384,15 @@ class TextPath {
     }
     var lastY = params.y;
 
-    var ret = [indentStr, `<path style="${styleStr}" d="`];
+    var maybeId = "";
+    if (params.id) {
+      maybeId = `id="${params.id}" `;
+    }
+    var maybeClass = "";
+    if (params.className) {
+      maybeClass = `class="${params.className}" `;
+    }
+    var ret = [indentStr, `<path ${maybeId}${maybeClass}style="${styleStr}" d="`];
     TextPath.walkChildren(children, font, params, lastX, lastY,
       (d, size, dx, dy) => {
         // 'render' a glyph
