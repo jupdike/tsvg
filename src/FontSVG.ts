@@ -46,7 +46,8 @@ export class FontSVG {
       fontStr = fontStr.replace(/\<!DOCTYPE.*?\>/g, '');
       fontStr = entities.decode(fontStr);
       var fontJson = xmlparse(fontStr);
-      //console.log(fontJson);
+      
+      //console.log(JSON.stringify(fontJson.root.children[1].children.slice(0, 5500), null, "   "));
 
       // TODO load data into 'font' object
       FontSVG.walker(fontJson.root, 'font', node => {
@@ -64,10 +65,10 @@ export class FontSVG {
       });
       var gNameToUnicode = {}
       FontSVG.walker(fontJson.root, 'glyph', node => {
-        //console.log(node);
+        //console.log('----\n', node);
         if (node.attributes && node.attributes.unicode) {
           var gname = node.attributes['glyph-name']; // might be undefined
-          const uni = node.attributes.unicode;
+          var uni = node.attributes.unicode;
           if (whitelist && whitelist.indexOf(uni) < 0) {
             return;
           }
@@ -78,12 +79,23 @@ export class FontSVG {
             return; // skip verical line separator and paragraph separator
             // http://www.fileformat.info/info/unicode/char/2028/index.htm ... screws up JavaScript output
           }
+          if (uni === '&quot;') { // manually double entity encoded. The XML parser chokes on the element with """ and skips it!
+            uni = '"';
+          }
+          //console.log('uni:', uni);
+          // XML parser handles this for us, so this should do nothing
+          if (uni.startsWith('&#x') && uni.endsWith(';')) {
+            uni = uni.replace(';');
+            uni = String.fromCharCode(parseInt(uni.slice(2), 16))
+          }
+          //console.log('uni:', uni, 'gname:', gname);
           if (gname) {
             gNameToUnicode[gname] = uni;
             //console.log('loaded glyph for unicode: '+node.attributes.unicode);
           }
           // TODO test this new tweak (to allow <glyph> tags without glyph-name attributes...
           // make sure nothing broke on old SVG fonts, then remove this comment and build, commit, ship, etc.
+          //console.log('glyph\n-----');
           //console.log(node.attributes);
           font.glyphs[uni] = node.attributes;
         }
