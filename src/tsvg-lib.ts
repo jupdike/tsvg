@@ -539,7 +539,7 @@ class TextPath {
           pushPoint(+(coords.shift()), +(coords.shift()));
         }
       }
-      // chop of weird digits after ten decimal places, then convert back to 'succinct' representation (skip trailing 0's)
+      // chop off weird digits after ten decimal places, then convert back to 'succinct' representation (skip trailing 0's)
       // remove useless commas (when dash for negative is there to separate the numbers)
       ret.push(i + newCoords.map(x => +(+(x).toFixed(7))).join(',').replace(TextPath.CommaMinusRegex, '-'));
     });

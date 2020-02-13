@@ -79,7 +79,11 @@ export class FontSVG {
             return; // skip verical line separator and paragraph separator
             // http://www.fileformat.info/info/unicode/char/2028/index.htm ... screws up JavaScript output
           }
+          var oldUni = uni;
           if (uni === '&quot;') { // manually double entity encoded. The XML parser chokes on the element with """ and skips it!
+            uni = '"';
+          }
+          if (uni === '&amp;quot;') { // manually double entity encoded. The XML parser chokes on the element with """ and skips it!
             uni = '"';
           }
           //console.log('uni:', uni);
@@ -88,7 +92,10 @@ export class FontSVG {
             uni = uni.replace(';');
             uni = String.fromCharCode(parseInt(uni.slice(2), 16))
           }
-          //console.log('uni:', uni, 'gname:', gname);
+          // console.warn("------------");
+          // console.warn('oldUni:', oldUni);
+          // console.warn(uni);
+          // console.warn('uni:', uni, 'gname:', gname);
           if (gname) {
             gNameToUnicode[gname] = uni;
             //console.log('loaded glyph for unicode: '+node.attributes.unicode);
