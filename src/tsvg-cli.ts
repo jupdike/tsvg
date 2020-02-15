@@ -335,6 +335,7 @@ export function main(options: any, callback: any) {
               process.exit(1);
             }
             // success! write out the .svg
+            console.error(stderr);
             fs.writeFileSync(stem+'.svg', stdout);
             if (!options.keep) {
               // upon success, remove the temp files
