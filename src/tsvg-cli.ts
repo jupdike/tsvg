@@ -14,7 +14,7 @@ const optionDefinitions = [
   { name: 'src', alias: 's', type: String, multiple: true, defaultOption: true, typeLabel: '[underline]{file.tsvg} ...',
     description: "(default if no flag specified) the input .tsvg files to process; by default x.tsvg will output x.svg (see --output below)"},
   { name: 'args', alias: 'a', multiple:true, type: String, typeLabel: '[underline]{k:v} ...',
-    description: "one or more k:v pairs passed to the template, where @k takes the value v, e.g.  tsvg --arg k:v  results in {k: 'v'}  passed to template"},
+    description: "one or more k:v pairs passed to the template, where @k takes the value v, e.g.  tsvg --args k:v  results in {k: 'v'}  passed to template"},
   { name: 'quiet', alias: 'q', type: Boolean,
     description: "produce no .svg ouput; generated .js code does not call  console.log(TSVG.Templates[<mine>]().render());  as is the default, for generating .svg files" },
   { name: 'output', alias: 'o', type: String, typeLabel: '[underline]{to/file.js}',
@@ -185,8 +185,8 @@ function wrapMeat(options, inkey, meat) {
   var lib = fs.readFileSync(__dirname + '/../lib/tsvg-lib.ts');
 
   const argy = {};
-  if (options.arg) {
-    options.arg.forEach(s => {
+  if (options.args) {
+    options.args.forEach(s => {
       const ps = s.split(':');
       if (ps.length >= 2) {
         const k = ps[0];
