@@ -151,10 +151,10 @@ class FakeElement {
       //console.log('---');
       //console.log(children[i]);
       if (children[i] === undefined) {
-        ret.push('undefined'); // don'r crash
+        ret.push('undefined'); // don't crash
       }
       else if (children[i] === null) {
-        ret.push('null'); // don'r crash
+        ret.push('null'); // don't crash
       }
       else if (children[i].renderInner) {
         ret = ret.concat((children[i] as FakeElement).renderInner(indent + 1));
@@ -247,9 +247,116 @@ interface FontAndTextParams {
     unitsPerEm, ascent, descent, horizAdvX: number;
   textAnchor: string; // left (default) right, middle (allow center for kicks)
   // nullable args passed through if non-null
-  id, fontId, style, transform, className: string;
+  id, fontId, style, transform, className, controlPoints: string;
   font: any; // the glyph lookup and hkern lookup tables for the font (we have extracted any meta already)
 }
+
+class CPoints {
+  dCommands: string[] = null;
+  lastI: string = null;
+  constructor(public collectPoints = [],
+              public collectSquares = [],
+              public collectSegments = [],
+              public lastControlPoint = null) {
+  }
+  setDataString(d: string) {
+    this.dCommands = [];
+    var mat;
+    while ((mat = TextPath.AzAZazAZRegex.exec(d)) !== null) {
+      if (mat[0] && mat[0].length > 0) {
+        this.dCommands.push(mat[0].slice(0,1));
+      }
+    }
+    //console.error(this.dCommands.join(''));
+  }
+  isCurvy(i) {
+    return !i || i === 'M' || i === 'C' || i === 'c' || i === 'S' || i === 's';
+  }
+  tryToPushRoundPoint(lastLoc, i) {
+    if (this.isCurvy(i) && this.isCurvy(this.lastI)) {
+      //console.error('this.lastI:', this.lastI, 'i:', i, '--> round');
+      this.collectPoints.push(lastLoc);
+    } else if (i !== 'z' && i !== 'Z') {
+      //console.error('this.lastI:', this.lastI, 'i:', i, '--> square');
+      this.collectSquares.push(lastLoc);
+    }
+  }
+  index: number = 0;
+  processLoc(lastLoc, i: string, coords: number[]): number[] {
+    // TODO 'S' (symmetric or shorthand or smooth curveTo, absolute position, with four numbers, two points)
+    if ((i === 'M' || i === 'L') && coords.length >= 2) {
+      // if (i === 'M') {
+      //   this.isFirstPoint = true;
+      // }
+      if (i !== 'M') {
+        // if (!this.isFirstPoint) { // possible for the last command to be a curveTo the first point
+        this.tryToPushRoundPoint(lastLoc, i);
+      }   else {
+        this.lastI = null;
+      }
+      lastLoc = [coords[0], coords[1]];
+      this.lastControlPoint = lastLoc;
+    } else if (i === 'C' && coords.length >= 6) {
+      // two control half-handles
+      this.collectSegments.push([[lastLoc[0],lastLoc[1]], [coords[0],coords[1]]]);
+      this.collectSegments.push([[coords[2],coords[3]], [coords[4],coords[5]]]);
+      this.tryToPushRoundPoint(lastLoc, i);
+      lastLoc = [coords[4], coords[5]];
+      this.lastControlPoint = [coords[2], coords[3]];
+    } else if ((i === 'm' || i === 'l') && coords.length >= 2) {
+      this.tryToPushRoundPoint(lastLoc, i);
+      lastLoc = [lastLoc[0] + coords[0], lastLoc[1] + coords[1]];
+      this.lastControlPoint = lastLoc;
+    } else if ((i === 's') && coords.length >= 4) {
+      var ctrlPt2 = [lastLoc[0]+coords[0],lastLoc[1]+coords[1]];
+      this.collectSegments.push([ctrlPt2, [lastLoc[0]+coords[2], lastLoc[1]+coords[3]]]);
+      //console.error('found s:', i, coords);
+      // make p1.x1, p1.y symmetrical about lastControlPoint
+      var p1 = [2*lastLoc[0] - this.lastControlPoint[0], 2*lastLoc[1] - this.lastControlPoint[1]];
+      this.collectSegments.push([lastLoc, p1]);
+      this.tryToPushRoundPoint(lastLoc, i);
+      lastLoc = [lastLoc[0] + coords[2], lastLoc[1] + coords[3]];
+      this.lastControlPoint = ctrlPt2;
+    }
+    else if (i === 'c' && coords.length >= 6) {
+      this.collectSegments.push([[lastLoc[0],lastLoc[1]], [lastLoc[0]+coords[0],lastLoc[1]+coords[1]]]);
+      var ctrlPt = [lastLoc[0]+coords[2],lastLoc[1]+coords[3]];
+      this.collectSegments.push([ctrlPt, [lastLoc[0]+coords[4], lastLoc[1]+coords[5]]]);
+      this.lastControlPoint = [lastLoc[0] + coords[2], lastLoc[1] + coords[3]];
+      this.tryToPushRoundPoint(lastLoc, i);
+      lastLoc = [lastLoc[0] + coords[4], lastLoc[1] + coords[5]];
+    }
+    this.lastI = i;
+    if (i === 'z' || i === 'Z') {
+      this.lastI = null;
+      this.tryToPushRoundPoint(lastLoc, i);
+    }
+
+    return lastLoc;
+  }
+  addControlPoints(params, ret) {
+    var col = params.controlPoints;
+    var r = params.fontSize * 0.005;
+    var r2 = params.fontSize * 0.004;
+    var stroke = params.fontSize * 0.002;
+    this.collectSegments.forEach((seg) => {
+      var [[x0, y0], [x1, y1]] = seg;
+      var d = "M"+x0+","+y0+" L"+x1+","+y1;
+      ret.push("<path style='stroke: "+col+"; stroke-width: "+stroke+"' d='"+d+"' />\n");
+      ret.push("<circle style='fill: "+col+"; stroke-width: 0' cx='"+x0+"' cy='"+y0+"' r='"+r2+"'/>\n");
+      ret.push("<circle style='fill: "+col+"; stroke-width: 0' cx='"+x1+"' cy='"+y1+"' r='"+r2+"'/>\n");
+    });
+    this.collectSquares.forEach((point) => {
+      var [x, y] = point;
+      ret.push("<rect style='fill: "+col+"; stroke-width: 0' x='"+(x-r)+"' y='"+(y-r)+"' width='"+(r*2)+"' height='"+(r*2)+"'/>\n");
+    });
+    this.collectPoints.forEach((point) => {
+      var [x, y] = point;
+      ret.push("<circle style='fill: "+col+"; stroke-width: 0' cx='"+x+"' cy='"+y+"' r='"+r+"'/>\n");
+    });
+  }
+}
+
 class TextPath {
   // https://www.w3.org/TR/SVG/coords.html#Units
   // "1pt" equals "1.25px" (and therefore 1.25 user units)
@@ -300,7 +407,7 @@ class TextPath {
     var params: FontAndTextParams = {
       id: null, fontId: null, style: null, className: className, transform: transform,
       x: 0, y: 0, fontSize: 16, letterSpacing: 0, lineHeight: 1, unitsPerEm: 1, ex: 1, em: 1,
-      ascent: 0, descent: 0, horizAdvX: 1, textAnchor: "start", font: null };
+      ascent: 0, descent: 0, horizAdvX: 1, textAnchor: "start", font: null, controlPoints: 'transparent' };
     TextPath.setAttrib(params, 'id', attributes);
     TextPath.setAttrib(params, 'fontId', attributes);
     TextPath.setAttrib(params, 'x', attributes);
@@ -314,6 +421,7 @@ class TextPath {
     // start = left, middle = center, end = right
     TextPath.setAttrib(params, 'textAnchor', style, 'text-anchor');
     TextPath.setAttrib(params, 'textAnchor', attributes, 'text-anchor'); // attributes override CSS
+    TextPath.setAttrib(params, 'controlPoints', attributes, 'control-points'); // attributes override CSS
     params.textAnchor = params.textAnchor.toLowerCase();
     // get the string out of here
     params.x = +(params.x);
@@ -351,6 +459,7 @@ class TextPath {
 
     return params;
   }
+  static cpoints: CPoints;
   // based on (sort of) EasySVG by Simon Tarchichi <kartsims@gmail.com>
   public static renderSpecial(indent: number, attributes: any, children: Array<any>): Array<string> {
     if (!attributes || !attributes.hasOwnProperty('font-id') || !attributes.hasOwnProperty('style')) {
@@ -393,6 +502,7 @@ class TextPath {
       maybeClass = `class="${params.className}" `;
     }
     var ret = [indentStr, `<path ${maybeId}${maybeClass}style="${styleStr}" d="`];
+    TextPath.cpoints = new CPoints();
     TextPath.walkChildren(children, font, params, lastX, lastY,
       (d, size, dx, dy) => {
         // 'render' a glyph
@@ -401,6 +511,10 @@ class TextPath {
         lastY += dy;
       });
     ret.push('"/>');
+    // draw points and control handles for fun and profit
+    if (params.controlPoints != 'transparent') {
+      TextPath.cpoints.addControlPoints(params, ret);
+    }
 
     return ret;
   }
@@ -503,6 +617,8 @@ class TextPath {
   static CommaMinusRegex = new RegExp(',\-', 'g');
   static DefApplyMatrix_OneShape(def, matrix: number[]) {
     var ret = [];
+    var lastLoc = [0, 0];
+    TextPath.cpoints.setDataString(def);
     def.match(TextPath.AzAZazAZRegex).forEach(instruction => {
       var i = instruction.replace(TextPath.NotazAZRegex, '');
       var coords = instruction.match(TextPath.NumberRegex);
@@ -539,6 +655,8 @@ class TextPath {
           pushPoint(+(coords.shift()), +(coords.shift()));
         }
       }
+      lastLoc = TextPath.cpoints.processLoc(lastLoc, i, newCoords);
+  
       // chop off weird digits after ten decimal places, then convert back to 'succinct' representation (skip trailing 0's)
       // remove useless commas (when dash for negative is there to separate the numbers)
       ret.push(i + newCoords.map(x => +(+(x).toFixed(7))).join(',').replace(TextPath.CommaMinusRegex, '-'));
