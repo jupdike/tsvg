@@ -197,6 +197,8 @@ The Font tag will parse the .svg font file specified by path, as XML, and conver
 
 The TextPath tag uses (some of) the same attributes as the <a href="https://www.w3.org/TR/SVG/text.html#AlignmentProperties">SVG text tag</a>, including those in the example above, as well as letter-spacing. (Ligatures like fi ff are supported, but not when letter-spacing is used. This matches the text tag) The TextPath-specific attribute **font-id** is mandatory (to know which font to use) but could later use the same system as the &lt;text&gt; tag, with family and weight.
 
+TextPath also supports and attribute, control-points (default is transparent), which takes an HTML color string and draws control points and bezier handles. The default is not to draw anything.
+
 In order to convert .otf and .ttf fonts to .svg fonts, just search online for converters, or use <a href="https://fontforge.github.io/en-US/">FontForge</a> at home. (FF's UI is terrible on the Mac, so I use it from the command-line. YMMV.) Remember that professional fonts have license restrictions, so good luck navigating that.
 
 ## Caveats
@@ -234,36 +236,38 @@ In order to convert .otf and .ttf fonts to .svg fonts, just search online for co
 ## Command-line arguments
 
     Examples
-    
-      $ tsvg input.tsvg                        1. Convert input.tsvg to input.svg.                          
-      $ tsvg input2.tsvg -a width:100          2. Convert input2.tsvg to input2.svg; pass argument "@width" 
-                                               as "100".                                                    
-      $ tsvg *.tsvg -o tsvg-all.js -g window   3. Convert multiple .tsvg files to one .js file (can call    
-                                               window.TSVG.Templates["fname"]({additional:                  
-                                               "args"}).render() to generate SVG string).                   
-    
+
+        $ tsvg input.tsvg                        1. Convert input.tsvg to input.svg.                                                                                                          
+        $ tsvg input2.tsvg -a width:100          2. Convert input2.tsvg to input2.svg; pass argument "@width" as "100".                                                                       
+        $ tsvg *.tsvg -o tsvg-all.js -g window   3. Convert multiple .tsvg files to one .js file (can call window.TSVG.Templates["fname"]({additional: "args"}).render() to generate SVG      
+                                                string).
+
     Options
-    
-      -h, --help                print this usage help and exit                                               
-      -k, --keep                do not delete .js.map, .js and .tsx temp files (.tsvg -> .tsx -> .js ->      
-                                .svg); overwrite them if they exist (default is to delete upon success, and  
-                                to bail if those files exist -- so as not to delete anything important)      
-      -f, --force               Always overwrite .js.map, .js and .tsx temp files (.tsvg -> .tsx -> .js ->   
-                                .svg); they do not contain anything important                                
-      -s, --src file.tsvg ...   (default if no flag specified) the input .tsvg files to process; by default  
-                                x.tsvg will output x.svg (see --output below)                                
-      -a, --args k:v ...        one or more k:v pairs passed to the template, where @k takes the value v,    
-                                e.g.  tsvg --arg k:v  results in {k: 'v'}  passed to template                
-      -q, --quiet               produce no .svg ouput; generated .js code does not call                      
-                                console.log(TSVG.Templates[<mine>]().render());  as is the default, for      
-                                generating .svg files                                                        
-      -o, --output to/file.js   combine all .js code from all .tsvg src files into a single .js file,        
-                                instead of generating .svg file(s); turns on --quiet as well                 
-      -g, --global string       define the global object to attach templates code to; for example  --global  
-                                window generates code   window['TSVG'] = TSVG;  this turns on --quiet as     
-                                well                                                                         
-      -d, --dev                 a special flag for development, to force TypeScript files to be recompiled   
-                                each time tsvg binary runs
+
+        -h, --help                print this usage help and exit                                                
+        -k, --keep                do not delete .js.map, .js and .tsx temp files (.tsvg -> .tsx -> .js ->       
+                                    .svg); overwrite them if they exist (default is to delete upon success, and   
+                                    to bail if those files exist -- so as not to delete anything important)       
+        -f, --force               Always overwrite .js.map, .js and .tsx temp files (.tsvg -> .tsx -> .js ->    
+                                    .svg); they do not contain anything important                                 
+        -s, --src file.tsvg ...   (default if no flag specified) the input .tsvg files to process; by default   
+                                    x.tsvg will output x.svg (see --output below)                                 
+        -a, --args k:v ...        one or more k:v pairs passed to the template, where @k takes the value v,     
+                                    e.g.  tsvg --args k:v  results in {k: 'v'}  passed to template                
+        -q, --quiet               produce no .svg ouput; generated .js code does not call                       
+                                    console.log(TSVG.Templates[<mine>]().render());  as is the default, for       
+                                    generating .svg files                                                         
+        -o, --output to/file.js   combine all .js code from all .tsvg src files into a single .js file, instead 
+                                    of generating .svg file(s); turns on --quiet as well                          
+        -n, --node                output Node.js-compatible args-parsing code, when used with --output. The     
+                                    resulting .js file can be used as a commandline script which can be passed    
+                                    args, e.g.                                                                    
+                                    $ node stem.js k0:v0 k1:v1                                                    
+        -g, --global string       define the global object to attach templates code to; for example  --global   
+                                    window generates code   window['TSVG'] = TSVG;  this turns on --quiet as well 
+        -d, --dev                 a special flag for development, to force TypeScript files to be recompiled    
+                                    each time tsvg binary runs                                                    
+
 ## Future Work
 
 - --jshelper ClassName (-j flag) to allow one to specify external JS (ES6) code, a class to pull methods out of and add to generated code and 'this' object.

@@ -19,6 +19,8 @@ const optionDefinitions = [
     description: "produce no .svg ouput; generated .js code does not call  console.log(TSVG.Templates[<mine>]().render());  as is the default, for generating .svg files" },
   { name: 'output', alias: 'o', type: String, typeLabel: '[underline]{to/file.js}',
     description: "combine all .js code from all .tsvg src files into a single .js file, instead of generating .svg file(s); turns on --quiet as well" },
+  { name: 'node', alias: 'n', type: Boolean,
+    description: "output Node.js-compatible args-parsing code, when used with --output. The resulting .js file can be used as a commandline script which can be passed args, e.g.\n$ node stem.js k0:v0 k1:v1" },
   { name: 'global', alias: 'g', type: String,
     description: "define the global object to attach templates code to; for example  --global window generates code   window['TSVG'] = TSVG;  this turns on --quiet as well" },
   { name: 'dev', alias: 'd', type: Boolean,
@@ -185,7 +187,8 @@ function wrapMeat(options, inkey, meat) {
   var lib = fs.readFileSync(__dirname + '/../lib/tsvg-lib.ts');
 
   const argy = {};
-  if (options.args) {
+  var loggy = '';
+  if (options.args && !options.quiet && !options.node) {
     options.args.forEach(s => {
       const ps = s.split(':');
       if (ps.length >= 2) {
@@ -194,12 +197,30 @@ function wrapMeat(options, inkey, meat) {
         argy[k] = v;
       }
     });
+    loggy = `console.log(TSVG.Templates['${inkey}'](${JSON.stringify(argy, null, 2)}).render());`
   }
-  const loggy = options.quiet ? '' : `console.log(TSVG.Templates['${inkey}'](${JSON.stringify(argy, null, 2)}).render());`
+  if (options.node) {
+    loggy = `
+    var argy = {};
+    if (process.argv && process.argv.length > 2) {
+      process.argv.slice(2).forEach(function (s) {
+          var ps = s.split(':');
+          if (ps.length >= 2) {
+              var k = ps[0];
+              var v = ps[1];
+              argy[k] = v;
+          }
+      });
+    }
+    console.log(TSVG.Templates['${inkey}'](argy).render());
+`;
+  }
   const global = options.global ? `var ${options.global}: any; ${options.global}['TSVG'] = TSVG;` : '';
 
   var result = `
 ${pre}
+declare var process: any // deal with TypeScript type error which will not be a problem in the Node.js-specific .js file (if -n flag present)
+
 (function() { // protect TSVG lib + React, TextPath, For, Font, etc. from infecting global
 
 ${lib}
@@ -352,6 +373,15 @@ export function main(options: any, callback: any) {
       var outtsx = options.output.replace('.js','.tsx');
 
       var meats = [];
+      if (options.node && options.src && options.src.length > 1) {
+        console.error('Cannot use --node or -n flag unless there is only one .tsvg file specified in --src or -s');
+        process.exit(1);
+      }
+      var stem = '';
+      if (options.node && options.src && options.src.length > 0) {
+        var parts = path.parse(options.src[0]);
+        stem = parts.base.replace(parts.ext, "");
+      }
       options.src.forEach(infilename => {
         console.error('Input file stem: ' + infilename);
         var meat = prepOneInfile(infilename);
@@ -364,7 +394,7 @@ export function main(options: any, callback: any) {
         process.exit(1);
       }
       
-      var result = wrapMeat(options, '', meats.join('\n'));
+      var result = wrapMeat(options, stem, meats.join('\n'));
       fs.writeFileSync(outtsx, result);
 
       // tsc --sourceMap --jsx react $one.tsx && ...
